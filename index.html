@@ -6,76 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Hungry ABC Monsters - Progress Edition</title>
-<style>
-  :root {
-    --bg-top: #E0F7FA;
-    --bg-bottom: #FFF9C4;
-    --card-border: #FFFFFF;
-    --accent-color: #FF6B6B;
-  }
-  * {
-    box-sizing: border-box;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    margin: 0;
-    padding: 0;
-  }
-  body, html {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    font-family: "Comic Sans MS", "Chalkboard SE", "Arial Rounded MT Bold", sans-serif;
-    touch-action: none;
-    transition: background 0.6s ease;
-  }
-
-  /* 主题氛围飘落背景粒子 */
-  #ambient-bg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-  }
-  .ambient-item {
-    position: absolute;
-    top: -50px;
-    font-size: 26px;
-    opacity: 0.45;
-    animation: fallDown linear infinite;
-  }
-  @keyframes fallDown {
-    0% { transform: translateY(-40px) rotate(0deg); }
-    100% { transform: translateY(108vh) rotate(360deg); }
-  }
-
-  /* 1. 首屏一键开启声音遮罩 */
-  #unlock-screen {
-    position: fixed;
-    inset: 0;已针对这两项核心需求完成修复与升级：
-
-1. **修复字母“A”读成“额（/ə/）”的问题 & 100% 纯正美式发音**：
-   - **原因分析**：之前点击字母 `A` 时，代码把小写的 `"a"` 传给了词典发音接口，英语词典会把单独的小写 `a` 当作不定冠词（a book 的 a），因此读成了弱读音“额 `/ə/`”。
-   - **修复方案**：内置了 **26个字母的标准字母名（Letter Names）映射表**（例如点击 `A` 时强制请求字母本音 `/eɪ/`，点击 `I` 读 `/aɪ/`，点击 `Z` 读 `zee`），同时在离线语音引擎中强制锁定母语级英文语音包（如 iOS 的 `Samantha`、Android 的 `Google US English`），彻底杜绝中式腔调或“额”的发音。
-2. **全自动本地学习进度保存（`localStorage` 持久化）**：
-   - **自动记忆断点**：无论何时关闭网页或退回桌面，再次打开时会自动回到**上次所在的主题、正在学习的单词序号**。
-   - **已学词库与贴纸永久保留**：所有喂饱怪兽学完的单词、贴纸乐园里收集的贴纸以及你拖动摆放好的贴纸位置都会自动保存在手机/平板里。
-   - **进度统计与重置**：词库抽屉顶部新增了进度统计（如 `已学 15 / 210`）以及防误触的进度重置按钮。
-
-请将以下完整代码保存为 `index.html` 重新上传即可体验：
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
 <title>Hungry ABC Monsters - Pro Edition</title>
 <style>
   :root {
@@ -179,7 +109,9 @@
     padding: 6px 12px;
     border-radius: 40px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    max-width: 98vw;
+    max-width: 96vw;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   #theme-switcher {
     display: flex;
@@ -187,6 +119,7 @@
     background: #F2EFE9;
     padding: 4px;
     border-radius: 30px;
+    flex-shrink: 0;
   }
   .theme-pill {
     width: 38px;
@@ -257,7 +190,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 66px;
+    padding-top: var(--topbar-space, 66px);
     position: relative;
     z-index: 10;
   }
@@ -277,6 +210,8 @@
     border: 5px solid var(--card-border);
     transition: transform 0.25s, border-color 0.4s;
     position: relative;
+    max-width: 96vw;
+    box-sizing: border-box;
   }
   #Showcase-card:active { transform: scale(1.05); }
   /* 已学过该单词的小星星标记 */
@@ -301,20 +236,23 @@
     gap: 7px;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    max-width: 100%;
   }
   .h-slot {
-    width: 44px;
-    height: 54px;
+    width: var(--slot-w, 44px);
+    height: var(--slot-h, 54px);
     border-radius: 13px;
     background: #EAE0C8;
     box-shadow: inset 0 4px 0 rgba(0,0,0,0.12);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+    font-size: var(--slot-fs, 32px);
     font-weight: 900;
     color: rgba(255,255,255,0.48);
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
   }
   .h-slot.target-now {
     background: #FFF3B0;
@@ -769,7 +707,7 @@
 
   @media (max-width: 680px) {
     #big-word-emoji { font-size: 76px; }
-    .h-slot { width: 36px; height: 46px; font-size: 26px; border-radius: 10px; }
+    .h-slot { width: var(--slot-w, 36px); height: var(--slot-h, 46px); font-size: var(--slot-fs, 26px); border-radius: 10px; }
     #monster-zone { margin-top: clamp(36px, 7vh, 75px); }
     #monster-body { width: 162px; height: 156px; padding: 14px 10px; }
     #monster-mouth { width: 100px; height: 58px; }
@@ -779,6 +717,49 @@
     #cel-emoji { font-size: 125px; }
     #cel-word { font-size: 44px; }
     #cel-sentence-text { font-size: 22px; }
+  }
+
+  /* 窄屏：顶栏按钮缩小，避免换行过高挤压主舞台 */
+  @media (max-width: 460px) {
+    .theme-pill { width: 32px; height: 32px; font-size: 17px; }
+    .nav-btn { width: 34px; height: 34px; font-size: 15px; }
+    #top-bar { gap: 5px; padding: 5px 8px; }
+    #word-counter { font-size: 12px; padding: 0 2px; }
+  }
+
+  /* 矮屏 / 横屏：整体压缩纵向占用，保证怪兽和字母点心都能露出来 */
+  @media (max-height: 560px) {
+    /* 顶栏必须保持单行，否则会把主舞台整体压扁 */
+    .theme-pill { width: 30px; height: 30px; font-size: 16px; }
+    .nav-btn { width: 34px; height: 34px; font-size: 15px; }
+    #theme-switcher { gap: 4px; padding: 3px; }
+    #top-bar { gap: 5px; padding: 5px 8px; }
+    #word-counter { font-size: 12px; padding: 0 2px; }
+
+    #big-word-emoji { font-size: 48px; }
+    #Showcase-card { padding: 5px 14px 8px; gap: 4px; }
+    #monster-zone { margin-top: 10px; }
+    #monster-body { width: 110px; height: 104px; border-width: 4px; padding: 8px 6px; }
+    #monster-horns { top: -22px; font-size: 26px; }
+    .m-eye { width: 24px; height: 24px; }
+    .m-pupil { width: 11px; height: 11px; }
+    #monster-mouth { width: 70px; height: 38px; border-width: 3px; }
+    .tooth { width: 10px; height: 8px; }
+    .teeth-row { gap: 7px; }
+    .tongue { width: 34px; height: 15px; }
+    .h-slot { border-radius: 8px; }
+    #header-slots { gap: 5px; }
+    #learned-star { font-size: 16px; top: 4px; right: 6px; }
+    .letter-treat { width: 56px; height: 56px; font-size: 30px; border-radius: 15px; border-width: 4px; }
+    .treat-badge { font-size: 19px; top: -9px; right: -7px; }
+    #craving-bubble { font-size: 20px; padding: 3px 9px; right: -60px; top: -12px; }
+    #craving-bubble::after { width: 10px; height: 10px; bottom: -7px; left: 10px; border-width: 3px; }
+    #cel-emoji { font-size: 84px; }
+    #cel-word { font-size: 34px; }
+    #cel-sentence-text { font-size: 18px; }
+    #cel-next-btn { font-size: 22px; padding: 10px 28px; border-width: 4px; }
+    #start-btn { width: 108px; height: 108px; font-size: 50px; }
+    #unlock-icons { font-size: 52px; }
   }
 </style>
 </head>
@@ -1162,7 +1143,7 @@ function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   cloudPlayer.onended = done;
   cloudPlayer.onerror = () => fallbackLocalTTS(ttsFallbackText, done);
   // type=2 强制美式真人发音
-  cloudPlayer.src = `[https://dict.youdao.com/dictvoice?audio=$](https://dict.youdao.com/dictvoice?audio=$){encoded}&type=2`;
+  cloudPlayer.src = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
 
   const p = cloudPlayer.play();
   if (p !== undefined) {
@@ -1256,6 +1237,28 @@ const celNextBtn = document.getElementById('cel-next-btn');
 const stickerBadge = document.getElementById('sticker-count-badge');
 const ambientBg = document.getElementById('ambient-bg');
 const savedProgressTip = document.getElementById('saved-progress-tip');
+const topBar = document.getElementById('top-bar');
+const stageEl = document.getElementById('stage');
+
+/**
+ * 自适应布局：顶部导航栏在窄屏会换行变高，这里实测它的高度，
+ * 再把舞台整体往下推，保证任何屏幕上元素都不会互相重叠。
+ */
+function syncResponsiveLayout() {
+  if (topBar) {
+    const h = topBar.getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--topbar-space', Math.round(h + 22) + 'px');
+  }
+  // 字母点心按窗口尺寸定位，转屏/缩放后需要重新排布
+  if (currentWordList && currentWordList[currentIdx] && document.querySelector('.letter-treat')) {
+    const chars = currentWordList[currentIdx].word.split('');
+    applySlotSizing(chars.length);   // 拼写槽位同样要跟随屏幕重新计算
+    reflowTreats(chars);
+  }
+}
+
+window.addEventListener('resize', syncResponsiveLayout);
+window.addEventListener('orientationchange', () => setTimeout(syncResponsiveLayout, 250));
 
 // 首屏显示上次学习进度提示
 if (completedSet.size > 0) {
@@ -1366,6 +1369,9 @@ function loadWord(idx) {
   showcaseCard.classList.toggle('is-learned', completedSet.has(uniqueKey));
   applyMonsterStyle(idx);
 
+  // 拼写槽位：字母多时自动缩小并收紧间距，保证整行永远在卡片内
+  applySlotSizing(chars.length);
+
   headerSlots.innerHTML = '';
   chars.forEach((ch, i) => {
     const s = document.createElement('div');
@@ -1377,47 +1383,207 @@ function loadWord(idx) {
 
   cravingLetter.textContent = chars[0];
   speakWordOrSentence(wordObj.word);
+  // 先按实测顶栏高度下移舞台，再排布点心，保证任何屏幕都不重叠
+  syncResponsiveLayout();
   spawnLetterTreats(wordObj, chars);
 }
 
 function spawnLetterTreats(wordObj, chars) {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const count = chars.length;
-  const treatW = vw < 680 ? 68 : 84;
-
-  const yBase = vh * 0.79;
-  const maxSpan = Math.min(vw * 0.92, count * (treatW + 16));
-  const startX = (vw - maxSpan) / 2;
-  const stepX = count > 1 ? (maxSpan - treatW) / (count - 1) : 0;
-
-  const posIndices = Array.from({ length: count }, (_, i) => i).sort(() => Math.random() - 0.5);
+  const treatW = getTreatSize(chars.length);
+  const layout = computeTreatLayout(chars.length, treatW);
   const badges = THEMES[currentThemeKey].treatBadges;
+
+  // 点心尺寸与布局计算保持一致（覆盖 CSS 媒体查询的默认值）
+  document.documentElement.style.setProperty('--treat-size', treatW + 'px');
 
   chars.forEach((ch, charOrderIdx) => {
     const treat = document.createElement('div');
     treat.className = 'letter-treat';
     treat.dataset.order = charOrderIdx;
     treat.dataset.char = ch;
+    treat.dataset.slot = charOrderIdx; // 固定的摆放位置，与答题顺序解耦
     treat.style.backgroundColor = LETTER_COLORS[ch] || "#FF6B6B";
+    treat.style.width = treatW + 'px';
+    treat.style.height = treatW + 'px';
 
     const badgeIcon = badges[(currentIdx + charOrderIdx) % badges.length];
     treat.innerHTML = `<span class="treat-badge">${badgeIcon}</span><span>${ch}</span>`;
 
-    const pIdx = posIndices[charOrderIdx];
-    const homeX = startX + pIdx * stepX;
-    const homeY = yBase + (pIdx % 2 === 0 ? -10 : 14);
-
-    treat.style.left = homeX + 'px';
-    treat.style.top = homeY + 'px';
-    treat.dataset.homeX = homeX;
-    treat.dataset.homeY = homeY;
+    const pos = layout[charOrderIdx];
+    treat.style.left = pos.x + 'px';
+    treat.style.top = pos.y + 'px';
+    treat.dataset.homeX = pos.x;
+    treat.dataset.homeY = pos.y;
 
     document.body.appendChild(treat);
     bindTreatInteraction(treat, wordObj);
   });
 
   updateTurnHighlights();
+}
+
+/**
+ * 根据字母数量和屏幕宽度计算拼写槽位的尺寸。
+ * 单词很长时（如下 XYLOPHONE 有 9 个字母）自动缩小并收紧间距，
+ * 保证整行拼写始终在展示卡片内，不会溢出屏幕。
+ */
+function applySlotSizing(count) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // 展示卡片可用宽度：视口减去卡片内边距和边框
+  const cardPad = vw < 680 ? 40 : 58;
+  const availW = Math.max(60, Math.min(vw - 20, 520) - cardPad);
+
+  let baseW = 44, baseFs = 32;
+  if (vh < 560) { baseW = 30; baseFs = 21; }
+  else if (vw < 680) { baseW = 36; baseFs = 26; }
+
+  let slotW = baseW;
+  let gap = Math.max(4, Math.round(baseW * 0.16));
+  let guard = 0;
+  while (slotW > 16 && guard++ < 60) {
+    if (count * slotW + (count - 1) * gap <= availW) break;
+    slotW -= 1;
+    if (slotW < baseW * 0.6) gap = Math.max(2, gap - 1);
+  }
+
+  const ratio = slotW / baseW;
+  headerSlots.style.setProperty('--slot-w', slotW + 'px');
+  headerSlots.style.setProperty('--slot-h', Math.round(slotW * 1.23) + 'px');
+  headerSlots.style.setProperty('--slot-fs', Math.max(11, Math.round(baseFs * ratio)) + 'px');
+  headerSlots.style.gap = gap + 'px';
+  headerSlots.style.flexWrap = 'nowrap';
+}
+
+/**
+ * 当前屏幕下单个字母点心的边长。
+ * 会根据「可用区域」和「字母数量」动态收缩，
+ * 保证再长的单词（如 XYLOPHONE 9 个字母）也不会互相重叠或超出屏幕。
+ */
+function getTreatSize(count = 1) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // 基础尺寸：按屏幕宽度分档
+  let size = vw < 680 ? 68 : 84;
+  if (vh < 560) size = 56;
+  else if (vh < 680) size = Math.min(size, 62);
+
+  const avail = measureTreatArea();
+  const gap = Math.max(8, Math.round(size * 0.22));
+  const margin = 8;
+
+  // 在可用区域内，贪心地缩小尺寸直到所有字母都能不重叠地放下
+  let guard = 0;
+  while (size > 34 && guard++ < 60) {
+    const cols = Math.max(1, Math.floor((avail.w + gap) / (size + gap)));
+    const rows = Math.ceil(count / cols);
+    const needW = cols * size + (cols - 1) * gap;
+    const needH = rows * size + (rows - 1) * gap;
+    if (needW <= avail.w + 0.5 && needH <= avail.h + 0.5) break;
+    size -= 2;
+  }
+  return Math.max(34, size);
+}
+
+/** 测量怪兽下方（或两侧）可放置点心的矩形区域 */
+function measureTreatArea() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = 8;
+
+  const monsterRect = monsterBody.getBoundingClientRect();
+  const monsterBottom = monsterRect.bottom || vh * 0.62;
+  const belowH = vh - monsterBottom - 20;
+
+  // 下方空间充足时，优先使用怪兽下方的整条区域
+  if (belowH >= 60) {
+    return { w: vw - margin * 2, h: belowH, x: margin, y: monsterBottom + 20 };
+  }
+
+  // 下方不够（横屏/矮屏）：改用左右两侧并排的区域
+  const leftW = Math.max(0, monsterRect.left - margin);
+  const rightW = Math.max(0, vw - monsterRect.right - margin);
+  return { w: leftW + rightW, h: vh - margin * 2, x: margin, y: margin, split: true };
+}
+
+/**
+ * 计算每个字母点心的归位坐标。
+ * 使用「自动换行网格」：先按可用区域算出每行能放几个，放不下就自动缩小/换行，
+ * 确保任意字母数量、任意屏幕尺寸下点心都完整可见且互不重叠。
+ */
+function computeTreatLayout(count, treatW) {
+  const gap = Math.max(8, Math.round(treatW * 0.22));
+  const area = measureTreatArea();
+
+  // 每次生成时打乱一次摆放位置，让找字母更有挑战
+  const slots = Array.from({ length: count }, (_, i) => i).sort(() => Math.random() - 0.5);
+
+  let cols;
+  let startX;
+  let rowH = treatW;
+  let startY;
+
+  if (area.split) {
+    // 左右分列模式：每侧独立排布，纵向整体居中
+    const leftRoom = monsterBody.getBoundingClientRect().left - 8;
+    const rightRoom = window.innerWidth - monsterBody.getBoundingClientRect().right - 8;
+    const perSideW = Math.max(leftRoom, rightRoom);
+
+    cols = Math.max(1, Math.floor((perSideW + gap) / (treatW + gap)));
+    const rows = Math.ceil(count / (cols * 2));
+    const blockH = rows * treatW + (rows - 1) * gap;
+    startY = Math.max(area.y, area.y + (area.h - blockH) / 2);
+
+    return slots.map((pIdx, i) => {
+      const side = i < cols * rows ? 0 : 1;   // 0 左, 1 右
+      const idxInSide = side === 0 ? i : i - cols * rows;
+      const r = Math.floor(idxInSide / cols);
+      const c = idxInSide % cols;
+
+      const x = side === 0
+        ? 8 + c * (treatW + gap)
+        : window.innerWidth - 8 - treatW - c * (treatW + gap);
+
+      return {
+        x: Math.max(4, Math.min(window.innerWidth - treatW - 4, x)),
+        y: Math.max(4, Math.min(window.innerHeight - treatW - 4, startY + r * rowH))
+      };
+    });
+  }
+
+  // 常规模式：底部横向网格，超出宽度自动换到下一行
+  cols = Math.max(1, Math.min(count, Math.floor((area.w + gap) / (treatW + gap))));
+  const rows = Math.ceil(count / cols);
+  const blockW = cols * treatW + (cols - 1) * gap;
+  const blockH = rows * treatW + (rows - 1) * gap;
+  startX = area.x + Math.max(0, (area.w - blockW) / 2);
+  startY = area.y + Math.max(0, (area.h - blockH) / 2);
+
+  return slots.map((pIdx, i) => ({
+    x: startX + (i % cols) * (treatW + gap),
+    y: startY + Math.floor(i / cols) * rowH
+  }));
+}
+
+/** 屏幕尺寸变化后，把已生成的点心重新归位（正在拖拽的那个除外） */
+function reflowTreats(chars) {
+  const treatW = getTreatSize(chars.length);
+  const layout = computeTreatLayout(chars.length, treatW);
+  document.querySelectorAll('.letter-treat').forEach(treat => {
+    if (treat.classList.contains('dragging')) return;
+    const slot = parseInt(treat.dataset.slot, 10);
+    const pos = layout[slot] || layout[0];
+    // 尺寸可能随屏幕变化（如从横屏切回竖屏），必须同步更新，否则会互相重叠
+    treat.style.width = treatW + 'px';
+    treat.style.height = treatW + 'px';
+    treat.classList.add('returning');
+    treat.style.left = pos.x + 'px';
+    treat.style.top = pos.y + 'px';
+    treat.dataset.homeX = pos.x;
+    treat.dataset.homeY = pos.y;
+  });
 }
 
 function updateTurnHighlights() {
