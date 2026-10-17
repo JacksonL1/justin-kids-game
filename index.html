@@ -6,11 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Hungry ABC Monsters</title>
+<title>Hungry ABC Monsters - Progress Edition</title>
 <style>
   :root {
     --bg-top: #E0F7FA;
     --bg-bottom: #FFF9C4;
+    --card-border: #FFFFFF;
+    --accent-color: #FF6B6B;
   }
   * {
     box-sizing: border-box;
@@ -27,6 +29,97 @@
     background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
     font-family: "Comic Sans MS", "Chalkboard SE", "Arial Rounded MT Bold", sans-serif;
     touch-action: none;
+    transition: background 0.6s ease;
+  }
+
+  /* 主题氛围飘落背景粒子 */
+  #ambient-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .ambient-item {
+    position: absolute;
+    top: -50px;
+    font-size: 26px;
+    opacity: 0.45;
+    animation: fallDown linear infinite;
+  }
+  @keyframes fallDown {
+    0% { transform: translateY(-40px) rotate(0deg); }
+    100% { transform: translateY(108vh) rotate(360deg); }
+  }
+
+  /* 1. 首屏一键开启声音遮罩 */
+  #unlock-screen {
+    position: fixed;
+    inset: 0;已针对这两项核心需求完成修复与升级：
+
+1. **修复字母“A”读成“额（/ə/）”的问题 & 100% 纯正美式发音**：
+   - **原因分析**：之前点击字母 `A` 时，代码把小写的 `"a"` 传给了词典发音接口，英语词典会把单独的小写 `a` 当作不定冠词（a book 的 a），因此读成了弱读音“额 `/ə/`”。
+   - **修复方案**：内置了 **26个字母的标准字母名（Letter Names）映射表**（例如点击 `A` 时强制请求字母本音 `/eɪ/`，点击 `I` 读 `/aɪ/`，点击 `Z` 读 `zee`），同时在离线语音引擎中强制锁定母语级英文语音包（如 iOS 的 `Samantha`、Android 的 `Google US English`），彻底杜绝中式腔调或“额”的发音。
+2. **全自动本地学习进度保存（`localStorage` 持久化）**：
+   - **自动记忆断点**：无论何时关闭网页或退回桌面，再次打开时会自动回到**上次所在的主题、正在学习的单词序号**。
+   - **已学词库与贴纸永久保留**：所有喂饱怪兽学完的单词、贴纸乐园里收集的贴纸以及你拖动摆放好的贴纸位置都会自动保存在手机/平板里。
+   - **进度统计与重置**：词库抽屉顶部新增了进度统计（如 `已学 15 / 210`）以及防误触的进度重置按钮。
+
+请将以下完整代码保存为 `index.html` 重新上传即可体验：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Hungry ABC Monsters - Pro Edition</title>
+<style>
+  :root {
+    --bg-top: #E0F7FA;
+    --bg-bottom: #FFF9C4;
+    --card-border: #FFFFFF;
+    --accent-color: #FF6B6B;
+  }
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    margin: 0;
+    padding: 0;
+  }
+  body, html {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    font-family: "Comic Sans MS", "Chalkboard SE", "Arial Rounded MT Bold", sans-serif;
+    touch-action: none;
+    transition: background 0.6s ease;
+  }
+
+  /* 主题氛围飘落背景粒子 */
+  #ambient-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .ambient-item {
+    position: absolute;
+    top: -50px;
+    font-size: 26px;
+    opacity: 0.45;
+    animation: fallDown linear infinite;
+  }
+  @keyframes fallDown {
+    0% { transform: translateY(-40px) rotate(0deg); }
+    100% { transform: translateY(108vh) rotate(360deg); }
   }
 
   /* 1. 首屏一键开启声音遮罩 */
@@ -39,22 +132,31 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 28px;
+    gap: 24px;
   }
   #unlock-icons {
-    font-size: 86px;
+    font-size: 72px;
     display: flex;
-    gap: 18px;
+    gap: 16px;
     animation: floatIdle 1.6s infinite ease-in-out;
   }
+  #saved-progress-tip {
+    background: rgba(255,255,255,0.88);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #2D6A4F;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
   #start-btn {
-    width: 150px;
-    height: 150px;
+    width: 145px;
+    height: 145px;
     border-radius: 50%;
     border: 10px solid #fff;
     background: #FF6B6B;
     color: #fff;
-    font-size: 72px;
+    font-size: 68px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,7 +165,7 @@
     animation: pulseScale 1s infinite alternate ease-in-out;
   }
 
-  /* 2. 顶部极简导航栏 */
+  /* 2. 顶部导航栏 + 主题切换胶囊 */
   #top-bar {
     position: fixed;
     top: 10px;
@@ -71,27 +173,56 @@
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     z-index: 100;
-    background: rgba(255,255,255,0.9);
-    padding: 6px 14px;
+    background: rgba(255,255,255,0.92);
+    padding: 6px 12px;
     border-radius: 40px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    max-width: 98vw;
   }
+  #theme-switcher {
+    display: flex;
+    gap: 5px;
+    background: #F2EFE9;
+    padding: 4px;
+    border-radius: 30px;
+  }
+  .theme-pill {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .theme-pill.active {
+    background: #fff;
+    border-color: var(--accent-color);
+    transform: scale(1.15);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  }
+
   .nav-btn {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
     background: #FF6B6B;
     color: #fff;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 900;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 0 #D64545;
+    flex-shrink: 0;
   }
   .nav-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #D64545; }
   .nav-btn.dice { background: #4ECDC4; box-shadow: 0 4px 0 #319B94; }
@@ -104,17 +235,18 @@
     right: -5px;
     background: #FF5252;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 900;
-    padding: 2px 6px;
-    border-radius: 12px;
+    padding: 1px 5px;
+    border-radius: 10px;
     border: 2px solid #fff;
   }
   #word-counter {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 900;
     color: #555;
-    padding: 0 6px;
+    padding: 0 4px;
+    white-space: nowrap;
   }
 
   /* 3. 主舞台布局 */
@@ -127,60 +259,69 @@
     justify-content: flex-start;
     padding-top: 66px;
     position: relative;
+    z-index: 10;
   }
 
-  /* 超大醒目的单词物品展示卡 + 拼写槽位 */
+  /* 顶部醒目物品展示卡 + 拼写槽位 */
   #Showcase-card {
-    background: #ffffff;
-    border-radius: 36px;
-    padding: 12px 28px 16px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.1), inset 0 -6px 0 #F0ECE1;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 32px;
+    padding: 10px 24px 14px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.12), inset 0 -5px 0 #F0ECE1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     z-index: 20;
     cursor: pointer;
-    border: 6px solid #FFF;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 5px solid var(--card-border);
+    transition: transform 0.25s, border-color 0.4s;
+    position: relative;
   }
-  #Showcase-card:active {
-    transform: scale(1.06);
+  #Showcase-card:active { transform: scale(1.05); }
+  /* 已学过该单词的小星星标记 */
+  #learned-star {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 24px;
+    display: none;
+  }
+  #Showcase-card.is-learned #learned-star {
+    display: block;
   }
   #big-word-emoji {
-    font-size: 108px;
+    font-size: 92px;
     line-height: 1.05;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
     animation: floatIdle 2.4s infinite ease-in-out;
   }
   #header-slots {
     display: flex;
-    gap: 8px;
+    gap: 7px;
     align-items: center;
     justify-content: center;
   }
   .h-slot {
-    width: 48px;
-    height: 60px;
-    border-radius: 14px;
+    width: 44px;
+    height: 54px;
+    border-radius: 13px;
     background: #EAE0C8;
     box-shadow: inset 0 4px 0 rgba(0,0,0,0.12);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 900;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.48);
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
   }
-  /* 当前需要喂食的目标字母槽位高亮闪烁 */
   .h-slot.target-now {
     background: #FFF3B0;
-    color: #FF6B6B;
-    border: 4px dashed #FF6B6B;
-    transform: scale(1.14);
-    box-shadow: 0 6px 14px rgba(255, 107, 107, 0.28);
+    color: #FF5252;
+    border: 3px dashed #FF5252;
+    transform: scale(1.12);
+    box-shadow: 0 6px 14px rgba(255, 82, 82, 0.25);
   }
   .h-slot.filled {
     color: #fff;
@@ -189,41 +330,41 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.18);
   }
 
-  /* 4. 百变贪吃怪兽主体 */
+  /* 4. 贪吃怪兽区域（与上方拼写槽位保持充足距离） */
   #monster-zone {
-    margin-top: 16px;
+    margin-top: clamp(46px, 8.5vh, 95px);
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     z-index: 15;
   }
-  /* 怪兽头顶的“想吃当前字母”气泡 */
   #craving-bubble {
     position: absolute;
-    top: -22px;
-    right: -76px;
+    top: -16px;
+    right: -78px;
     background: #fff;
     border: 4px solid #333;
-    border-radius: 26px;
-    padding: 6px 14px;
-    font-size: 32px;
+    border-radius: 24px;
+    padding: 5px 13px;
+    font-size: 28px;
     font-weight: 900;
     color: #FF5252;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.14);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
     gap: 4px;
     z-index: 30;
+    cursor: pointer;
     animation: pulseScale 0.9s infinite alternate ease-in-out;
   }
   #craving-bubble::after {
     content: "";
     position: absolute;
-    bottom: -12px;
+    bottom: -10px;
     left: 14px;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     background: #fff;
     border-left: 4px solid #333;
     border-bottom: 4px solid #333;
@@ -231,38 +372,37 @@
   }
 
   #monster-body {
-    width: 215px;
-    height: 205px;
+    width: 196px;
+    height: 186px;
     background: #9B5DE5;
-    border-radius: 65px 65px 50px 50px;
-    border: 8px solid #fff;
-    box-shadow: inset 0 -16px 0 rgba(0,0,0,0.15), 0 14px 28px rgba(0,0,0,0.18);
+    border-radius: 60px 60px 46px 46px;
+    border: 7px solid #fff;
+    box-shadow: inset 0 -14px 0 rgba(0,0,0,0.15), 0 14px 28px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 16px 18px;
+    padding: 18px 14px 16px;
     position: relative;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.35s;
     cursor: pointer;
   }
-  /* 怪兽头顶呆毛/犄角装饰 */
   #monster-horns {
     position: absolute;
     top: -34px;
     font-size: 42px;
     pointer-events: none;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
   }
-  /* 怪兽眼睛（眼珠会跟随手指拖动的字母转动） */
   #monster-eyes {
     display: flex;
-    gap: 18px;
+    gap: 16px;
     margin-top: 4px;
     z-index: 2;
   }
   .m-eye {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: #fff;
     border-radius: 50%;
     border: 3px solid rgba(0,0,0,0.15);
@@ -272,8 +412,8 @@
     overflow: hidden;
   }
   .m-pupil {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     background: #222;
     border-radius: 50%;
     position: relative;
@@ -284,18 +424,17 @@
     position: absolute;
     top: 3px;
     left: 3px;
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background: #fff;
     border-radius: 50%;
   }
 
-  /* 怪兽大嘴巴 */
   #monster-mouth {
-    width: 130px;
-    height: 76px;
+    width: 122px;
+    height: 70px;
     background: #590D22;
-    border-radius: 20px 20px 60px 60px;
+    border-radius: 18px 18px 54px 54px;
     border: 5px solid #333;
     position: relative;
     overflow: hidden;
@@ -305,60 +444,42 @@
     justify-content: space-between;
     transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  /* 牙齿与小舌头 */
-  .teeth-row {
-    display: flex;
-    gap: 10px;
-  }
+  .teeth-row { display: flex; gap: 10px; }
   .tooth {
-    width: 18px;
-    height: 14px;
+    width: 16px;
+    height: 12px;
     background: #fff;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 7px 7px;
   }
   .tongue {
-    width: 66px;
-    height: 32px;
+    width: 60px;
+    height: 28px;
     background: #FF4D6D;
     border-radius: 50% 50% 0 0;
   }
 
-  /* 怪兽状态动画：张大嘴等待投喂、嚼东西、摇头拒吃 */
-  #monster-body.mouth-wide {
-    transform: scale(1.1);
-  }
+  #monster-body.mouth-wide { transform: scale(1.1); }
   #monster-body.mouth-wide #monster-mouth {
-    height: 104px;
-    width: 146px;
+    height: 96px;
+    width: 138px;
     background: #800F2F;
   }
-  #monster-body.chewing {
-    animation: monsterChew 0.22s 3 ease-in-out !important;
-  }
-  #monster-body.chewing #monster-mouth {
-    height: 18px;
-    border-radius: 20px;
-  }
-  #monster-body.head-shake {
-    animation: rejectShake 0.45s ease-in-out !important;
-  }
-  #monster-body.head-shake #monster-mouth {
-    height: 16px;
-    width: 90px;
-    border-radius: 12px;
-  }
+  #monster-body.chewing { animation: monsterChew 0.22s 3 ease-in-out !important; }
+  #monster-body.chewing #monster-mouth { height: 16px; border-radius: 20px; }
+  #monster-body.head-shake { animation: rejectShake 0.45s ease-in-out !important; }
+  #monster-body.head-shake #monster-mouth { height: 15px; width: 84px; border-radius: 12px; }
 
-  /* 5. 底部字母饼干/糖果转盘 */
+  /* 5. 底部主题字母点心 */
   .letter-treat {
     position: fixed;
-    width: 88px;
-    height: 88px;
-    border-radius: 26px;
+    width: 84px;
+    height: 84px;
+    border-radius: 24px;
     border: 5px solid #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 52px;
+    font-size: 48px;
     font-weight: 900;
     color: #fff;
     cursor: grab;
@@ -367,25 +488,23 @@
     touch-action: none;
     transition: transform 0.2s, opacity 0.25s, filter 0.25s;
   }
-  /* 散落零食上的装饰小角标（饼干/甜甜圈/草莓感） */
   .treat-badge {
     position: absolute;
-    top: -10px;
+    top: -12px;
     right: -10px;
-    font-size: 24px;
+    font-size: 26px;
     pointer-events: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   }
-  /* 当前该吃的字母：放大、发光、上下欢快跳动 */
   .letter-treat.active-target {
     z-index: 55;
     box-shadow: 0 0 0 6px #FFE066, 0 10px 0 rgba(0,0,0,0.2), 0 16px 28px rgba(0,0,0,0.25);
     animation: targetBounce 1.1s infinite alternate ease-in-out;
   }
-  /* 还没轮到的字母：半透明浅睡状态，降低4岁孩子视觉干扰 */
   .letter-treat.waiting-turn {
-    opacity: 0.52;
+    opacity: 0.5;
     filter: grayscale(30%);
-    transform: scale(0.9);
+    transform: scale(0.88);
   }
   .letter-treat.dragging {
     cursor: grabbing;
@@ -399,40 +518,87 @@
     transition: left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  /* 6. 吃饱后的超大物品玩具狂欢层 */
+  /* 6. 拼写完成后的【单词+主题短句】庆典层 */
   #celebrate-layer {
     position: fixed;
     inset: 0;
-    background: rgba(255, 252, 235, 0.94);
+    background: rgba(255, 252, 240, 0.95);
     z-index: 200;
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    padding: 20px;
+    gap: 14px;
   }
   #celebrate-layer.show {
     display: flex;
-    animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #cel-theme-tag {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    background: var(--accent-color);
+    padding: 6px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
   }
   #cel-emoji {
-    font-size: 190px;
-    line-height: 1.1;
-    filter: drop-shadow(0 18px 26px rgba(0,0,0,0.2));
+    font-size: 155px;
+    line-height: 1.05;
+    cursor: pointer;
+    filter: drop-shadow(0 16px 24px rgba(0,0,0,0.18));
     transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   #cel-word {
-    font-size: 74px;
+    font-size: 58px;
     font-weight: 900;
     color: #FF5252;
-    text-shadow: 0 5px 0 #fff, 0 10px 20px rgba(0,0,0,0.15);
-    letter-spacing: 4px;
-    margin-top: 8px;
+    text-shadow: 0 4px 0 #fff, 0 8px 16px rgba(0,0,0,0.12);
+    letter-spacing: 3px;
   }
-  #cel-finger {
-    font-size: 46px;
-    margin-top: 12px;
-    animation: targetBounce 0.7s infinite alternate;
+  #cel-sentence-box {
+    background: #fff;
+    border: 5px solid #FFE066;
+    border-radius: 28px;
+    padding: 16px 26px;
+    max-width: min(90vw, 560px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  #cel-sentence-box:active { transform: scale(0.96); }
+  #cel-sentence-Box-speaker {
+    font-size: 36px;
+    flex-shrink: 0;
+    animation: pulseScale 0.9s infinite alternate;
+  }
+  #cel-sentence-text {
+    font-size: 28px;
+    font-weight: 900;
+    color: #333;
+    line-height: 1.3;
+  }
+  #cel-sentence-text .hl-word {
+    color: #FF5252;
+    text-decoration: underline;
+  }
+  #cel-next-btn {
+    margin-top: 8px;
+    padding: 14px 38px;
+    border-radius: 40px;
+    border: 6px solid #fff;
+    background: #4ECDC4;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #319B94, 0 14px 24px rgba(0,0,0,0.18);
+    animation: pulseScale 1s infinite alternate;
   }
 
   /* 7. 贴纸乐园与词库抽屉 */
@@ -470,12 +636,32 @@
   }
 
   #drawer-modal {
-    background: rgba(25, 32, 48, 0.85);
+    background: rgba(25, 32, 48, 0.88);
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 16px;
   }
   #drawer-modal.open { display: flex; }
+  #drawer-header {
+    width: min(94vw, 900px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 18px;
+  }
+  #reset-progress-btn {
+    background: rgba(255, 82, 82, 0.25);
+    border: 2px solid #FF5252;
+    color: #FFD6D6;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
   #az-filter {
     display: flex;
     flex-wrap: wrap;
@@ -485,13 +671,13 @@
     margin-bottom: 12px;
   }
   .az-btn {
-    width: 36px;
-    height: 36px;
+    width: 35px;
+    height: 35px;
     border-radius: 10px;
     border: none;
     background: #fff;
     font-weight: 900;
-    font-size: 16px;
+    font-size: 15px;
     color: #555;
     cursor: pointer;
   }
@@ -519,10 +705,18 @@
     cursor: pointer;
     border: 4px solid transparent;
     box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+    position: relative;
   }
   .word-card.done { border-color: #4ECDC4; background: #F0FFFD; }
-  .word-card .card-emoji { font-size: 44px; }
-  .word-card .card-text { font-size: 17px; font-weight: 900; color: #444; margin-top: 4px; }
+  .word-card.done::after {
+    content: "⭐";
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 14px;
+  }
+  .word-card .card-emoji { font-size: 42px; }
+  .word-card .card-text { font-size: 16px; font-weight: 900; color: #444; margin-top: 4px; }
   #close-drawer {
     margin-top: 12px;
     width: 56px;
@@ -536,7 +730,6 @@
     cursor: pointer;
   }
 
-  /* 糖果碎屑粒子 */
   .crumb {
     position: fixed;
     width: 14px;
@@ -548,15 +741,15 @@
 
   @keyframes floatIdle {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-7px); }
   }
   @keyframes pulseScale {
     0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
+    100% { transform: scale(1.09); }
   }
   @keyframes targetBounce {
-    0% { transform: translateY(0) scale(1.06); }
-    100% { transform: translateY(-14px) scale(1.15); }
+    0% { transform: translateY(0) scale(1.05); }
+    100% { transform: translateY(-13px) scale(1.14); }
   }
   @keyframes monsterChew {
     0%, 100% { transform: scale(1, 1); }
@@ -575,30 +768,41 @@
   }
 
   @media (max-width: 680px) {
-    #big-word-emoji { font-size: 86px; }
-    .h-slot { width: 38px; height: 48px; font-size: 28px; border-radius: 10px; }
-    #monster-body { width: 175px; height: 168px; padding: 16px 12px; }
-    #monster-mouth { width: 108px; height: 62px; }
-    .m-eye { width: 36px; height: 36px; }
-    #craving-bubble { right: -58px; font-size: 26px; padding: 4px 12px; }
-    .letter-treat { width: 72px; height: 72px; font-size: 42px; border-radius: 20px; }
-    #cel-emoji { font-size: 145px; }
-    #cel-word { font-size: 54px; }
+    #big-word-emoji { font-size: 76px; }
+    .h-slot { width: 36px; height: 46px; font-size: 26px; border-radius: 10px; }
+    #monster-zone { margin-top: clamp(36px, 7vh, 75px); }
+    #monster-body { width: 162px; height: 156px; padding: 14px 10px; }
+    #monster-mouth { width: 100px; height: 58px; }
+    .m-eye { width: 34px; height: 34px; }
+    #craving-bubble { right: -56px; font-size: 24px; padding: 4px 10px; }
+    .letter-treat { width: 68px; height: 68px; font-size: 38px; border-radius: 18px; }
+    #cel-emoji { font-size: 125px; }
+    #cel-word { font-size: 44px; }
+    #cel-sentence-text { font-size: 22px; }
   }
 </style>
 </head>
 <body>
 
+<div id="ambient-bg"></div>
+
 <!-- 1. 首屏一键开启声音 -->
 <div id="unlock-screen">
-  <div id="unlock-icons">🍎 👾 🍩</div>
+  <div id="unlock-icons">🌈 🎄 🎃 🧧</div>
+  <div id="saved-progress-tip">🌟 Ready to play!</div>
   <button id="start-btn" aria-label="Play">▶</button>
 </div>
 
-<!-- 2. 顶部极简导航栏 -->
+<!-- 2. 顶部导航栏 + 4大主题切换器 -->
 <div id="top-bar">
+  <div id="theme-switcher">
+    <button class="theme-pill active" data-theme="daily" title="Daily Classic">🌈</button>
+    <button class="theme-pill" data-theme="christmas" title="Christmas">🎄</button>
+    <button class="theme-pill" data-theme="halloween" title="Halloween">🎃</button>
+    <button class="theme-pill" data-theme="lunar" title="Lunar New Year">🧧</button>
+  </div>
   <button class="nav-btn" id="prev-btn">◀</button>
-  <span id="word-counter">1 / 210</span>
+  <span id="word-counter">1/210</span>
   <button class="nav-btn" id="next-btn">▶</button>
   <button class="nav-btn dice" id="random-btn">🎲</button>
   <button class="nav-btn park-btn" id="open-park-btn">
@@ -607,17 +811,16 @@
   <button class="nav-btn grid-btn" id="open-drawer-btn">📖</button>
 </div>
 
-<!-- 3. 主舞台：超大醒目物品卡 + 贪吃怪兽 -->
+<!-- 3. 主舞台 -->
 <div id="stage">
-  <!-- 醒目物品展示卡（点击随时重读单词） -->
   <div id="Showcase-card" title="Tap to hear word">
+    <span id="learned-star">⭐</span>
     <div id="big-word-emoji">🍎</div>
     <div id="header-slots"></div>
   </div>
 
-  <!-- 百变贪吃怪兽 -->
   <div id="monster-zone">
-    <div id="craving-bubble">😋 <span id="craving-letter">A</span></div>
+    <div id="craving-bubble" title="Tap to hear letter">😋 <span id="craving-letter">A</span></div>
     <div id="monster-body">
       <div id="monster-horns">👑</div>
       <div id="monster-eyes">
@@ -636,11 +839,16 @@
   </div>
 </div>
 
-<!-- 4. 吃饱后的超大物品庆典层 -->
+<!-- 4. 拼写完成后的【单词 + 相关英文句子】庆典层 -->
 <div id="celebrate-layer">
-  <div id="cel-emoji">🍎</div>
+  <div id="cel-theme-tag">🌈 Daily Words</div>
+  <div id="cel-emoji" title="Tap me!">🍎</div>
   <div id="cel-word">APPLE</div>
-  <div id="cel-finger">👆</div>
+  <div id="cel-sentence-box" title="Tap to hear sentence">
+    <span id="cel-sentence-Box-speaker">🔊</span>
+    <div id="cel-sentence-text">I eat a red <span class="hl-word">apple</span>.</div>
+  </div>
+  <button id="cel-next-btn">NEXT ▶</button>
 </div>
 
 <!-- 5. 我的贴纸乐园 -->
@@ -649,42 +857,186 @@
   <div id="park-canvas" style="width:100%;height:100%;position:relative;"></div>
 </div>
 
-<!-- 6. 210词画廊抽屉 -->
+<!-- 6. 词库画廊抽屉 -->
 <div id="drawer-modal">
+  <div id="drawer-header">
+    <span id="drawer-progress-text">🌟 Learned: 0</span>
+    <button id="reset-progress-btn">Reset Progress</button>
+  </div>
   <div id="az-filter"></div>
   <div id="word-grid"></div>
   <button id="close-drawer">✕</button>
 </div>
 
 <script>
-const RAW_WORD_DATA = [
-  "ANT|🐜", "APPLE|🍎", "APE|🦍", "ARM|💪", "AXE|🪓", "ART|🎨", "ARK|🚢", "ARCH|🌉", "ACORN|🌰", "ANGEL|👼",
-  "BAT|🦇", "BEAR|🐻", "BEE|🐝", "BIRD|🐦", "BUG|🐛", "BUS|🚌", "BOAT|⛵", "BIKE|🚲", "BALL|⚽", "BED|🛏️", "BELL|🔔", "BOOK|📖", "BOX|📦", "BAG|👜", "BONE|🦴", "BREAD|🍞",
-  "CAT|🐱", "COW|🐮", "CRAB|🦀", "CAR|🚗", "CAB|🚕", "CAKE|🎂", "CORN|🌽", "CANDY|🍬", "CUP|🥤", "CAP|🧢", "COAT|🧥", "COMB|🪮", "COIN|🪙", "CLOCK|⏰", "CLOUD|☁️",
-  "DOG|🐶", "DUCK|🦆", "DEER|🦌", "DOVE|🕊️", "DOLL|🎎", "DRUM|🥁", "DOOR|🚪", "DESK|🪑", "DRESS|👗", "DICE|🎲", "DONUT|🍩",
-  "EGG|🥚", "EAR|👂", "EYE|👁️", "ELF|🧝", "ELK|🫎", "EAGLE|🦅",
-  "FOX|🦊", "FROG|🐸", "FISH|🐟", "FLY|🪰", "FAN|🪭", "FLAG|🚩", "FORK|🍴", "FIRE|🔥", "FOOT|🦶", "FACE|😊", "FRIES|🍟",
-  "GOAT|🐐", "GOOSE|🪿", "GRAPE|🍇", "GIFT|🎁", "GAME|🎮", "GLOVE|🧤", "GLASS|🥛", "GRASS|🌿",
-  "HEN|🐔", "HORSE|🐴", "HIPPO|🦛", "HAT|👒", "HARP|🪉", "HORN|📯", "HOUSE|🏠", "HAND|✋", "HEART|❤️", "HONEY|🍯", "HAM|🍖",
-  "ICE|🧊", "INK|🖋️", "IRON|🥌", "ISLAND|🏝️",
-  "JAM|🍓", "JUICE|🧃", "JELLY|🍮", "JET|✈️", "JEEP|🚙", "JAR|🫙",
-  "KEY|🔑", "KITE|🪁", "KING|🤴", "KIDS|🧒", "KIWI|🥝", "KOALA|🐨",
-  "LION|🦁", "LAMB|🐑", "LARK|🐤", "LAMP|💡", "LOCK|🔒", "LOG|🪵", "LEAF|🍃", "LEG|🦵", "LIPS|👄", "LEMON|🍋", "LIME|🍈",
-  "MOUSE|🐭", "MOTH|🦋", "MULE|🫏", "MILK|🥛", "MEAT|🥩", "MELON|🍉", "MANGO|🥭", "MUG|☕", "MAP|🗺️", "MOP|🧹", "MASK|🎭", "MOON|🌙",
-  "NUT|🥜", "NOODLE|🍜", "NET|🥅", "NAIL|🔩", "NOTE|🎵", "NEST|🪺", "NOSE|👃",
-  "OWL|🦉", "OX|🐂", "OTTER|🦦", "OLIVE|🫒", "ONION|🧅", "OCEAN|🌊",
-  "PIG|🐷", "PANDA|🐼", "PUPPY|🐶", "PONY|🐴", "PEAR|🍐", "PEACH|🍑", "PIE|🥧", "PIZZA|🍕", "PEA|🫛", "PEN|🖊️", "PAN|🍳", "POT|🍲", "PIANO|🎹", "PLANE|🛩️",
-  "QUEEN|👸", "QUILT|🛌", "QUAIL|🐦",
-  "RAT|🐀", "RAM|🐏", "RABBIT|🐰", "RICE|🍚", "RING|💍", "ROPE|🪢", "ROBOT|🤖", "RADIO|📻", "ROSE|🌹", "RAIN|🌧️",
-  "SHEEP|🐑", "SNAKE|🐍", "SHARK|🦈", "SNAIL|🐌", "SWAN|🦢", "SEAL|🦭", "SOUP|🥣", "SALAD|🥗", "SHIP|🚢", "SLED|🛷", "SOCK|🧦", "SHOE|👟", "SOAP|🧼", "SPOON|🥄", "STAR|⭐", "SUN|☀️",
-  "TIGER|🐯", "TOAD|🐸", "TURTLE|🐢", "TRAIN|🚂", "TRUCK|🚚", "TAXI|🚖", "TENT|⛺", "TOY|🧸", "TACO|🌮", "TOAST|🍞", "TREE|🌳", "TOOTH|🦷",
-  "URN|🏺", "UFO|🛸", "UNICORN|🦄",
-  "VAN|🚐", "VASE|🏺", "VEST|🦺", "VIOLIN|🎻",
-  "WOLF|🐺", "WORM|🪱", "WHALE|🐋", "WAFFLE|🧇", "WATER|💧", "WATCH|⌚", "WEB|🕸️",
-  "XRAY|🩻", "XYLOPHONE|🎹",
-  "YAK|🐃", "YARN|🧶", "YOYO|🪀",
-  "ZEBRA|🦓", "ZOO|🎪"
+// ==================== 1. 四大主题配置 ====================
+const THEMES = {
+  daily: {
+    name: "🌈 Fun Daily",
+    bgTop: "#E0F7FA",
+    bgBottom: "#FFF9C4",
+    cardBorder: "#FFFFFF",
+    accent: "#FF6B6B",
+    ambientIcons: ["☁️", "⭐", "🎈", "🫧"],
+    treatBadges: ["🍪", "🍩", "🍓", "🧁", "🍬", "🍫"],
+    monsters: [
+      { color: "#9B5DE5", horn: "👑", eyes: 2, radius: "60px 60px 46px 46px" },
+      { color: "#FF6B6B", horn: "🦖", eyes: 1, radius: "50% 50% 42% 42%" },
+      { color: "#4ECDC4", horn: "📡", eyes: 3, radius: "45px 45px 65px 65px" },
+      { color: "#FF9F1C", horn: "🎀", eyes: 2, radius: "70px 40px 70px 40px" }
+    ]
+  },
+  christmas: {
+    name: "🎄 Merry Christmas",
+    bgTop: "#1B4332",
+    bgBottom: "#95D5B2",
+    cardBorder: "#D90429",
+    accent: "#D90429",
+    ambientIcons: ["❄️", "❅", "🎄", "✨", "🔔"],
+    treatBadges: ["🎄", "🦌", "🔔", "🎁", "🧦", "⛄"],
+    monsters: [
+      { color: "#D90429", horn: "🎅", eyes: 2, radius: "60px 60px 46px 46px" },
+      { color: "#2D6A4F", horn: "🦌", eyes: 2, radius: "50% 50% 42% 42%" },
+      { color: "#48CAE4", horn: "⛄", eyes: 2, radius: "55px 55px 55px 55%" },
+      { color: "#FFB703", horn: "🌟", eyes: 3, radius: "45px 45px 65px 65px" }
+    ]
+  },
+  halloween: {
+    name: "🎃 Spooky Halloween",
+    bgTop: "#240046",
+    bgBottom: "#5A189A",
+    cardBorder: "#FF6D00",
+    accent: "#FF6D00",
+    ambientIcons: ["🎃", "👻", "🦇", "🕸️", "🍬"],
+    treatBadges: ["🎃", "👻", "🍬", "🍭", "🦇", "🕷️"],
+    monsters: [
+      { color: "#FF6D00", horn: "🎃", eyes: 2, radius: "55px 55px 50px 50px" },
+      { color: "#7209B7", horn: "🧙‍♀️", eyes: 1, radius: "60px 60px 42px 42px" },
+      { color: "#38B000", horn: "🧟", eyes: 3, radius: "42px 42px 60px 60px" },
+      { color: "#F72585", horn: "😈", eyes: 2, radius: "65px 45px 65px 45px" }
+    ]
+  },
+  lunar: {
+    name: "🧧 Lunar New Year",
+    bgTop: "#9B0000",
+    bgBottom: "#FFCC00",
+    cardBorder: "#FFD700",
+    accent: "#D00000",
+    ambientIcons: ["🏮", "🧧", "🧨", "🪙", "🌸"],
+    treatBadges: ["🥟", "🧧", "🏮", "🍊", "🧨", "🪙"],
+    monsters: [
+      { color: "#D00000", horn: "🐉", eyes: 2, radius: "60px 60px 46px 46px" },
+      { color: "#FF9F1C", horn: "🦁", eyes: 2, radius: "52% 52% 44% 44%" },
+      { color: "#E63946", horn: "🏮", eyes: 3, radius: "48px 48px 62px 62px" },
+      { color: "#F4A261", horn: "👑", eyes: 2, radius: "60px 45px 60px 45px" }
+    ]
+  }
+};
+
+// ==================== 2. 主题专属词库与短句 ====================
+const THEME_EXCLUSIVE_WORDS = {
+  christmas: [
+    { word: "SANTA", emoji: "🎅", sentence: "Here comes Santa!" },
+    { word: "ELF", emoji: "🧝", sentence: "Look at the little elf." },
+    { word: "TREE", emoji: "🎄", sentence: "I love the green tree." },
+    { word: "STAR", emoji: "🌟", sentence: "A bright yellow star." },
+    { word: "BELL", emoji: "🔔", sentence: "Ring the golden bell!" },
+    { word: "GIFT", emoji: "🎁", sentence: "Open the big gift!" },
+    { word: "DEER", emoji: "🦌", sentence: "The cute deer can run." },
+    { word: "SNOW", emoji: "❄️", sentence: "White and cold snow." },
+    { word: "SOCK", emoji: "🧦", sentence: "A red Christmas sock." },
+    { word: "SLED", emoji: "🛷", sentence: "Ride on the fast sled!" },
+    { word: "ANGEL", emoji: "👼", sentence: "A sweet little angel." },
+    { word: "CANDY", emoji: "🍬", sentence: "I like sweet candy." },
+    { word: "COAT", emoji: "🧥", sentence: "Put on a warm coat." },
+    { word: "CAKE", emoji: "🎂", sentence: "Yummy holiday cake!" },
+    { word: "TOY", emoji: "🧸", sentence: "I got a new toy!" },
+    { word: "COOKIE", emoji: "🍪", sentence: "Eat a yummy cookie." },
+    { word: "GLOVE", emoji: "🧤", sentence: "Wear your warm glove." },
+    { word: "SNOWMAN", emoji: "⛄", sentence: "Hello, happy snowman!" }
+  ],
+  halloween: [
+    { word: "GHOST", emoji: "👻", sentence: "Boo! A funny ghost!" },
+    { word: "WITCH", emoji: "🧙‍♀️", sentence: "The witch can fly!" },
+    { word: "BAT", emoji: "🦇", sentence: "A black bat in the sky." },
+    { word: "CAT", emoji: "🐈‍⬛", sentence: "Meow! A cute cat." },
+    { word: "WEB", emoji: "🕸️", sentence: "Look at the spider web." },
+    { word: "CANDY", emoji: "🍬", sentence: "Trick or treat! Candy!" },
+    { word: "MASK", emoji: "🎭", sentence: "Put on a funny mask." },
+    { word: "MOON", emoji: "🌕", sentence: "A big yellow moon." },
+    { word: "OWL", emoji: "🦉", sentence: "The owl says hoot!" },
+    { word: "BONE", emoji: "🦴", sentence: "A white dog bone." },
+    { word: "FROG", emoji: "🐸", sentence: "The green frog jumps." },
+    { word: "SPIDER", emoji: "🕷️", sentence: "A tiny little spider." },
+    { word: "PUMPKIN", emoji: "🎃", sentence: "A big orange pumpkin!" },
+    { word: "MONSTER", emoji: "👾", sentence: "Feed the hungry monster!" },
+    { word: "ROBOT", emoji: "🤖", sentence: "I am a cool robot." },
+    { word: "BROOM", emoji: "🧹", sentence: "Sweep with a broom." }
+  ],
+  lunar: [
+    { word: "DRAGON", emoji: "🐉", sentence: "Look at the big dragon!" },
+    { word: "LION", emoji: "🦁", sentence: "The happy lion dances!" },
+    { word: "GOLD", emoji: "🪙", sentence: "Shiny lucky gold!" },
+    { word: "GIFT", emoji: "🧧", sentence: "A red lucky gift!" },
+    { word: "FISH", emoji: "🐟", sentence: "A lucky red fish." },
+    { word: "DRUM", emoji: "🥁", sentence: "Beat the big red drum!" },
+    { word: "RICE", emoji: "🍚", sentence: "Eat warm white rice." },
+    { word: "TEA", emoji: "🍵", sentence: "Drink a cup of tea." },
+    { word: "NOODLE", emoji: "🍜", sentence: "Yummy long noodles!" },
+    { word: "ORANGE", emoji: "🍊", sentence: "A sweet orange for you." },
+    { word: "APPLE", emoji: "🍎", sentence: "A sweet red apple." },
+    { word: "TIGER", emoji: "🐯", sentence: "Roar! A strong tiger!" },
+    { word: "RABBIT", emoji: "🐰", sentence: "Hop, little white rabbit!" },
+    { word: "HORSE", emoji: "🐴", sentence: "Run fast, little horse!" },
+    { word: "SNAKE", emoji: "🐍", sentence: "A long green snake." },
+    { word: "PANDA", emoji: "🐼", sentence: "I love the cute panda." },
+    { word: "LANTERN", emoji: "🏮", sentence: "A bright red lantern!" },
+    { word: "DUMPLING", emoji: "🥟", sentence: "I love yummy dumplings!" }
+  ]
+};
+
+const RAW_DAILY_DATA = [
+  "ANT|🐜|A", "APPLE|🍎|F", "APE|🦍|A", "ARM|💪|B", "AXE|🪓|T", "ART|🎨|T", "ARK|🚢|V", "ARCH|🌉|N", "ACORN|🌰|F", "ANGEL|👼|N",
+  "BAT|🦇|A", "BEAR|🐻|A", "BEE|🐝|A", "BIRD|🐦|A", "BUG|🐛|A", "BUS|🚌|V", "BOAT|⛵|V", "BIKE|🚲|V", "BALL|⚽|T", "BED|🛏️|T", "BELL|🔔|T", "BOOK|📖|T", "BOX|📦|T", "BAG|👜|T", "BONE|🦴|F", "BREAD|🍞|F",
+  "CAT|🐱|A", "COW|🐮|A", "CRAB|🦀|A", "CAR|🚗|V", "CAB|🚕|V", "CAKE|🎂|F", "CORN|🌽|F", "CANDY|🍬|F", "CUP|🥤|T", "CAP|🧢|T", "COAT|🧥|T", "COMB|🪮|T", "COIN|🪙|T", "CLOCK|⏰|T", "CLOUD|☁️|N",
+  "DOG|🐶|A", "DUCK|🦆|A", "DEER|🦌|A", "DOVE|🕊️|A", "DOLL|🎎|T", "DRUM|🥁|T", "DOOR|🚪|T", "DESK|🪑|T", "DRESS|👗|T", "DICE|🎲|T", "DONUT|🍩|F",
+  "EGG|🥚|F", "EAR|👂|B", "EYE|👁️|B", "ELF|🧝|N", "ELK|🫎|A", "EAGLE|🦅|A",
+  "FOX|🦊|A", "FROG|🐸|A", "FISH|🐟|A", "FLY|🪰|A", "FAN|🪭|T", "FLAG|🚩|T", "FORK|🍴|T", "FIRE|🔥|N", "FOOT|🦶|B", "FACE|😊|B", "FRIES|🍟|F",
+  "GOAT|🐐|A", "GOOSE|🪿|A", "GRAPE|🍇|F", "GIFT|🎁|T", "GAME|🎮|T", "GLOVE|🧤|T", "GLASS|🥛|F", "GRASS|🌿|N",
+  "HEN|🐔|A", "HORSE|🐴|A", "HIPPO|🦛|A", "HAT|👒|T", "HARP|🪉|T", "HORN|📯|T", "HOUSE|🏠|N", "HAND|✋|B", "HEART|❤️|B", "HONEY|🍯|F", "HAM|🍖|F",
+  "ICE|🧊|F", "INK|🖋️|T", "IRON|🥌|T", "ISLAND|🏝️|N",
+  "JAM|🍓|F", "JUICE|🧃|F", "JELLY|🍮|F", "JET|✈️|V", "JEEP|🚙|V", "JAR|🫙|T",
+  "KEY|🔑|T", "KITE|🪁|T", "KING|🤴|N", "KIDS|🧒|N", "KIWI|🥝|F", "KOALA|🐨|A",
+  "LION|🦁|A", "LAMB|🐑|A", "LARK|🐤|A", "LAMP|💡|T", "LOCK|🔒|T", "LOG|🪵|N", "LEAF|🍃|N", "LEG|🦵|B", "LIPS|👄|B", "LEMON|🍋|F", "LIME|🍈|F",
+  "MOUSE|🐭|A", "MOTH|🦋|A", "MULE|🫏|A", "MILK|🥛|F", "MEAT|🥩|F", "MELON|🍉|F", "MANGO|🥭|F", "MUG|☕|T", "MAP|🗺️|T", "MOP|🧹|T", "MASK|🎭|T", "MOON|🌙|N",
+  "NUT|🥜|F", "NOODLE|🍜|F", "NET|🥅|T", "NAIL|🔩|T", "NOTE|🎵|T", "NEST|🪺|N", "NOSE|👃|B",
+  "OWL|🦉|A", "OX|🐂|A", "OTTER|🦦|A", "OLIVE|🫒|F", "ONION|🧅|F", "OCEAN|🌊|N",
+  "PIG|🐷|A", "PANDA|🐼|A", "PUPPY|🐶|A", "PONY|🐴|A", "PEAR|🍐|F", "PEACH|🍑|F", "PIE|🥧|F", "PIZZA|🍕|F", "PEA|🫛|F", "PEN|🖊️|T", "PAN|🍳|T", "POT|🍲|T", "PIANO|🎹|T", "PLANE|🛩️|V",
+  "QUEEN|👸|N", "QUILT|🛌|T", "QUAIL|🐦|A",
+  "RAT|🐀|A", "RAM|🐏|A", "RABBIT|🐰|A", "RICE|🍚|F", "RING|💍|T", "ROPE|🪢|T", "ROBOT|🤖|T", "RADIO|📻|T", "ROSE|🌹|N", "RAIN|🌧️|N",
+  "SHEEP|🐑|A", "SNAKE|🐍|A", "SHARK|🦈|A", "SNAIL|🐌|A", "SWAN|🦢|A", "SEAL|🦭|A", "SOUP|🥣|F", "SALAD|🥗|F", "SHIP|🚢|V", "SLED|🛷|V", "SOCK|🧦|T", "SHOE|👟|T", "SOAP|🧼|T", "SPOON|🥄|T", "STAR|⭐|N", "SUN|☀️|N",
+  "TIGER|🐯|A", "TOAD|🐸|A", "TURTLE|🐢|A", "TRAIN|🚂|V", "TRUCK|🚚|V", "TAXI|🚖|V", "TENT|⛺|T", "TOY|🧸|T", "TACO|🌮|F", "TOAST|🍞|F", "TREE|🌳|N", "TOOTH|🦷|B",
+  "URN|🏺|T", "UFO|🛸|V", "UNICORN|🦄|A",
+  "VAN|🚐|V", "VASE|🏺|T", "VEST|🦺|T", "VIOLIN|🎻|T",
+  "WOLF|🐺|A", "WORM|🪱|A", "WHALE|🐋|A", "WAFFLE|🧇|F", "WATER|💧|F", "WATCH|⌚|T", "WEB|🕸️|N",
+  "XRAY|🩻|T", "XYLOPHONE|🎹|T",
+  "YAK|🐃|A", "YARN|🧶|T", "YOYO|🪀|T",
+  "ZEBRA|🦓|A", "ZOO|🎪|N"
 ];
+
+function makeSimpleSentence(word, cat) {
+  const w = word.toLowerCase();
+  if (cat === "F") return `Yummy! I like to eat ${w}.`;
+  if (cat === "A") return `Look at the cute ${w}!`;
+  if (cat === "V") return `Let's go in the ${w}!`;
+  if (cat === "B") return `Touch your little ${w}!`;
+  return `I can see a ${w}.`;
+}
+
+THEME_EXCLUSIVE_WORDS.daily = RAW_DAILY_DATA.map(entry => {
+  const [word, emoji, cat] = entry.split("|");
+  return { word, emoji, sentence: makeSimpleSentence(word, cat) };
+});
 
 const LETTER_COLORS = {
   A: "#FF6B6B", B: "#4ECDC4", C: "#FFB900", D: "#9B5DE5", E: "#F15BB5",
@@ -694,32 +1046,79 @@ const LETTER_COLORS = {
   U: "#52B788", V: "#48CAE4", W: "#FFBE0B", X: "#FB5607", Y: "#FF006E", Z: "#8338EC"
 };
 
-// 5种不同造型与肤色的贪吃小怪兽轮换登场
-const MONSTER_STYLES = [
-  { color: "#9B5DE5", horn: "👑", eyes: 2, radius: "65px 65px 50px 50px" },
-  { color: "#FF6B6B", horn: "🦖", eyes: 1, radius: "50% 50% 42% 42%" },
-  { color: "#4ECDC4", horn: "📡", eyes: 3, radius: "45px 45px 65px 65px" },
-  { color: "#FF9F1C", horn: "🎀", eyes: 2, radius: "70px 40px 70px 40px" },
-  { color: "#00BBF9", horn: "⚡", eyes: 2, radius: "55px 55px 45px 45px" }
-];
+/**
+ * 26个英文字母的纯正美式字母名映射表（彻底解决 A 读成 "额/ə/" 的问题）：
+ * 词典接口遇到单独的 "a" 会当成冠词读成 /ə/，因此使用同音词 "ay" (/eɪ/) 等确保 100% 纯正美式字母音！
+ */
+const LETTER_VOICE_QUERY = {
+  A: "ay",   B: "bee",  C: "see",  D: "dee",  E: "ee",
+  F: "ef",   G: "jee",  H: "aitch",I: "eye",  J: "jay",
+  K: "kay",  L: "el",   M: "em",   N: "en",   O: "oh",
+  P: "pee",  Q: "cue",  R: "ar",   S: "ess",  T: "tee",
+  U: "you",  V: "vee",  W: "double u", X: "ex", Y: "why", Z: "zee"
+};
 
-// 字母点心上的可爱糖果小角标
-const TREAT_BADGES = ["🍪", "🍩", "🍓", "🧁", "🍬", "🍫"];
+// ==================== 3. 本地进度自动保存系统 (localStorage) ====================
+const STORAGE_KEY = "HUNGRY_ABC_PROGRESS_V1";
 
-const WORDS = RAW_WORD_DATA.map(entry => {
-  const [word, emoji] = entry.split("|");
-  return { word, emoji };
-});
+let progressData = {
+  lastTheme: "daily",
+  themeWordIndices: { daily: 0, christmas: 0, halloween: 0, lunar: 0 },
+  completedKeys: [], // 例如 "daily_APPLE"
+  stickers: []       // { key, emoji, word, sentence, left, top }
+};
 
-let currentIdx = 0;
-let expectedCharIndex = 0; // 严格控制当前必须喂食第几个字母
+function loadProgressFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      progressData = {
+        lastTheme: parsed.lastTheme || "daily",
+        themeWordIndices: { daily: 0, christmas: 0, halloween: 0, lunar: 0, ...(parsed.themeWordIndices || {}) },
+        completedKeys: Array.isArray(parsed.completedKeys) ? parsed.completedKeys : [],
+        stickers: Array.isArray(parsed.stickers) ? parsed.stickers : []
+      };
+    }
+  } catch (e) {}
+}
+
+function saveProgressToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+  } catch (e) {}
+}
+
+loadProgressFromStorage();
+
+let currentThemeKey = progressData.lastTheme || "daily";
+let currentWordList = THEME_EXCLUSIVE_WORDS[currentThemeKey] || THEME_EXCLUSIVE_WORDS.daily;
+let currentIdx = progressData.themeWordIndices[currentThemeKey] || 0;
+let expectedCharIndex = 0;
 let activeLetterFilter = "ALL";
 let audioCtx = null;
-const completedSet = new Set();
+let preferredEnglishVoice = null;
+const completedSet = new Set(progressData.completedKeys);
 const cloudPlayer = new Audio();
 cloudPlayer.preload = "auto";
 
-// ==================== 极简纯净语音与轻快音效 ====================
+// ==================== 4. 100% 纯正英文语音系统（杜绝中式腔调与冠词弱读） ====================
+function initPreferredEnglishVoice() {
+  if (!('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || !voices.length) return;
+  // 优先挑选苹果/安卓原生高质量美式母语发音人（绝不选中文语音包读英文）
+  preferredEnglishVoice =
+    voices.find(v => /Samantha|Alex|Victoria|Ava|Google US English/i.test(v.name) && /en/i.test(v.lang)) ||
+    voices.find(v => v.lang === 'en-US') ||
+    voices.find(v => /^en[-_]/i.test(v.lang)) ||
+    null;
+}
+if ('speechSynthesis' in window) {
+  initPreferredEnglishVoice();
+  window.speechSynthesis.onvoiceschanged = initPreferredEnglishVoice;
+}
+
 function ensureAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -730,9 +1129,23 @@ function ensureAudio() {
 }
 
 /**
- * 极简发音：只读干净的字母名（如 "A"）或单词本身（如 "apple"），不读复杂长句
+ * 专门用于朗读单个英文字母（A-Z）的标准字母名发音，彻底避免 A 被读成 "额"
  */
-function speakClean(wordOrLetter, onEnd = null) {
+function speakLetterName(letterChar, onEnd = null) {
+  const upper = letterChar.toUpperCase();
+  const phoneticWord = LETTER_VOICE_QUERY[upper] || upper;
+  speakEnglishAudio(phoneticWord, upper + ".", onEnd);
+}
+
+/**
+ * 专门用于朗读英文单词或英文短句
+ */
+function speakWordOrSentence(text, onEnd = null) {
+  const clean = text.trim();
+  speakEnglishAudio(clean, clean, onEnd);
+}
+
+function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   let finished = false;
   const done = () => {
     if (finished) return;
@@ -745,38 +1158,40 @@ function speakClean(wordOrLetter, onEnd = null) {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   } catch (e) {}
 
-  const cleanText = wordOrLetter.trim().toLowerCase();
-  const encoded = encodeURIComponent(cleanText);
+  const encoded = encodeURIComponent(cloudQueryText.toLowerCase());
   cloudPlayer.onended = done;
-  cloudPlayer.onerror = () => fallbackLocalTTS(cleanText, done);
-  cloudPlayer.src = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
+  cloudPlayer.onerror = () => fallbackLocalTTS(ttsFallbackText, done);
+  // type=2 强制美式真人发音
+  cloudPlayer.src = `[https://dict.youdao.com/dictvoice?audio=$](https://dict.youdao.com/dictvoice?audio=$){encoded}&type=2`;
 
   const p = cloudPlayer.play();
   if (p !== undefined) {
-    p.catch(() => fallbackLocalTTS(cleanText, done));
+    p.catch(() => fallbackLocalTTS(ttsFallbackText, done));
   }
 }
 
 function fallbackLocalTTS(text, doneCallback) {
   if (!('speechSynthesis' in window)) {
-    setTimeout(doneCallback, 700);
+    setTimeout(doneCallback, 800);
     return;
   }
   try {
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US';
-    u.pitch = 1.2;
-    u.rate = 0.95;
+    if (preferredEnglishVoice) {
+      u.voice = preferredEnglishVoice;
+    }
+    u.pitch = 1.15;
+    u.rate = 0.9;
     u.onend = doneCallback;
     u.onerror = doneCallback;
     window.speechSynthesis.speak(u);
-    setTimeout(doneCallback, 900);
+    setTimeout(doneCallback, Math.max(950, text.length * 85));
   } catch (e) {
-    setTimeout(doneCallback, 700);
+    setTimeout(doneCallback, 800);
   }
 }
 
-// 怪兽咔嚓吃饼干音效
 function playChompSound() {
   ensureAudio();
   [260, 420, 580].forEach((f, i) => {
@@ -784,7 +1199,7 @@ function playChompSound() {
     const gain = audioCtx.createGain();
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.045);
-    gain.gain.setValueAtTime(0.24, audioCtx.currentTime + i * 0.045);
+    gain.gain.setValueAtTime(0.22, audioCtx.currentTime + i * 0.045);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.045 + 0.12);
     osc.connect(gain).connect(audioCtx.destination);
     osc.start(audioCtx.currentTime + i * 0.045);
@@ -792,7 +1207,6 @@ function playChompSound() {
   });
 }
 
-// 拿错字母时的轻柔弹簧提示音
 function playBoingSoft() {
   ensureAudio();
   const osc = audioCtx.createOscillator();
@@ -800,14 +1214,13 @@ function playBoingSoft() {
   osc.type = 'sine';
   osc.frequency.setValueAtTime(300, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(190, audioCtx.currentTime + 0.18);
-  gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
   osc.connect(gain).connect(audioCtx.destination);
   osc.start();
   osc.stop(audioCtx.currentTime + 0.2);
 }
 
-// 单词拼完欢呼音效
 function playDingFanfare() {
   ensureAudio();
   [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
@@ -823,46 +1236,102 @@ function playDingFanfare() {
   });
 }
 
-// ==================== 界面元素与首屏解锁 ====================
+// ==================== 5. 界面初始化与进度恢复 ====================
+const showcaseCard = document.getElementById('Showcase-card');
 const bigWordEmoji = document.getElementById('big-word-emoji');
 const headerSlots = document.getElementById('header-slots');
 const wordCounter = document.getElementById('word-counter');
 const monsterBody = document.getElementById('monster-body');
 const monsterHorns = document.getElementById('monster-horns');
 const monsterEyes = document.getElementById('monster-eyes');
+const cravingBubble = document.getElementById('craving-bubble');
 const cravingLetter = document.getElementById('craving-letter');
 const celebrateLayer = document.getElementById('celebrate-layer');
+const celThemeTag = document.getElementById('cel-theme-tag');
 const celEmoji = document.getElementById('cel-emoji');
 const celWord = document.getElementById('cel-word');
+const celSentenceBox = document.getElementById('cel-sentence-box');
+const celSentenceText = document.getElementById('cel-sentence-text');
+const celNextBtn = document.getElementById('cel-next-btn');
 const stickerBadge = document.getElementById('sticker-count-badge');
+const ambientBg = document.getElementById('ambient-bg');
+const savedProgressTip = document.getElementById('saved-progress-tip');
+
+// 首屏显示上次学习进度提示
+if (completedSet.size > 0) {
+  savedProgressTip.textContent = `🌟 Saved Progress: ${completedSet.size} Words Learned!`;
+}
+
+// 恢复已保存的贴纸乐园
+stickerBadge.textContent = completedSet.size;
+
+function applyThemeEnvironment(themeKey, keepSavedWordIdx = true) {
+  currentThemeKey = themeKey;
+  progressData.lastTheme = themeKey;
+  saveProgressToStorage();
+
+  const t = THEMES[themeKey];
+  currentWordList = THEME_EXCLUSIVE_WORDS[themeKey];
+
+  document.documentElement.style.setProperty('--bg-top', t.bgTop);
+  document.documentElement.style.setProperty('--bg-bottom', t.bgBottom);
+  document.documentElement.style.setProperty('--card-border', t.cardBorder);
+  document.documentElement.style.setProperty('--accent-color', t.accent);
+
+  document.querySelectorAll('.theme-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === themeKey);
+  });
+
+  ambientBg.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const item = document.createElement('div');
+    item.className = 'ambient-item';
+    item.textContent = t.ambientIcons[i % t.ambientIcons.length];
+    item.style.left = (Math.random() * 94) + 'vw';
+    item.style.animationDuration = (7 + Math.random() * 7) + 's';
+    item.style.animationDelay = (-Math.random() * 10) + 's';
+    ambientBg.appendChild(item);
+  }
+
+  const targetIdx = keepSavedWordIdx ? (progressData.themeWordIndices[themeKey] || 0) : 0;
+  loadWord(targetIdx % currentWordList.length);
+}
+
+document.querySelectorAll('.theme-pill').forEach(btn => {
+  btn.onclick = () => applyThemeEnvironment(btn.dataset.theme, true);
+});
 
 document.getElementById('start-btn').addEventListener('click', () => {
   ensureAudio();
   if ('speechSynthesis' in window) {
+    initPreferredEnglishVoice();
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
   }
   document.getElementById('unlock-screen').style.display = 'none';
-  loadWord(0);
+  restoreSavedStickersToPark();
+  applyThemeEnvironment(currentThemeKey, true);
 });
 
-document.getElementById('prev-btn').onclick = () => loadWord((currentIdx - 1 + WORDS.length) % WORDS.length);
-document.getElementById('next-btn').onclick = () => loadWord((currentIdx + 1) % WORDS.length);
-document.getElementById('random-btn').onclick = () => loadWord(Math.floor(Math.random() * WORDS.length));
+document.getElementById('prev-btn').onclick = () => loadWord((currentIdx - 1 + currentWordList.length) % currentWordList.length);
+document.getElementById('next-btn').onclick = () => loadWord((currentIdx + 1) % currentWordList.length);
+document.getElementById('random-btn').onclick = () => loadWord(Math.floor(Math.random() * currentWordList.length));
 
-// 点击顶部大物品卡片或怪兽，只朗读干净的单词或当前需要的字母
-document.getElementById('Showcase-card').onclick = () => speakClean(WORDS[currentIdx].word);
-monsterBody.onclick = () => {
-  const targetChar = WORDS[currentIdx].word[expectedCharIndex];
-  if (targetChar) speakClean(targetChar);
+showcaseCard.onclick = () => speakWordOrSentence(currentWordList[currentIdx].word);
+const speakCurrentTargetLetter = () => {
+  const targetChar = currentWordList[currentIdx].word[expectedCharIndex];
+  if (targetChar) speakLetterName(targetChar);
 };
+monsterBody.onclick = speakCurrentTargetLetter;
+cravingBubble.onclick = speakCurrentTargetLetter;
 
-// ==================== 加载单词与百变怪兽舞台 ====================
+// ==================== 6. 单词加载与顺序喂怪兽核心逻辑 ====================
 function clearTreats() {
   document.querySelectorAll('.letter-treat').forEach(el => el.remove());
 }
 
 function applyMonsterStyle(idx) {
-  const style = MONSTER_STYLES[idx % MONSTER_STYLES.length];
+  const themeMonsters = THEMES[currentThemeKey].monsters;
+  const style = themeMonsters[idx % themeMonsters.length];
   monsterBody.style.backgroundColor = style.color;
   monsterBody.style.borderRadius = style.radius;
   monsterHorns.textContent = style.horn;
@@ -880,17 +1349,23 @@ function applyMonsterStyle(idx) {
 function loadWord(idx) {
   currentIdx = idx;
   expectedCharIndex = 0;
+
+  // 实时保存当前主题学到了第几个词
+  progressData.themeWordIndices[currentThemeKey] = idx;
+  saveProgressToStorage();
+
   celebrateLayer.classList.remove('show');
   clearTreats();
 
-  const wordObj = WORDS[idx];
+  const wordObj = currentWordList[idx];
   const chars = wordObj.word.split('');
+  const uniqueKey = `${currentThemeKey}_${wordObj.word}`;
 
-  wordCounter.textContent = `${idx + 1} / ${WORDS.length}`;
+  wordCounter.textContent = `${idx + 1}/${currentWordList.length}`;
   bigWordEmoji.textContent = wordObj.emoji;
+  showcaseCard.classList.toggle('is-learned', completedSet.has(uniqueKey));
   applyMonsterStyle(idx);
 
-  // 渲染物品下方的拼写槽位
   headerSlots.innerHTML = '';
   chars.forEach((ch, i) => {
     const s = document.createElement('div');
@@ -901,11 +1376,7 @@ function loadWord(idx) {
   });
 
   cravingLetter.textContent = chars[0];
-
-  // 进场朗读一遍干净的单词名
-  speakClean(wordObj.word);
-
-  // 生成底部的字母饼干（打乱横向排列，但高亮第一个要吃的字母）
+  speakWordOrSentence(wordObj.word);
   spawnLetterTreats(wordObj, chars);
 }
 
@@ -913,15 +1384,15 @@ function spawnLetterTreats(wordObj, chars) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const count = chars.length;
-  const treatW = vw < 680 ? 72 : 88;
+  const treatW = vw < 680 ? 68 : 84;
 
-  const yBase = vh * 0.77;
-  const maxSpan = Math.min(vw * 0.9, count * (treatW + 18));
+  const yBase = vh * 0.79;
+  const maxSpan = Math.min(vw * 0.92, count * (treatW + 16));
   const startX = (vw - maxSpan) / 2;
   const stepX = count > 1 ? (maxSpan - treatW) / (count - 1) : 0;
 
-  // 打乱位置索引，让孩子寻找发光的目标字母，也可以直接点击喂食
   const posIndices = Array.from({ length: count }, (_, i) => i).sort(() => Math.random() - 0.5);
+  const badges = THEMES[currentThemeKey].treatBadges;
 
   chars.forEach((ch, charOrderIdx) => {
     const treat = document.createElement('div');
@@ -930,12 +1401,12 @@ function spawnLetterTreats(wordObj, chars) {
     treat.dataset.char = ch;
     treat.style.backgroundColor = LETTER_COLORS[ch] || "#FF6B6B";
 
-    const badgeIcon = TREAT_BADGES[(currentIdx + charOrderIdx) % TREAT_BADGES.length];
+    const badgeIcon = badges[(currentIdx + charOrderIdx) % badges.length];
     treat.innerHTML = `<span class="treat-badge">${badgeIcon}</span><span>${ch}</span>`;
 
     const pIdx = posIndices[charOrderIdx];
     const homeX = startX + pIdx * stepX;
-    const homeY = yBase + (pIdx % 2 === 0 ? -12 : 16);
+    const homeY = yBase + (pIdx % 2 === 0 ? -10 : 14);
 
     treat.style.left = homeX + 'px';
     treat.style.top = homeY + 'px';
@@ -949,9 +1420,8 @@ function spawnLetterTreats(wordObj, chars) {
   updateTurnHighlights();
 }
 
-// 严格按单词拼写顺序高亮下一个要喂的字母
 function updateTurnHighlights() {
-  const targetChar = WORDS[currentIdx].word[expectedCharIndex];
+  const targetChar = currentWordList[currentIdx].word[expectedCharIndex];
   if (targetChar) {
     cravingLetter.textContent = targetChar;
   }
@@ -972,14 +1442,13 @@ function updateTurnHighlights() {
   });
 }
 
-// 怪兽眼珠跟随手指坐标转动
 function lookAtPoint(x, y) {
   document.querySelectorAll('.m-pupil').forEach(pupil => {
     const rect = pupil.parentElement.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const angle = Math.atan2(y - cy, x - cx);
-    const dist = Math.min(9, Math.hypot(x - cx, y - cy) / 18);
+    const dist = Math.min(8, Math.hypot(x - cx, y - cy) / 18);
     pupil.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
   });
 }
@@ -990,7 +1459,6 @@ function resetEyes() {
   });
 }
 
-// 撒出彩色饼干碎屑特效
 function burstCrumbs(x, y, color) {
   for (let i = 0; i < 10; i++) {
     const c = document.createElement('div');
@@ -1002,13 +1470,10 @@ function burstCrumbs(x, y, color) {
 
     const angle = (Math.PI * 2 * i) / 10;
     const dist = 40 + Math.random() * 55;
-    const tx = Math.cos(angle) * dist;
-    const ty = Math.sin(angle) * dist;
-
     c.animate([
       { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-      { transform: `translate(${tx}px, ${ty}px) scale(0.2)`, opacity: 0 }
-    ], { duration: 480, easing: 'ease-out' }).onfinish = () => c.remove();
+      { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0.2)`, opacity: 0 }
+    ], { duration: 460, easing: 'ease-out' }).onfinish = () => c.remove();
   }
 }
 
@@ -1030,11 +1495,10 @@ function bindTreatInteraction(treat, wordObj) {
     treat.classList.remove('returning');
     treat.classList.add('dragging');
 
-    // 点击瞬间：只干净利落地读出该字母名称（如 "A"），不放冗长语音
-    speakClean(treat.dataset.char);
+    // 点击字母瞬间：使用纯正美式字母名发音（A 读 /eɪ/，绝不会有“额”的音）
+    speakLetterName(treat.dataset.char);
 
-    const isMyTurn = (treat.dataset.char === wordObj.word[expectedCharIndex]);
-    if (isMyTurn) {
+    if (treat.dataset.char === wordObj.word[expectedCharIndex]) {
       monsterBody.classList.add('mouth-wide');
     }
     lookAtPoint(e.clientX, e.clientY);
@@ -1057,7 +1521,6 @@ function bindTreatInteraction(treat, wordObj) {
     const ch = treat.dataset.char;
     const targetChar = wordObj.word[expectedCharIndex];
 
-    // 判断是否为轻点（4岁小朋友如果直接点击发光的目标字母，也会自动飞进怪兽嘴里！）
     const moveDist = Math.hypot(e.clientX - startX, e.clientY - startY);
     const mRect = monsterBody.getBoundingClientRect();
     const tRect = treat.getBoundingClientRect();
@@ -1068,10 +1531,8 @@ function bindTreatInteraction(treat, wordObj) {
 
     if (distToMouth < 145 || (moveDist < 18 && ch === targetChar)) {
       if (ch === targetChar) {
-        // 顺序正确！怪兽一口吃掉（即使单词里有两个相同字母P，喂任意一个P都可以）
         const myOrder = parseInt(treat.dataset.order, 10);
         if (myOrder !== expectedCharIndex) {
-          // 如果点的是同名但序号靠后的字母，与当前槽位字母交换顺序标记
           const other = document.querySelector(`.letter-treat[data-order="${expectedCharIndex}"]`);
           if (other) other.dataset.order = myOrder;
           treat.dataset.order = expectedCharIndex;
@@ -1079,16 +1540,14 @@ function bindTreatInteraction(treat, wordObj) {
         feedMonsterSuccess(treat, wordObj);
         return;
       } else {
-        // 顺序不对！怪兽摇摇头闭紧嘴巴，弹回原位并再次轻读正确目标字母提示孩子
         playBoingSoft();
         monsterBody.classList.remove('head-shake');
         void monsterBody.offsetWidth;
         monsterBody.classList.add('head-shake');
-        setTimeout(() => speakClean(targetChar), 260);
+        setTimeout(() => speakLetterName(targetChar), 260);
       }
     }
 
-    // 弹回原来的位置
     treat.classList.add('returning');
     treat.style.left = treat.dataset.homeX + 'px';
     treat.style.top = treat.dataset.homeY + 'px';
@@ -1103,7 +1562,6 @@ function feedMonsterSuccess(treat, wordObj) {
   const color = LETTER_COLORS[ch] || "#FF6B6B";
   const mRect = monsterBody.getBoundingClientRect();
 
-  // 飞进怪兽嘴巴动画
   treat.style.transition = 'all 0.22s ease-in';
   treat.style.left = (mRect.left + mRect.width / 2 - 40) + 'px';
   treat.style.top = (mRect.top + mRect.height / 2 - 20) + 'px';
@@ -1115,14 +1573,12 @@ function feedMonsterSuccess(treat, wordObj) {
     playChompSound();
     burstCrumbs(mRect.left + mRect.width / 2, mRect.top + mRect.height * 0.65, color);
 
-    // 怪兽大口咀嚼动画 + 肚皮变圆一点点
     monsterBody.classList.remove('chewing');
     void monsterBody.offsetWidth;
     monsterBody.classList.add('chewing');
-    const growScale = 1 + (expectedCharIndex + 1) * 0.04;
+    const growScale = 1 + (expectedCharIndex + 1) * 0.035;
     monsterBody.style.transform = `scale(${growScale})`;
 
-    // 点亮顶部对应槽位
     const slot = document.getElementById(`h-slot-${expectedCharIndex}`);
     if (slot) {
       slot.classList.remove('target-now');
@@ -1135,59 +1591,85 @@ function feedMonsterSuccess(treat, wordObj) {
     if (expectedCharIndex < wordObj.word.length) {
       updateTurnHighlights();
     } else {
-      // 整个单词按顺序喂食完毕！
-      setTimeout(() => showWordCelebration(wordObj), 500);
+      setTimeout(() => showWordAndSentenceCelebration(wordObj), 480);
     }
   }, 200);
 }
 
-// ==================== 喂饱后的超大物品玩具狂欢 ====================
-function showWordCelebration(wordObj) {
+// ==================== 7. 拼完单词后：保存进度 + 展示并朗读相关英文句子 ====================
+function highlightWordInSentence(sentence, word) {
+  const regex = new RegExp(`(${word})`, 'ig');
+  return sentence.replace(regex, `<span class="hl-word">$1</span>`);
+}
+
+function showWordAndSentenceCelebration(wordObj) {
   playDingFanfare();
 
-  if (!completedSet.has(currentIdx)) {
-    completedSet.add(currentIdx);
+  const uniqueKey = `${currentThemeKey}_${wordObj.word}`;
+  if (!completedSet.has(uniqueKey)) {
+    completedSet.add(uniqueKey);
+    progressData.completedKeys = Array.from(completedSet);
+
+    const newSticker = {
+      key: uniqueKey,
+      emoji: wordObj.emoji,
+      word: wordObj.word,
+      sentence: wordObj.sentence,
+      left: (12 + Math.random() * 72).toFixed(1) + '%',
+      top: (18 + Math.random() * 64).toFixed(1) + '%'
+    };
+    progressData.stickers.push(newSticker);
+    saveProgressToStorage();
+
     stickerBadge.textContent = completedSet.size;
-    addStickerToPark(wordObj);
+    renderSingleStickerElement(newSticker);
   }
 
+  showcaseCard.classList.add('is-learned');
+  celThemeTag.textContent = THEMES[currentThemeKey].name;
   celEmoji.textContent = wordObj.emoji;
   celWord.textContent = wordObj.word;
+  celSentenceText.innerHTML = highlightWordInSentence(wordObj.sentence, wordObj.word);
   celEmoji.style.transform = 'scale(1)';
   celebrateLayer.classList.add('show');
 
-  // 干净利落朗读单词
-  speakClean(wordObj.word);
+  // 先读单词，再读配套英文短句
+  speakWordOrSentence(`${wordObj.word}! ${wordObj.sentence}`);
 
-  let taps = 0;
-  celebrateLayer.onclick = () => {
-    taps++;
+  celEmoji.onclick = () => {
     playChompSound();
-    celEmoji.style.transform = `scale(${taps % 2 === 0 ? 1.25 : 0.85}) rotate(${taps % 2 === 0 ? 12 : -12}deg)`;
-    speakClean(wordObj.word);
+    celEmoji.style.transform = 'scale(1.22) rotate(10deg)';
+    setTimeout(() => celEmoji.style.transform = 'scale(1)', 240);
+    speakWordOrSentence(wordObj.word);
+  };
 
-    if (taps >= 2) {
-      celebrateLayer.onclick = null;
-      setTimeout(() => {
-        loadWord((currentIdx + 1) % WORDS.length);
-      }, 850);
-    }
+  celSentenceBox.onclick = () => {
+    speakWordOrSentence(wordObj.sentence);
+  };
+
+  celNextBtn.onclick = () => {
+    loadWord((currentIdx + 1) % currentWordList.length);
   };
 }
 
-// ==================== 我的贴纸乐园与词库抽屉 ====================
+// ==================== 8. 贴纸乐园（位置持久化保存）与词库抽屉 ====================
 const parkModal = document.getElementById('park-modal');
 const parkCanvas = document.getElementById('park-canvas');
 
 document.getElementById('open-park-btn').onclick = () => parkModal.classList.add('open');
 document.getElementById('park-close-btn').onclick = () => parkModal.classList.remove('open');
 
-function addStickerToPark(wordObj) {
+function restoreSavedStickersToPark() {
+  parkCanvas.innerHTML = '';
+  progressData.stickers.forEach(st => renderSingleStickerElement(st));
+}
+
+function renderSingleStickerElement(stickerObj) {
   const s = document.createElement('div');
   s.className = 'park-sticker';
-  s.textContent = wordObj.emoji;
-  s.style.left = (12 + Math.random() * 72) + '%';
-  s.style.top = (18 + Math.random() * 64) + '%';
+  s.textContent = stickerObj.emoji;
+  s.style.left = stickerObj.left;
+  s.style.top = stickerObj.top;
 
   let dragging = false, ox = 0, oy = 0;
   s.addEventListener('pointerdown', e => {
@@ -1196,30 +1678,60 @@ function addStickerToPark(wordObj) {
     const r = s.getBoundingClientRect();
     ox = e.clientX - r.left;
     oy = e.clientY - r.top;
-    speakClean(wordObj.word);
+    speakWordOrSentence(`${stickerObj.word}! ${stickerObj.sentence}`);
   });
   s.addEventListener('pointermove', e => {
     if (!dragging) return;
     s.style.left = (e.clientX - ox) + 'px';
     s.style.top = (e.clientY - oy) + 'px';
   });
-  s.addEventListener('pointerup', () => dragging = false);
-  s.addEventListener('pointercancel', () => dragging = false);
+  const saveStickerPos = () => {
+    if (!dragging) return;
+    dragging = false;
+    stickerObj.left = s.style.left;
+    stickerObj.top = s.style.top;
+    saveProgressToStorage();
+  };
+  s.addEventListener('pointerup', saveStickerPos);
+  s.addEventListener('pointercancel', saveStickerPos);
 
   parkCanvas.appendChild(s);
 }
 
 const drawerModal = document.getElementById('drawer-modal');
+const drawerProgressText = document.getElementById('drawer-progress-text');
 const azFilter = document.getElementById('az-filter');
 const wordGrid = document.getElementById('word-grid');
 
 document.getElementById('open-drawer-btn').onclick = () => {
+  activeLetterFilter = "ALL";
   renderDrawer();
   drawerModal.classList.add('open');
 };
 document.getElementById('close-drawer').onclick = () => drawerModal.classList.remove('open');
 
+// 重置进度按钮（方便家长需要时清空重来）
+document.getElementById('reset-progress-btn').onclick = () => {
+  if (confirm("Reset all learned words and stickers?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    completedSet.clear();
+    progressData = {
+      lastTheme: currentThemeKey,
+      themeWordIndices: { daily: 0, christmas: 0, halloween: 0, lunar: 0 },
+      completedKeys: [],
+      stickers: []
+    };
+    stickerBadge.textContent = "0";
+    parkCanvas.innerHTML = '';
+    renderDrawer();
+    loadWord(0);
+  }
+};
+
 function renderDrawer() {
+  const learnedInTheme = currentWordList.filter(w => completedSet.has(`${currentThemeKey}_${w.word}`)).length;
+  drawerProgressText.textContent = `🌟 Theme Learned: ${learnedInTheme} / ${currentWordList.length} (Total: ${completedSet.size})`;
+
   azFilter.innerHTML = '';
   const allBtn = document.createElement('button');
   allBtn.className = 'az-btn' + (activeLetterFilter === 'ALL' ? ' active' : '');
@@ -1227,7 +1739,8 @@ function renderDrawer() {
   allBtn.onclick = () => { activeLetterFilter = 'ALL'; renderDrawer(); };
   azFilter.appendChild(allBtn);
 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
+  const availableLetters = Array.from(new Set(currentWordList.map(w => w.word[0]))).sort();
+  availableLetters.forEach(letter => {
     const b = document.createElement('button');
     b.className = 'az-btn' + (activeLetterFilter === letter ? ' active' : '');
     b.textContent = letter;
@@ -1236,10 +1749,11 @@ function renderDrawer() {
   });
 
   wordGrid.innerHTML = '';
-  WORDS.forEach((item, i) => {
+  currentWordList.forEach((item, i) => {
     if (activeLetterFilter !== 'ALL' && item.word[0] !== activeLetterFilter) return;
+    const uniqueKey = `${currentThemeKey}_${item.word}`;
     const card = document.createElement('div');
-    card.className = 'word-card' + (completedSet.has(i) ? ' done' : '');
+    card.className = 'word-card' + (completedSet.has(uniqueKey) ? ' done' : '');
     card.innerHTML = `<div class="card-emoji">${item.emoji}</div><div class="card-text">${item.word}</div>`;
     card.onclick = () => {
       drawerModal.classList.remove('open');
