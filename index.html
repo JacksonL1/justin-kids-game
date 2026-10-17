@@ -6,13 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Hungry ABC Monsters - Pro Edition</title>
+<title>Hungry ABC Monsters - Cute Edition</title>
 <style>
   :root {
     --bg-top: #E0F7FA;
     --bg-bottom: #FFF9C4;
     --card-border: #FFFFFF;
     --accent-color: #FF6B6B;
+    --monster-color: #FF85A1;
+    --monster-belly: #FFD6E0;
   }
   * {
     box-sizing: border-box;
@@ -95,7 +97,7 @@
     animation: pulseScale 1s infinite alternate ease-in-out;
   }
 
-  /* 2. 顶部极简导航栏：仅保留主题切换胶囊 + 词库按钮 */
+  /* 2. 顶部极简导航栏 */
   #top-bar {
     position: fixed;
     top: 10px;
@@ -197,11 +199,9 @@
     font-size: 24px;
     display: none;
   }
-  #Showcase-card.is-learned #learned-star {
-    display: block;
-  }
+  #Showcase-card.is-learned #learned-star { display: block; }
   #big-word-emoji {
-    font-size: 92px;
+    font-size: 88px;
     line-height: 1.05;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
     animation: floatIdle 2.4s infinite ease-in-out;
@@ -243,9 +243,9 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.18);
   }
 
-  /* 4. 贪吃怪兽区域 */
+  /* ==================== 4. 全新超萌 Q 版怪兽设计 ==================== */
   #monster-zone {
-    margin-top: clamp(46px, 8.5vh, 95px);
+    margin-top: clamp(38px, 7vh, 80px);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -254,16 +254,16 @@
   }
   #craving-bubble {
     position: absolute;
-    top: -16px;
-    right: -78px;
+    top: -18px;
+    right: -82px;
     background: #fff;
-    border: 4px solid #333;
-    border-radius: 24px;
-    padding: 5px 13px;
+    border: 4px solid #444;
+    border-radius: 26px;
+    padding: 5px 14px;
     font-size: 28px;
     font-weight: 900;
     color: #FF5252;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.14);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -279,108 +279,290 @@
     width: 14px;
     height: 14px;
     background: #fff;
-    border-left: 4px solid #333;
-    border-bottom: 4px solid #333;
+    border-left: 4px solid #444;
+    border-bottom: 4px solid #444;
     transform: rotate(-45deg);
   }
 
+  /* 怪兽软萌身体：支持呼吸动画与张嘴时自然拉长 */
   #monster-body {
-    width: 196px;
-    height: 186px;
-    background: #9B5DE5;
-    border-radius: 60px 60px 46px 46px;
+    width: 210px;
+    min-height: 190px;
+    background: var(--monster-color);
+    border-radius: 95px 95px 75px 75px;
     border: 7px solid #fff;
-    box-shadow: inset 0 -14px 0 rgba(0,0,0,0.15), 0 14px 28px rgba(0,0,0,0.2);
+    box-shadow:
+      inset 0 -16px 0 rgba(0,0,0,0.12),
+      inset 0 10px 18px rgba(255,255,255,0.45),
+      0 16px 30px rgba(0,0,0,0.18);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 18px 14px 16px;
+    justify-content: flex-start;
+    padding: 22px 16px 18px;
     position: relative;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.35s;
+    transition:
+      transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background-color 0.35s,
+      min-height 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
+    animation: cuteBreathe 2.6s infinite ease-in-out;
   }
+  @keyframes cuteBreathe {
+    0%, 100% { transform: translateY(0) scale(1, 1); }
+    50% { transform: translateY(-4px) scale(1.02, 0.98); }
+  }
+
+  /* 萌萌的小耳朵 */
+  .m-ear {
+    position: absolute;
+    top: -16px;
+    width: 44px;
+    height: 44px;
+    background: var(--monster-color);
+    border: 6px solid #fff;
+    border-radius: 50%;
+    z-index: -1;
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,0.15);
+    transition: transform 0.25s, background-color 0.35s;
+  }
+  .m-ear.left { left: 14px; transform: rotate(-18deg); }
+  .m-ear.right { right: 14px; transform: rotate(18deg); }
+
+  /* 挥动的小圆手 */
+  .m-hand {
+    position: absolute;
+    top: 78px;
+    width: 34px;
+    height: 46px;
+    background: var(--monster-color);
+    border: 5px solid #fff;
+    border-radius: 24px;
+    z-index: -1;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.35s;
+  }
+  .m-hand.left { left: -18px; transform: rotate(25deg); }
+  .m-hand.right { right: -18px; transform: rotate(-25deg); }
+
+  /* 怪兽脚丫 */
+  .m-foot {
+    position: absolute;
+    bottom: -14px;
+    width: 42px;
+    height: 26px;
+    background: var(--monster-color);
+    border: 5px solid #fff;
+    border-radius: 20px 20px 14px 14px;
+    z-index: -1;
+    transition: background-color 0.35s;
+  }
+  .m-foot.left { left: 34px; }
+  .m-foot.right { right: 34px; }
+
+  /* 肚子上的粉嫩小肚皮贴片 */
+  #monster-belly-patch {
+    position: absolute;
+    bottom: 10px;
+    width: 110px;
+    height: 52px;
+    background: var(--monster-belly);
+    border-radius: 50% 50% 42% 42%;
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 头顶主题装饰（皇冠/圣诞帽/南瓜/龙头等） */
   #monster-horns {
     position: absolute;
-    top: -34px;
+    top: -36px;
     font-size: 42px;
     pointer-events: none;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    z-index: 5;
   }
+
+  /* 水汪汪的大眼睛 */
   #monster-eyes {
     display: flex;
-    gap: 16px;
-    margin-top: 4px;
-    z-index: 2;
+    gap: 20px;
+    margin-top: 2px;
+    z-index: 3;
+    position: relative;
   }
   .m-eye {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     background: #fff;
     border-radius: 50%;
-    border: 3px solid rgba(0,0,0,0.15);
+    border: 3px solid rgba(0,0,0,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08);
   }
   .m-pupil {
-    width: 17px;
-    height: 17px;
-    background: #222;
+    width: 24px;
+    height: 24px;
+    background: #231942;
     border-radius: 50%;
     position: relative;
     transition: transform 0.08s linear;
   }
-  .m-pupil::after {
+  /* 双高光让眼睛超有神 */
+  .m-pupil::before {
     content: "";
     position: absolute;
     top: 3px;
-    left: 3px;
-    width: 5px;
-    height: 5px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .m-pupil::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 4px;
+    height: 4px;
     background: #fff;
     border-radius: 50%;
   }
 
+  /* 粉扑扑的脸颊腮红 */
+  #monster-cheeks {
+    width: 156px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -4px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .m-cheek {
+    width: 30px;
+    height: 16px;
+    background: rgba(255, 77, 109, 0.55);
+    border-radius: 50%;
+    filter: blur(1px);
+    transition: transform 0.2s;
+  }
+
+  /* 核心升级：平时微笑闭合，抓起字母时真正大口张开的嘴巴！ */
   #monster-mouth {
-    width: 122px;
-    height: 70px;
-    background: #590D22;
-    border-radius: 18px 18px 54px 54px;
-    border: 5px solid #333;
+    margin-top: 4px;
+    width: 54px;
+    height: 22px;
+    background: #6A040F;
+    border-radius: 10px 10px 36px 36px;
+    border: 4px solid #370617;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 3;
+    transition:
+      width 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+      height 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-radius 0.24s ease,
+      background-color 0.2s;
   }
-  .teeth-row { display: flex; gap: 10px; }
+  /* 可爱的两颗圆角小门牙 */
+  .teeth-row {
+    display: flex;
+    gap: 8px;
+    margin-top: -2px;
+    opacity: 0.9;
+    transition: transform 0.2s;
+  }
   .tooth {
-    width: 16px;
-    height: 12px;
+    width: 14px;
+    height: 9px;
     background: #fff;
-    border-radius: 0 0 7px 7px;
+    border-radius: 0 0 8px 8px;
   }
+  /* 粉嫩的爱心小舌头 */
   .tongue {
-    width: 60px;
-    height: 28px;
+    width: 42px;
+    height: 16px;
     background: #FF4D6D;
     border-radius: 50% 50% 0 0;
+    transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  #monster-body.mouth-wide { transform: scale(1.1); }
-  #monster-body.mouth-wide #monster-mouth {
-    height: 96px;
-    width: 138px;
-    background: #800F2F;
+  /* 状态1：当孩子抓起字母时 —— 怪兽兴奋挥手、嘴巴大张开（“啊——”） */
+  #monster-body.mouth-wide {
+    min-height: 226px;
+    animation: none;
+    transform: scale(1.06);
   }
-  #monster-body.chewing { animation: monsterChew 0.22s 3 ease-in-out !important; }
-  #monster-body.chewing #monster-mouth { height: 16px; border-radius: 20px; }
-  #monster-body.head-shake { animation: rejectShake 0.45s ease-in-out !important; }
-  #monster-body.head-shake #monster-mouth { height: 15px; width: 84px; border-radius: 12px; }
+  #monster-body.mouth-wide .m-hand.left {
+    transform: rotate(65deg) translateY(-10px);
+  }
+  #monster-body.mouth-wide .m-hand.right {
+    transform: rotate(-65deg) translateY(-10px);
+  }
+  #monster-body.mouth-wide .m-ear.left {
+    transform: rotate(-30deg) scale(1.08);
+  }
+  #monster-body.mouth-wide .m-ear.right {
+    transform: rotate(30deg) scale(1.08);
+  }
+  #monster-body.mouth-wide .m-cheek {
+    transform: scale(1.3);
+    background: rgba(255, 40, 85, 0.75);
+  }
+  #monster-body.mouth-wide #monster-mouth {
+    width: 128px;
+    height: 90px;
+    background: #800F2F;
+    border-radius: 26px 26px 68px 68px;
+    border-width: 5px;
+    box-shadow: inset 0 8px 14px rgba(0,0,0,0.35);
+  }
+  #monster-body.mouth-wide .tooth {
+    width: 18px;
+    height: 14px;
+  }
+  #monster-body.mouth-wide .tongue {
+    width: 78px;
+    height: 38px;
+    background: #FF758F;
+  }
+
+  /* 状态2：吃到字母时 —— 嘴巴真实一开一合吧唧吧唧咀嚼 */
+  #monster-body.chewing {
+    animation: bodyHappyJump 0.24s 3 ease-in-out !important;
+  }
+  #monster-body.chewing #monster-mouth {
+    animation: mouthChompAnim 0.24s 3 ease-in-out !important;
+  }
+  #monster-body.chewing .m-eye {
+    transform: scaleY(0.25);
+  }
+
+  @keyframes bodyHappyJump {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.1, 0.92) translateY(4px); }
+  }
+  @keyframes mouthChompAnim {
+    0%, 100% { width: 48px; height: 10px; border-radius: 20px; }
+    50% { width: 96px; height: 56px; border-radius: 20px 20px 50px 50px; }
+  }
+
+  /* 状态3：拿错字母顺序时 —— 捂嘴摇头拒吃 */
+  #monster-body.head-shake {
+    animation: rejectShake 0.45s ease-in-out !important;
+  }
+  #monster-body.head-shake #monster-mouth {
+    width: 34px;
+    height: 10px;
+    border-radius: 12px;
+  }
 
   /* 5. 底部主题字母点心 */
   .letter-treat {
@@ -635,10 +817,6 @@
     0% { transform: translateY(0) scale(1.04); }
     100% { transform: translateY(-10px) scale(1.10); }
   }
-  @keyframes monsterChew {
-    0%, 100% { transform: scale(1, 1); }
-    50% { transform: scale(1.14, 0.86); }
-  }
   @keyframes rejectShake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-16px) rotate(-8deg); }
@@ -652,13 +830,16 @@
   }
 
   @media (max-width: 680px) {
-    #big-word-emoji { font-size: 76px; }
+    #big-word-emoji { font-size: 74px; }
     .h-slot { width: var(--slot-w, 36px); height: var(--slot-h, 46px); font-size: var(--slot-fs, 26px); border-radius: 10px; }
-    #monster-zone { margin-top: clamp(36px, 7vh, 75px); }
-    #monster-body { width: 162px; height: 156px; padding: 14px 10px; }
-    #monster-mouth { width: 100px; height: 58px; }
-    .m-eye { width: 34px; height: 34px; }
-    #craving-bubble { right: -56px; font-size: 24px; padding: 4px 10px; }
+    #monster-zone { margin-top: clamp(32px, 6vh, 68px); }
+    #monster-body { width: 176px; min-height: 158px; padding: 18px 12px 14px; }
+    #monster-body.mouth-wide { min-height: 192px; }
+    #monster-body.mouth-wide #monster-mouth { width: 108px; height: 76px; }
+    .m-eye { width: 38px; height: 38px; }
+    .m-pupil { width: 20px; height: 20px; }
+    #monster-cheeks { width: 132px; }
+    #craving-bubble { right: -58px; font-size: 24px; padding: 4px 10px; }
     .letter-treat { width: 68px; height: 68px; font-size: 38px; border-radius: 18px; }
     #cel-emoji { font-size: 125px; }
     #cel-word { font-size: 44px; }
@@ -671,30 +852,26 @@
     #theme-switcher { gap: 4px; padding: 3px; }
     #top-bar { gap: 8px; padding: 5px 10px; }
 
-    #big-word-emoji { font-size: 48px; }
+    #big-word-emoji { font-size: 46px; }
     #Showcase-card { padding: 5px 14px 8px; gap: 4px; }
     #monster-zone { margin-top: 10px; }
-    #monster-body { width: 110px; height: 104px; border-width: 4px; padding: 8px 6px; }
+    #monster-body { width: 126px; min-height: 112px; border-width: 5px; padding: 10px 8px; }
+    #monster-body.mouth-wide { min-height: 136px; }
+    #monster-body.mouth-wide #monster-mouth { width: 78px; height: 50px; }
     #monster-horns { top: -22px; font-size: 26px; }
-    .m-eye { width: 24px; height: 24px; }
-    .m-pupil { width: 11px; height: 11px; }
-    #monster-mouth { width: 70px; height: 38px; border-width: 3px; }
-    .tooth { width: 10px; height: 8px; }
-    .teeth-row { gap: 7px; }
-    .tongue { width: 34px; height: 15px; }
+    .m-eye { width: 26px; height: 26px; }
+    .m-pupil { width: 13px; height: 13px; }
+    #monster-cheeks { width: 96px; }
     .h-slot { border-radius: 8px; }
     #header-slots { gap: 5px; }
     #learned-star { font-size: 16px; top: 4px; right: 6px; }
     .letter-treat { width: 56px; height: 56px; font-size: 30px; border-radius: 15px; border-width: 4px; }
     .treat-badge { font-size: 19px; top: -9px; right: -7px; }
     #craving-bubble { font-size: 20px; padding: 3px 9px; right: -60px; top: -12px; }
-    #craving-bubble::after { width: 10px; height: 10px; bottom: -7px; left: 10px; border-width: 3px; }
     #cel-emoji { font-size: 84px; }
     #cel-word { font-size: 34px; }
     #cel-sentence-text { font-size: 18px; }
     #cel-next-btn { font-size: 22px; padding: 10px 28px; border-width: 4px; }
-    #start-btn { width: 108px; height: 108px; font-size: 50px; }
-    #unlock-icons { font-size: 52px; }
   }
 </style>
 </head>
@@ -728,17 +905,29 @@
     <div id="header-slots"></div>
   </div>
 
+  <!-- 超萌Q版小怪兽（带耳朵、小手、腮红、小肚皮与可大张开的嘴巴） -->
   <div id="monster-zone">
     <div id="craving-bubble" title="Tap to hear letter">😋 <span id="craving-letter">A</span></div>
     <div id="monster-body">
+      <div class="m-ear left"></div>
+      <div class="m-ear right"></div>
+      <div class="m-hand left"></div>
+      <div class="m-hand right"></div>
+      <div class="m-foot left"></div>
+      <div class="m-foot right"></div>
+      <div id="monster-belly-patch"></div>
+
       <div id="monster-horns">👑</div>
       <div id="monster-eyes">
         <div class="m-eye"><div class="m-pupil"></div></div>
         <div class="m-eye"><div class="m-pupil"></div></div>
       </div>
+      <div id="monster-cheeks">
+        <div class="m-cheek"></div>
+        <div class="m-cheek"></div>
+      </div>
       <div id="monster-mouth">
         <div class="teeth-row">
-          <div class="tooth"></div>
           <div class="tooth"></div>
           <div class="tooth"></div>
         </div>
@@ -772,7 +961,7 @@
 </div>
 
 <script>
-// ==================== 1. 四大主题配置 ====================
+// ==================== 1. 四大主题配置（马卡龙萌系配色） ====================
 const THEMES = {
   daily: {
     name: "🌈 Fun Daily",
@@ -783,10 +972,10 @@ const THEMES = {
     ambientIcons: ["☁️", "⭐", "🎈", "🫧"],
     treatBadges: ["🍪", "🍩", "🍓", "🧁", "🍬", "🍫"],
     monsters: [
-      { color: "#9B5DE5", horn: "👑", eyes: 2, radius: "60px 60px 46px 46px" },
-      { color: "#FF6B6B", horn: "🦖", eyes: 1, radius: "50% 50% 42% 42%" },
-      { color: "#4ECDC4", horn: "📡", eyes: 3, radius: "45px 45px 65px 65px" },
-      { color: "#FF9F1C", horn: "🎀", eyes: 2, radius: "70px 40px 70px 40px" }
+      { color: "#FF85A1", belly: "#FFE5EC", horn: "👑", eyes: 2 },
+      { color: "#72EFDD", belly: "#E0FBFC", horn: "🎀", eyes: 2 },
+      { color: "#B388EB", belly: "#F3E8FF", horn: "🌱", eyes: 2 },
+      { color: "#FFAA5A", belly: "#FFF1E6", horn: "⭐", eyes: 2 }
     ]
   },
   christmas: {
@@ -798,10 +987,10 @@ const THEMES = {
     ambientIcons: ["❄️", "❅", "🎄", "✨", "🔔"],
     treatBadges: ["🎄", "🦌", "🔔", "🎁", "🧦", "⛄"],
     monsters: [
-      { color: "#D90429", horn: "🎅", eyes: 2, radius: "60px 60px 46px 46px" },
-      { color: "#2D6A4F", horn: "🦌", eyes: 2, radius: "50% 50% 42% 42%" },
-      { color: "#48CAE4", horn: "⛄", eyes: 2, radius: "55px 55px 55px 55%" },
-      { color: "#FFB703", horn: "🌟", eyes: 3, radius: "45px 45px 65px 65px" }
+      { color: "#FF4D6D", belly: "#FFE5EC", horn: "🎅", eyes: 2 },
+      { color: "#52B788", belly: "#D8F3DC", horn: "🦌", eyes: 2 },
+      { color: "#48CAE4", belly: "#CAF0F8", horn: "⛄", eyes: 2 },
+      { color: "#FFB703", belly: "#FFF3B0", horn: "🌟", eyes: 2 }
     ]
   },
   halloween: {
@@ -813,10 +1002,10 @@ const THEMES = {
     ambientIcons: ["🎃", "👻", "🦇", "🕸️", "🍬"],
     treatBadges: ["🎃", "👻", "🍬", "🍭", "🦇", "🕷️"],
     monsters: [
-      { color: "#FF6D00", horn: "🎃", eyes: 2, radius: "55px 55px 50px 50px" },
-      { color: "#7209B7", horn: "🧙‍♀️", eyes: 1, radius: "60px 60px 42px 42px" },
-      { color: "#38B000", horn: "🧟", eyes: 3, radius: "42px 42px 60px 60px" },
-      { color: "#F72585", horn: "😈", eyes: 2, radius: "65px 45px 65px 45px" }
+      { color: "#FF8500", belly: "#FFE5B4", horn: "🎃", eyes: 2 },
+      { color: "#9D4EDD", belly: "#E0AAFF", horn: "🧙‍♀️", eyes: 2 },
+      { color: "#70E000", belly: "#DCFCE7", horn: "😈", eyes: 1 },
+      { color: "#F72585", belly: "#FFCCD5", horn: "🦇", eyes: 2 }
     ]
   },
   lunar: {
@@ -828,247 +1017,574 @@ const THEMES = {
     ambientIcons: ["🏮", "🧧", "🧨", "🪙", "🌸"],
     treatBadges: ["🥟", "🧧", "🏮", "🍊", "🧨", "🪙"],
     monsters: [
-      { color: "#D00000", horn: "🐉", eyes: 2, radius: "60px 60px 46px 46px" },
-      { color: "#FF9F1C", horn: "🦁", eyes: 2, radius: "52% 52% 44% 44%" },
-      { color: "#E63946", horn: "🏮", eyes: 3, radius: "48px 48px 62px 62px" },
-      { color: "#F4A261", horn: "👑", eyes: 2, radius: "60px 45px 60px 45px" }
+      { color: "#E63946", belly: "#FFE5E5", horn: "🐉", eyes: 2 },
+      { color: "#FF9F1C", belly: "#FFF3B0", horn: "🦁", eyes: 2 },
+      { color: "#FF4D6D", belly: "#FFCCD5", horn: "🏮", eyes: 2 },
+      { color: "#F4A261", belly: "#FEFAE0", horn: "🧧", eyes: 2 }
     ]
   }
 };
 
-// ==================== 2. 大幅扩充的四大主题专属词库与短句 ====================
+// ==================== 2. 460+ 个单词逐一手写定制地道幼儿短句（彻底告别乱造句） ====================
 const THEME_EXCLUSIVE_WORDS = {
-  // 圣诞节主题扩充至 50 个单词
   christmas: [
-    { word: "SANTA", emoji: "🎅", sentence: "Here comes Santa!" },
-    { word: "ELF", emoji: "🧝", sentence: "Look at the little elf." },
-    { word: "TREE", emoji: "🎄", sentence: "I love the green tree." },
-    { word: "STAR", emoji: "🌟", sentence: "A bright yellow star." },
-    { word: "BELL", emoji: "🔔", sentence: "Ring the golden bell!" },
-    { word: "GIFT", emoji: "🎁", sentence: "Open the big gift!" },
-    { word: "DEER", emoji: "🦌", sentence: "The cute deer can run." },
-    { word: "SNOW", emoji: "❄️", sentence: "White and cold snow." },
-    { word: "SOCK", emoji: "🧦", sentence: "A red Christmas sock." },
-    { word: "SLED", emoji: "🛷", sentence: "Ride on the fast sled!" },
-    { word: "ANGEL", emoji: "👼", sentence: "A sweet little angel." },
-    { word: "CANDY", emoji: "🍬", sentence: "I like sweet candy." },
-    { word: "COAT", emoji: "🧥", sentence: "Put on a warm coat." },
-    { word: "CAKE", emoji: "🎂", sentence: "Yummy holiday cake!" },
-    { word: "TOY", emoji: "🧸", sentence: "I got a new toy!" },
-    { word: "COOKIE", emoji: "🍪", sentence: "Eat a yummy cookie." },
-    { word: "GLOVE", emoji: "🧤", sentence: "Wear your warm glove." },
-    { word: "SNOWMAN", emoji: "⛄", sentence: "Hello, happy snowman!" },
-    { word: "SCARF", emoji: "🧣", sentence: "Wrap a warm red scarf." },
-    { word: "BOOT", emoji: "🥾", sentence: "Step in the snow with boots." },
-    { word: "MITTEN", emoji: "🧤", sentence: "Soft mittens for my hands." },
-    { word: "CANDLE", emoji: "🕯️", sentence: "A warm glowing candle." },
-    { word: "RIBBON", emoji: "🎀", sentence: "A pretty red ribbon." },
-    { word: "PINE", emoji: "🌲", sentence: "A tall green pine tree." },
-    { word: "HOLLY", emoji: "🍒", sentence: "Red berries on the holly." },
-    { word: "WREATH", emoji: "🌿", sentence: "Hang the green wreath." },
-    { word: "CHIMNEY", emoji: "🏠", sentence: "Santa goes down the chimney." },
-    { word: "FIRE", emoji: "🔥", sentence: "Sit by the warm fire." },
-    { word: "COCOA", emoji: "☕", sentence: "Drink a cup of hot cocoa." },
-    { word: "MILK", emoji: "🥛", sentence: "A glass of milk for Santa." },
-    { word: "PIE", emoji: "🥧", sentence: "Grandma baked a sweet pie." },
-    { word: "TURKEY", emoji: "🦃", sentence: "Yummy roast turkey!" },
-    { word: "FEAST", emoji: "🍽️", sentence: "A big holiday feast!" },
-    { word: "CAROL", emoji: "🎵", sentence: "Sing a happy Christmas carol." },
-    { word: "SONG", emoji: "🎶", sentence: "Listen to the joyful song." },
-    { word: "CHOIR", emoji: "🎤", sentence: "The choir sings together." },
-    { word: "CARD", emoji: "💌", sentence: "Send a sweet holiday card." },
-    { word: "LETTER", emoji: "✉️", sentence: "Write a letter to Santa." },
-    { word: "WISH", emoji: "🌠", sentence: "Make a happy holiday wish!" },
-    { word: "JOY", emoji: "😊", sentence: "Full of love and joy!" },
-    { word: "PEACE", emoji: "🕊️", sentence: "Peace and love for all." },
-    { word: "LOVE", emoji: "❤️", sentence: "I love my warm family." },
-    { word: "WINTER", emoji: "🏔️", sentence: "It is cold in winter." },
-    { word: "ICE", emoji: "🧊", sentence: "Skate on the shiny ice." },
-    { word: "SKATE", emoji: "⛸️", sentence: "Let's ice skate together!" },
-    { word: "SKI", emoji: "🎿", sentence: "Ski down the snowy hill!" },
-    { word: "IGLOO", emoji: "🛖", sentence: "A little white snow igloo." },
-    { word: "PENGUIN", emoji: "🐧", sentence: "The cute penguin waddles." },
-    { word: "POLAR", emoji: "🐻‍❄️", sentence: "A big white polar bear." },
-    { word: "GINGER", emoji: "🍪", sentence: "A cute gingerbread cookie!" }
+    { word: "SANTA", emoji: "🎅", sentence: "Santa brings gifts for kids." },
+    { word: "ELF", emoji: "🧝", sentence: "The little elf makes toys." },
+    { word: "TREE", emoji: "🎄", sentence: "We put stars on the Christmas tree." },
+    { word: "STAR", emoji: "🌟", sentence: "The star shines on top of the tree." },
+    { word: "BELL", emoji: "🔔", sentence: "Jingle bells, jingle all the way!" },
+    { word: "GIFT", emoji: "🎁", sentence: "Let's open the Christmas gift!" },
+    { word: "DEER", emoji: "🦌", sentence: "The deer pulls Santa's sleigh." },
+    { word: "SNOW", emoji: "❄️", sentence: "White snow falls from the sky." },
+    { word: "SOCK", emoji: "🧦", sentence: "Hang up your red Christmas sock." },
+    { word: "SLED", emoji: "🛷", sentence: "Slide down the hill on a sled!" },
+    { word: "ANGEL", emoji: "👼", sentence: "The little angel has white wings." },
+    { word: "CANDY", emoji: "🍬", sentence: "A sweet red and white candy cane." },
+    { word: "COAT", emoji: "🧥", sentence: "Put on your warm winter coat." },
+    { word: "CAKE", emoji: "🎂", sentence: "Let's share the holiday cake." },
+    { word: "TOY", emoji: "🧸", sentence: "I got a cute teddy bear toy!" },
+    { word: "COOKIE", emoji: "🍪", sentence: "Bake yummy cookies for Santa." },
+    { word: "GLOVE", emoji: "🧤", sentence: "Warm gloves keep my hands cozy." },
+    { word: "SNOWMAN", emoji: "⛄", sentence: "Let's build a happy snowman!" },
+    { word: "SCARF", emoji: "🧣", sentence: "Wear a soft scarf around your neck." },
+    { word: "BOOT", emoji: "🥾", sentence: "Walk in the snow with warm boots." },
+    { word: "MITTEN", emoji: "🧤", sentence: "Put on your soft wool mittens." },
+    { word: "CANDLE", emoji: "🕯️", sentence: "The candle glows in the dark." },
+    { word: "RIBBON", emoji: "🎀", sentence: "Tie a red ribbon on the box." },
+    { word: "PINE", emoji: "🌲", sentence: "The green pine tree smells fresh." },
+    { word: "HOLLY", emoji: "🍒", sentence: "Holly has green leaves and red berries." },
+    { word: "WREATH", emoji: "🌿", sentence: "Hang a pretty wreath on the door." },
+    { word: "CHIMNEY", emoji: "🏠", sentence: "Santa climbs down the chimney." },
+    { word: "FIRE", emoji: "🔥", sentence: "The warm fire keeps us cozy." },
+    { word: "COCOA", emoji: "☕", sentence: "Drink a mug of warm sweet cocoa." },
+    { word: "MILK", emoji: "🥛", sentence: "Leave a glass of milk for Santa." },
+    { word: "PIE", emoji: "🥧", sentence: "Grandma baked a warm apple pie." },
+    { word: "TURKEY", emoji: "🦃", sentence: "We eat roast turkey for dinner." },
+    { word: "FEAST", emoji: "🍽️", sentence: "The family enjoys a big feast." },
+    { word: "CAROL", emoji: "🎵", sentence: "We sing a happy Christmas carol." },
+    { word: "SONG", emoji: "🎶", sentence: "Let's sing a joyful holiday song." },
+    { word: "CHOIR", emoji: "🎤", sentence: "The children's choir sings sweetly." },
+    { word: "CARD", emoji: "💌", sentence: "I made a Christmas card for Mom." },
+    { word: "LETTER", emoji: "✉️", sentence: "Write a wish letter to Santa." },
+    { word: "WISH", emoji: "🌠", sentence: "Close your eyes and make a wish!" },
+    { word: "JOY", emoji: "😊", sentence: "Christmas brings us so much joy!" },
+    { word: "PEACE", emoji: "🕊️", sentence: "The white dove brings peace." },
+    { word: "LOVE", emoji: "❤️", sentence: "I love my family very much." },
+    { word: "WINTER", emoji: "🏔️", sentence: "It snows a lot in cold winter." },
+    { word: "ICE", emoji: "🧊", sentence: "The lake turns into smooth ice." },
+    { word: "SKATE", emoji: "⛸️", sentence: "We love to skate on the ice." },
+    { word: "SKI", emoji: "🎿", sentence: "Ski down the white snowy mountain!" },
+    { word: "IGLOO", emoji: "🛖", sentence: "An igloo is a house made of snow." },
+    { word: "PENGUIN", emoji: "🐧", sentence: "The little penguin walks on the ice." },
+    { word: "POLAR", emoji: "🐻‍❄️", sentence: "The white polar bear loves snow." },
+    { word: "GINGER", emoji: "🍪", sentence: "Run, run, little gingerbread man!" }
   ],
 
-  // 万圣节主题扩充至 50 个单词
   halloween: [
-    { word: "GHOST", emoji: "👻", sentence: "Boo! A funny ghost!" },
-    { word: "WITCH", emoji: "🧙‍♀️", sentence: "The witch can fly!" },
-    { word: "BAT", emoji: "🦇", sentence: "A black bat in the sky." },
-    { word: "CAT", emoji: "🐈‍⬛", sentence: "Meow! A black cat." },
-    { word: "WEB", emoji: "🕸️", sentence: "Look at the spider web." },
-    { word: "CANDY", emoji: "🍬", sentence: "Trick or treat! Candy!" },
-    { word: "MASK", emoji: "🎭", sentence: "Put on a funny mask." },
-    { word: "MOON", emoji: "🌕", sentence: "A big yellow moon." },
-    { word: "OWL", emoji: "🦉", sentence: "The owl says hoot!" },
-    { word: "BONE", emoji: "🦴", sentence: "A white spooky bone." },
-    { word: "FROG", emoji: "🐸", sentence: "The green frog jumps." },
-    { word: "SPIDER", emoji: "🕷️", sentence: "A tiny little spider." },
-    { word: "PUMPKIN", emoji: "🎃", sentence: "A big orange pumpkin!" },
-    { word: "MONSTER", emoji: "👾", sentence: "Feed the hungry monster!" },
-    { word: "ROBOT", emoji: "🤖", sentence: "I am a cool robot." },
-    { word: "BROOM", emoji: "🧹", sentence: "Fly on a magic broom." },
-    { word: "ZOMBIE", emoji: "🧟", sentence: "A silly walking zombie!" },
-    { word: "VAMPIRE", emoji: "🧛", sentence: "The vampire wears a cape." },
-    { word: "MUMMY", emoji: "🤕", sentence: "Wrapped like a funny mummy!" },
-    { word: "SKULL", emoji: "💀", sentence: "A spooky white skull." },
-    { word: "SKELETON", emoji: "☠️", sentence: "The skeleton likes to dance!" },
-    { word: "WIZARD", emoji: "🧙‍♂️", sentence: "The wizard waves his wand." },
-    { word: "MAGIC", emoji: "✨", sentence: "Abracadabra! Cool magic!" },
-    { word: "WAND", emoji: "🪄", sentence: "Wave the magic star wand!" },
-    { word: "POTION", emoji: "🧪", sentence: "Bubble, bubble, magic potion!" },
-    { word: "SPELL", emoji: "📖", sentence: "Read a funny magic spell." },
-    { word: "CASTLE", emoji: "🏰", sentence: "A big dark spooky castle." },
-    { word: "NIGHT", emoji: "🌃", sentence: "Stars shine in the night." },
-    { word: "DARK", emoji: "🌑", sentence: "Who is in the dark?" },
-    { word: "SHADOW", emoji: "👤", sentence: "Look at my funny shadow!" },
-    { word: "CROW", emoji: "🐦‍⬛", sentence: "The black crow can fly." },
-    { word: "RAT", emoji: "🐀", sentence: "Squeak! A little gray rat." },
-    { word: "SNAKE", emoji: "🐍", sentence: "Hiss! A slithering snake." },
-    { word: "TOAD", emoji: "🐸", sentence: "Hop goes the bumpy toad." },
-    { word: "WOLF", emoji: "🐺", sentence: "The wolf howls at the moon!" },
-    { word: "MOTH", emoji: "🦋", sentence: "A moth flies to the light." },
-    { word: "WORM", emoji: "🪱", sentence: "A wiggly little worm." },
-    { word: "BUG", emoji: "🐛", sentence: "Look at the cute green bug." },
-    { word: "TREAT", emoji: "🍭", sentence: "A sweet lollipop treat!" },
-    { word: "TRICK", emoji: "🃏", sentence: "Let's play a funny trick!" },
-    { word: "SWEET", emoji: "🍫", sentence: "Yummy sweet chocolate!" },
-    { word: "APPLE", emoji: "🍎", sentence: "A sweet caramel apple." },
-    { word: "CORN", emoji: "🌽", sentence: "Sweet yellow candy corn." },
-    { word: "CAPE", emoji: "🧥", sentence: "Put on a superhero cape!" },
-    { word: "CROWN", emoji: "👑", sentence: "Wear a shiny golden crown." },
-    { word: "PIRATE", emoji: "🏴‍☠️", sentence: "Ahoy! A brave little pirate!" },
-    { word: "CLOWN", emoji: "🤡", sentence: "A funny circus clown!" },
-    { word: "ALIEN", emoji: "👽", sentence: "Hello, little green alien!" },
-    { word: "FAIRY", emoji: "🧚", sentence: "A cute flying fairy!" },
-    { word: "KNIGHT", emoji: "🛡️", sentence: "A brave shining knight!" }
+    { word: "GHOST", emoji: "👻", sentence: "Boo! Look at the friendly ghost!" },
+    { word: "WITCH", emoji: "🧙‍♀️", sentence: "The witch wears a tall black hat." },
+    { word: "BAT", emoji: "🦇", sentence: "The little bat flies at night." },
+    { word: "CAT", emoji: "🐈‍⬛", sentence: "The black cat has bright green eyes." },
+    { word: "WEB", emoji: "🕸️", sentence: "The spider spins a big web." },
+    { word: "CANDY", emoji: "🍬", sentence: "My basket is full of sweet candy!" },
+    { word: "MASK", emoji: "🎭", sentence: "Put on a funny party mask." },
+    { word: "MOON", emoji: "🌕", sentence: "The full moon is bright tonight." },
+    { word: "OWL", emoji: "🦉", sentence: "The owl sits in the old tree." },
+    { word: "BONE", emoji: "🦴", sentence: "The puppy found a white bone." },
+    { word: "FROG", emoji: "🐸", sentence: "Ribbit! The green frog jumps high." },
+    { word: "SPIDER", emoji: "🕷️", sentence: "The little spider has eight legs." },
+    { word: "PUMPKIN", emoji: "🎃", sentence: "Let's carve a big orange pumpkin!" },
+    { word: "MONSTER", emoji: "👾", sentence: "The cute monster loves to dance!" },
+    { word: "ROBOT", emoji: "🤖", sentence: "Beep boop! I am a shiny robot." },
+    { word: "BROOM", emoji: "🧹", sentence: "The witch flies on her broom." },
+    { word: "ZOMBIE", emoji: "🧟", sentence: "The silly zombie walks very slowly." },
+    { word: "VAMPIRE", emoji: "🧛", sentence: "The vampire wears a red and black cape." },
+    { word: "MUMMY", emoji: "🤕", sentence: "The mummy is wrapped in white cloth." },
+    { word: "SKULL", emoji: "💀", sentence: "A spooky white pirate skull." },
+    { word: "SKELETON", emoji: "☠️", sentence: "Shake your funny skeleton bones!" },
+    { word: "WIZARD", emoji: "🧙‍♂️", sentence: "The wise wizard knows cool magic." },
+    { word: "MAGIC", emoji: "✨", sentence: "Watch me do a fun magic trick!" },
+    { word: "WAND", emoji: "🪄", sentence: "Wave your shiny magic wand!" },
+    { word: "POTION", emoji: "🧪", sentence: "Mix the colorful magic potion." },
+    { word: "SPELL", emoji: "📖", sentence: "Say the magic words of the spell." },
+    { word: "CASTLE", emoji: "🏰", sentence: "The king lives in a big castle." },
+    { word: "NIGHT", emoji: "🌃", sentence: "The stars come out at night." },
+    { word: "DARK", emoji: "🌑", sentence: "Turn on your flashlight in the dark." },
+    { word: "SHADOW", emoji: "👤", sentence: "My shadow follows me everywhere!" },
+    { word: "CROW", emoji: "🐦‍⬛", sentence: "Caw, caw! The black crow flies away." },
+    { word: "RAT", emoji: "🐀", sentence: "The little rat has a long tail." },
+    { word: "SNAKE", emoji: "🐍", sentence: "The snake slithers in the grass." },
+    { word: "TOAD", emoji: "🐸", sentence: "The brown toad hops on a rock." },
+    { word: "WOLF", emoji: "🐺", sentence: "Awoo! The wolf howls at the moon." },
+    { word: "MOTH", emoji: "🦋", sentence: "The moth dances around the lamp." },
+    { word: "WORM", emoji: "🪱", sentence: "The pink worm wiggles in the dirt." },
+    { word: "BUG", emoji: "🐛", sentence: "A tiny bug crawls on the leaf." },
+    { word: "TREAT", emoji: "🍭", sentence: "Knock on the door for a sweet treat!" },
+    { word: "TRICK", emoji: "🃏", sentence: "Trick or treat! Happy Halloween!" },
+    { word: "SWEET", emoji: "🍫", sentence: "Chocolate is my favorite sweet." },
+    { word: "APPLE", emoji: "🍎", sentence: "Bite into a sweet red apple." },
+    { word: "CORN", emoji: "🌽", sentence: "Yellow corn is sweet and tasty." },
+    { word: "CAPE", emoji: "🧥", sentence: "Superheroes wear a cool cape." },
+    { word: "CROWN", emoji: "👑", sentence: "The princess wears a golden crown." },
+    { word: "PIRATE", emoji: "🏴‍☠️", sentence: "The pirate sails on a big ship." },
+    { word: "CLOWN", emoji: "🤡", sentence: "The funny clown has a red nose." },
+    { word: "ALIEN", emoji: "👽", sentence: "The little alien comes from space." },
+    { word: "FAIRY", emoji: "🧚", sentence: "The little fairy has sparkly wings." },
+    { word: "KNIGHT", emoji: "🛡️", sentence: "The brave knight holds a shield." }
   ],
 
-  // 农历新年主题扩充至 50 个单词
   lunar: [
-    { word: "DRAGON", emoji: "🐉", sentence: "Look at the big dragon!" },
-    { word: "LION", emoji: "🦁", sentence: "The happy lion dances!" },
-    { word: "GOLD", emoji: "🪙", sentence: "Shiny lucky gold!" },
-    { word: "GIFT", emoji: "🧧", sentence: "A red lucky gift!" },
-    { word: "FISH", emoji: "🐟", sentence: "A lucky red fish." },
-    { word: "DRUM", emoji: "🥁", sentence: "Beat the big red drum!" },
-    { word: "RICE", emoji: "🍚", sentence: "Eat warm white rice." },
-    { word: "TEA", emoji: "🍵", sentence: "Drink a cup of tea." },
-    { word: "NOODLE", emoji: "🍜", sentence: "Yummy long noodles!" },
-    { word: "ORANGE", emoji: "🍊", sentence: "A sweet orange for you." },
-    { word: "APPLE", emoji: "🍎", sentence: "A sweet red apple." },
-    { word: "TIGER", emoji: "🐯", sentence: "Roar! A strong tiger!" },
-    { word: "RABBIT", emoji: "🐰", sentence: "Hop, little white rabbit!" },
-    { word: "HORSE", emoji: "🐴", sentence: "Run fast, little horse!" },
-    { word: "SNAKE", emoji: "🐍", sentence: "A long green snake." },
-    { word: "PANDA", emoji: "🐼", sentence: "I love the cute panda." },
-    { word: "LANTERN", emoji: "🏮", sentence: "A bright red lantern!" },
-    { word: "DUMPLING", emoji: "🥟", sentence: "I love yummy dumplings!" },
-    { word: "RED", emoji: "🧧", sentence: "Red is a lucky color!" },
-    { word: "LUCKY", emoji: "🍀", sentence: "Have a lucky new year!" },
-    { word: "HAPPY", emoji: "😄", sentence: "Happy Lunar New Year!" },
-    { word: "FAMILY", emoji: "👨‍👩‍👧", sentence: "I love my big family." },
-    { word: "HOME", emoji: "🏠", sentence: "Welcome to our warm home." },
-    { word: "DINNER", emoji: "🍲", sentence: "A big family dinner!" },
-    { word: "FEAST", emoji: "🍱", sentence: "Let's share a yummy feast!" },
-    { word: "SOUP", emoji: "🥣", sentence: "Warm and tasty soup." },
-    { word: "ROLL", emoji: "🌯", sentence: "Crispy golden spring roll!" },
-    { word: "CAKE", emoji: "🥮", sentence: "Sweet sticky rice cake!" },
-    { word: "CANDY", emoji: "🍬", sentence: "Share sweet New Year candy." },
-    { word: "PEACH", emoji: "🍑", sentence: "A sweet pink peach." },
-    { word: "PLUM", emoji: "🌺", sentence: "Pretty pink plum blossoms." },
-    { word: "FLOWER", emoji: "🌸", sentence: "Spring flowers are blooming!" },
-    { word: "BAMBOO", emoji: "🎍", sentence: "Green and tall bamboo." },
-    { word: "SPRING", emoji: "🌱", sentence: "Hello, warm green spring!" },
-    { word: "SPARK", emoji: "🎇", sentence: "Bright sparks in the sky!" },
-    { word: "FIREWORK", emoji: "🎆", sentence: "Boom! Pretty fireworks!" },
-    { word: "CRACKER", emoji: "🧨", sentence: "Pop, pop goes the cracker!" },
-    { word: "DANCE", emoji: "💃", sentence: "Let's do the lion dance!" },
-    { word: "GONG", emoji: "🪙", sentence: "Strike the loud golden gong!" },
-    { word: "FAN", emoji: "🪭", sentence: "Dance with a red fan." },
-    { word: "COIN", emoji: "🪙", sentence: "Shiny golden lucky coins." },
-    { word: "WISH", emoji: "🙏", sentence: "Best wishes for you!" },
-    { word: "SMILE", emoji: "😊", sentence: "Give me a big smile!" },
-    { word: "OX", emoji: "🐂", sentence: "A strong and hardworking ox." },
-    { word: "GOAT", emoji: "🐐", sentence: "A cute white mountain goat." },
-    { word: "MONKEY", emoji: "🐵", sentence: "A clever little monkey!" },
-    { word: "ROOSTER", emoji: "🐓", sentence: "The rooster sings in the morning." },
-    { word: "DOG", emoji: "🐶", sentence: "Woof! A loyal little dog." },
-    { word: "PIG", emoji: "🐷", sentence: "Oink! A happy pink pig." },
-    { word: "MOUSE", emoji: "🐭", sentence: "A smart little mouse!" }
+    { word: "DRAGON", emoji: "🐉", sentence: "The long dragon dances in the street!" },
+    { word: "LION", emoji: "🦁", sentence: "Watch the lively red lion dance!" },
+    { word: "GOLD", emoji: "🪙", sentence: "The gold coin shines brightly." },
+    { word: "GIFT", emoji: "🧧", sentence: "Grandma gave me a red packet gift!" },
+    { word: "FISH", emoji: "🐟", sentence: "The red fish swims in the pond." },
+    { word: "DRUM", emoji: "🥁", sentence: "Boom, boom! Beat the loud red drum!" },
+    { word: "RICE", emoji: "🍚", sentence: "We eat a bowl of warm white rice." },
+    { word: "TEA", emoji: "🍵", sentence: "Pour a cup of warm green tea." },
+    { word: "NOODLE", emoji: "🍜", sentence: "Slurp the yummy long noodles!" },
+    { word: "ORANGE", emoji: "🍊", sentence: "Peel a sweet and juicy orange." },
+    { word: "APPLE", emoji: "🍎", sentence: "Red apples mean peace and safety." },
+    { word: "TIGER", emoji: "🐯", sentence: "The strong tiger has black stripes." },
+    { word: "RABBIT", emoji: "🐰", sentence: "The white rabbit has long ears." },
+    { word: "HORSE", emoji: "🐴", sentence: "The brown horse runs very fast!" },
+    { word: "SNAKE", emoji: "🐍", sentence: "The little snake slides quietly." },
+    { word: "PANDA", emoji: "🐼", sentence: "The cute panda eats green bamboo." },
+    { word: "LANTERN", emoji: "🏮", sentence: "Red lanterns glow in the night." },
+    { word: "DUMPLING", emoji: "🥟", sentence: "We make yummy dumplings together!" },
+    { word: "RED", emoji: "🧧", sentence: "Everyone wears lucky red clothes." },
+    { word: "LUCKY", emoji: "🍀", sentence: "Wishing you a very lucky year!" },
+    { word: "HAPPY", emoji: "😄", sentence: "Happy New Year to everyone!" },
+    { word: "FAMILY", emoji: "👨‍👩‍👧", sentence: "Our whole family is together." },
+    { word: "HOME", emoji: "🏠", sentence: "We clean our home for the New Year." },
+    { word: "DINNER", emoji: "🍲", sentence: "We share a big New Year dinner." },
+    { word: "FEAST", emoji: "🍱", sentence: "So much yummy food at the feast!" },
+    { word: "SOUP", emoji: "🥣", sentence: "Drink a bowl of warm sweet soup." },
+    { word: "ROLL", emoji: "🌯", sentence: "Bite into a crispy spring roll." },
+    { word: "CAKE", emoji: "🥮", sentence: "Sweet rice cake is so delicious." },
+    { word: "CANDY", emoji: "🍬", sentence: "Pick a sweet from the candy box." },
+    { word: "PEACH", emoji: "🍑", sentence: "The pink peach is soft and sweet." },
+    { word: "PLUM", emoji: "🌺", sentence: "Plum blossoms bloom in the snow." },
+    { word: "FLOWER", emoji: "🌸", sentence: "Pretty flowers make the room smell nice." },
+    { word: "BAMBOO", emoji: "🎍", sentence: "Green bamboo grows tall and straight." },
+    { word: "SPRING", emoji: "🌱", sentence: "Warm spring is finally here!" },
+    { word: "SPARK", emoji: "🎇", sentence: "The sparkler shines in my hand." },
+    { word: "FIREWORK", emoji: "🎆", sentence: "Colorful fireworks light up the sky!" },
+    { word: "CRACKER", emoji: "🧨", sentence: "Firecrackers go pop, pop, pop!" },
+    { word: "DANCE", emoji: "💃", sentence: "Let's clap and dance to the music!" },
+    { word: "GONG", emoji: "🪙", sentence: "Crash! Hit the shiny brass gong." },
+    { word: "FAN", emoji: "🪭", sentence: "Wave the pretty silk folding fan." },
+    { word: "COIN", emoji: "🪙", sentence: "Put a lucky coin in your pocket." },
+    { word: "WISH", emoji: "🙏", sentence: "I wish you good health and joy!" },
+    { word: "SMILE", emoji: "😊", sentence: "Everyone has a big happy smile." },
+    { word: "OX", emoji: "🐂", sentence: "The strong ox has two big horns." },
+    { word: "GOAT", emoji: "🐐", sentence: "The gentle goat eats green grass." },
+    { word: "MONKEY", emoji: "🐵", sentence: "The funny monkey climbs up the tree." },
+    { word: "ROOSTER", emoji: "🐓", sentence: "Cock-a-doodle-doo! The rooster wakes us up." },
+    { word: "DOG", emoji: "🐶", sentence: "The happy dog wags its tail." },
+    { word: "PIG", emoji: "🐷", sentence: "The chubby pink pig loves to sleep." },
+    { word: "MOUSE", emoji: "🐭", sentence: "Squeak! The little mouse loves cheese." }
   ]
 };
 
-// 日常主题扩充至 310+ 个高频具象单词
-const RAW_DAILY_DATA = [
+// 日常主题 310+ 个单词：每一句都贴合单词真实含义手工定制！
+const RAW_DAILY_SENTENCES = [
   // A
-  "ANT|🐜|A", "APPLE|🍎|F", "APE|🦍|A", "ARM|💪|B", "AXE|🪓|T", "ART|🎨|T", "ARK|🚢|V", "ARCH|🌉|N", "ACORN|🌰|F", "ANGEL|👼|N", "ALLIGATOR|🐊|A", "AVOCADO|🥑|F", "ANCHOR|⚓|T", "AMBULANCE|🚑|V", "APRON|🎽|T",
+  "ANT|🐜|The tiny ant works very hard.",
+  "APPLE|🍎|I eat a sweet red apple.",
+  "APE|🦍|The big ape swings in the tree.",
+  "ARM|💪|Lift your strong arms up high!",
+  "AXE|🪓|The woodcutter chops wood with an axe.",
+  "ART|🎨|I love to paint pretty art.",
+  "ARK|🚢|The big wooden ark floats on water.",
+  "ARCH|🌉|Walk under the tall stone arch.",
+  "ACORN|🌰|The little squirrel loves acorns.",
+  "ANGEL|👼|The sweet angel has white wings.",
+  "ALLIGATOR|🐊|The green alligator has big teeth.",
+  "AVOCADO|🥑|Green avocado is soft and healthy.",
+  "ANCHOR|⚓|Drop the heavy anchor into the sea.",
+  "AMBULANCE|🚑|Wee-oo! The ambulance goes fast.",
+  "APRON|🎽|Wear an apron when you cook.",
   // B
-  "BAT|🦇|A", "BEAR|🐻|A", "BEE|🐝|A", "BIRD|🐦|A", "BUG|🐛|A", "BUS|🚌|V", "BOAT|⛵|V", "BIKE|🚲|V", "BALL|⚽|T", "BED|🛏️|T", "BELL|🔔|T", "BOOK|📖|T", "BOX|📦|T", "BAG|👜|T", "BONE|🦴|F", "BREAD|🍞|F", "BANANA|🍌|F", "BABY|👶|N", "BALLOON|🎈|T", "BASKET|🧺|T", "BRUSH|🪥|T", "BUTTER|🧈|F", "BROCCOLI|🥦|F", "BACON|🥓|F", "BEACH|🏖️|N", "BRIDGE|🌉|N", "BOOT|🥾|T", "BOWL|🥣|T", "BUCKET|🪣|T", "BUTTERFLY|🦋|A",
+  "BAT|🦇|The bat flies in the dark night.",
+  "BEAR|🐻|The big brown bear loves honey.",
+  "BEE|🐝|Buzz! The bee makes sweet honey.",
+  "BIRD|🐦|The little bird sings in the tree.",
+  "BUG|🐛|A little green bug is on the leaf.",
+  "BUS|🚌|We ride the yellow school bus.",
+  "BOAT|⛵|The little boat sails on the lake.",
+  "BIKE|🚲|I can ride my red bike!",
+  "BALL|⚽|Kick the ball across the grass!",
+  "BED|🛏️|It is time to sleep in my cozy bed.",
+  "BELL|🔔|Ring the bell! Ding-dong!",
+  "BOOK|📖|Let's read a fun picture book.",
+  "BOX|📦|What is inside the big brown box?",
+  "BAG|👜|Put your toys inside the bag.",
+  "BONE|🦴|The happy dog chews a bone.",
+  "BREAD|🍞|Fresh warm bread smells so good.",
+  "BANANA|🍌|Peel a sweet yellow banana.",
+  "BABY|👶|The cute little baby is smiling.",
+  "BALLOON|🎈|The red balloon floats in the air.",
+  "BASKET|🧺|Put the apples in the basket.",
+  "BRUSH|🪥|Brush your teeth every morning!",
+  "BUTTER|🧈|Spread yellow butter on the toast.",
+  "BROCCOLI|🥦|Green broccoli makes me strong!",
+  "BACON|🥓|Crispy bacon for breakfast!",
+  "BEACH|🏖️|We play in the sand at the beach.",
+  "BRIDGE|🌉|Cars drive across the long bridge.",
+  "BOOT|🥾|Put on your rain boots!",
+  "BOWL|🥣|A bowl of warm cereal.",
+  "BUCKET|🪣|Fill the bucket with water and sand.",
+  "BUTTERFLY|🦋|The pretty butterfly loves flowers.",
   // C
-  "CAT|🐱|A", "COW|🐮|A", "CRAB|🦀|A", "CAR|🚗|V", "CAB|🚕|V", "CAKE|🎂|F", "CORN|🌽|F", "CANDY|🍬|F", "CUP|🥤|T", "CAP|🧢|T", "COAT|🧥|T", "COMB|🪮|T", "COIN|🪙|T", "CLOCK|⏰|T", "CLOUD|☁️|N", "CAMEL|🐪|A", "CHICK|🐥|A", "CLAM|🦪|A", "CARROT|🥕|F", "CHEESE|🧀|F", "CHERRY|🍒|F", "COOKIE|🍪|F", "COCONUT|🥥|F", "CAMERA|📷|T", "CANDLE|🕯️|T", "CHAIR|🪑|T", "CROWN|👑|T", "CASTLE|🏰|N", "CACTUS|🌵|N",
+  "CAT|🐱|Meow! The soft cat likes to nap.",
+  "COW|🐮|Moo! The cow gives us fresh milk.",
+  "CRAB|🦀|The red crab walks sideways on the sand.",
+  "CAR|🚗|Beep beep! Drive the red car.",
+  "CAB|🚕|Wave to the yellow taxi cab.",
+  "CAKE|🎂|Happy birthday! Eat some sweet cake.",
+  "CORN|🌽|Munch on sweet yellow corn.",
+  "CANDY|🍬|One piece of sweet fruit candy.",
+  "CUP|🥤|Drink water from your cup.",
+  "CAP|🧢|Wear a blue cap in the sun.",
+  "COAT|🧥|Zip up your warm winter coat.",
+  "COMB|🪮|Comb your hair neatly.",
+  "COIN|🪙|Drop a shiny coin into the piggy bank.",
+  "CLOCK|⏰|Tick-tock goes the round clock.",
+  "CLOUD|☁️|White clouds float in the blue sky.",
+  "CAMEL|🐪|The camel walks across the desert.",
+  "CHICK|🐥|Cheep, cheep! A fluffy yellow chick.",
+  "CLAM|🦪|The clam hides inside its shell.",
+  "CARROT|🥕|Rabbits love to crunch orange carrots.",
+  "CHEESE|🧀|The little mouse loves yellow cheese.",
+  "CHERRY|🍒|Red cherries are sweet and juicy.",
+  "COOKIE|🍪|I love chocolate chip cookies!",
+  "COCONUT|🥥|Coconuts grow on tall palm trees.",
+  "CAMERA|📷|Smile for the camera! Cheese!",
+  "CANDLE|🕯️|Blow out the birthday candle!",
+  "CHAIR|🪑|Sit down on the wooden chair.",
+  "CROWN|👑|The king wears a shiny gold crown.",
+  "CASTLE|🏰|A tall fairy tale castle!",
+  "CACTUS|🌵|Careful! The green cactus is prickly.",
   // D
-  "DOG|🐶|A", "DUCK|🦆|A", "DEER|🦌|A", "DOVE|🕊️|A", "DOLL|🎎|T", "DRUM|🥁|T", "DOOR|🚪|T", "DESK|🪑|T", "DRESS|👗|T", "DICE|🎲|T", "DONUT|🍩|F", "DOLPHIN|🐬|A", "DINO|🦕|A", "DRAGON|🐉|A", "DIAMOND|💎|T", "DOCTOR|🩺|N", "DROP|💧|N",
+  "DOG|🐶|Woof! The dog is my best friend.",
+  "DUCK|🦆|Quack! The yellow duck swims in the pond.",
+  "DEER|🦌|The gentle deer runs in the woods.",
+  "DOVE|🕊️|The white dove flies high in the sky.",
+  "DOLL|🎎|Hug your cute little doll.",
+  "DRUM|🥁|Boom, boom! Play the happy drum.",
+  "DOOR|🚪|Knock, knock! Open the door.",
+  "DESK|🪑|Draw a picture at your desk.",
+  "DRESS|👗|She wears a pretty pink dress.",
+  "DICE|🎲|Roll the dice to play the game!",
+  "DONUT|🍩|A sweet donut with pink sprinkles.",
+  "DOLPHIN|🐬|The smart dolphin jumps out of the sea!",
+  "DINO|🦕|The big dino has a long neck.",
+  "DRAGON|🐉|The magic dragon can fly high!",
+  "DIAMOND|💎|The blue diamond sparkles in the light.",
+  "DOCTOR|🩺|The kind doctor helps us feel better.",
+  "DROP|💧|A little drop of clear water.",
   // E
-  "EGG|🥚|F", "EAR|👂|B", "EYE|👁️|B", "ELF|🧝|N", "ELK|🫎|A", "EAGLE|🦅|A", "ELEPHANT|🐘|A", "EARTH|🌍|N", "ENGINE|🚒|V",
+  "EGG|🥚|I eat a warm egg for breakfast.",
+  "EAR|👂|We listen to music with our ears.",
+  "EYE|👁️|Blink your two bright eyes!",
+  "ELF|🧝|The little elf has pointy ears.",
+  "ELK|🫎|The big elk has giant antlers.",
+  "EAGLE|🦅|The eagle flies high above the mountains.",
+  "ELEPHANT|🐘|The big elephant has a long trunk.",
+  "EARTH|🌍|We all live on planet Earth.",
+  "ENGINE|🚒|The red fire engine has a loud siren!",
   // F
-  "FOX|🦊|A", "FROG|🐸|A", "FISH|🐟|A", "FLY|🪰|A", "FAN|🪭|T", "FLAG|🚩|T", "FORK|🍴|T", "FIRE|🔥|N", "FOOT|🦶|B", "FACE|😊|B", "FRIES|🍟|F", "FLAMINGO|🦩|A", "FEATHER|🪶|N", "FLOWER|🌸|N", "FOREST|🌲|N", "FINGER|☝️|B", "FARM|🚜|N", "FLUTE|🪈|T",
+  "FOX|🦊|The clever orange fox has a bushy tail.",
+  "FROG|🐸|The green frog hops on a lily pad.",
+  "FISH|🐟|The little fish swims in the water.",
+  "FLY|🪰|A tiny fly buzzes in the air.",
+  "FAN|🪭|The fan keeps us cool in summer.",
+  "FLAG|🚩|The red flag waves in the wind.",
+  "FORK|🍴|Use a fork to eat your noodles.",
+  "FIRE|🔥|Don't touch! Fire is very hot.",
+  "FOOT|🦶|Stomp your feet on the floor!",
+  "FACE|😊|Wash your happy little face.",
+  "FRIES|🍟|Crispy golden french fries!",
+  "FLAMINGO|🦩|The pink flamingo stands on one leg.",
+  "FEATHER|🪶|The bird dropped a soft feather.",
+  "FLOWER|🌸|Smell the pretty pink flower.",
+  "FOREST|🌲|Tall green trees grow in the forest.",
+  "FINGER|☝️|Count to ten on your fingers!",
+  "FARM|🚜|Cows and sheep live on the farm.",
+  "FLUTE|🪈|Play a sweet song on the flute.",
   // G
-  "GOAT|🐐|A", "GOOSE|🪿|A", "GRAPE|🍇|F", "GIFT|🎁|T", "GAME|🎮|T", "GLOVE|🧤|T", "GLASS|🥛|F", "GRASS|🌿|N", "GIRAFFE|🦒|A", "GORILLA|🦍|A", "GARLIC|🧄|F", "GUITAR|🎸|T", "GLOBE|🌐|T", "GARDEN|🌻|N", "GOLD|🪙|T",
+  "GOAT|🐐|The mountain goat climbs up the rocks.",
+  "GOOSE|🪿|Honk! The white goose has a long neck.",
+  "GRAPE|🍇|Purple grapes are sweet and juicy.",
+  "GIFT|🎁|Thank you for the wonderful gift!",
+  "GAME|🎮|Let's play a fun game together!",
+  "GLOVE|🧤|Put on your gloves when it is cold.",
+  "GLASS|🥛|Drink fresh milk from a glass.",
+  "GRASS|🌿|We run and play on the green grass.",
+  "GIRAFFE|🦒|The tall giraffe eats leaves from trees.",
+  "GORILLA|🦍|The strong gorilla beats its chest.",
+  "GARLIC|🧄|Mom puts garlic in the yummy soup.",
+  "GUITAR|🎸|Strum a happy song on the guitar!",
+  "GLOBE|🌐|Find our country on the round globe.",
+  "GARDEN|🌻|Sunflowers grow in our garden.",
+  "GOLD|🪙|The treasure chest is full of gold!",
   // H
-  "HEN|🐔|A", "HORSE|🐴|A", "HIPPO|🦛|A", "HAT|👒|T", "HARP|🪉|T", "HORN|📯|T", "HOUSE|🏠|N", "HAND|✋|B", "HEART|❤️|B", "HONEY|🍯|F", "HAM|🍖|F", "HAMSTER|🐹|A", "HEDGEHOG|🦔|A", "HAWK|🦅|A", "HOTDOG|🌭|F", "HAMMER|🔨|T", "HELMET|⛑️|T", "HILL|⛰️|N",
+  "HEN|🐔|Cluck, cluck! The hen laid an egg.",
+  "HORSE|🐴|Gallop fast, big brown horse!",
+  "HIPPO|🦛|The big hippo loves to swim in the river.",
+  "HAT|👒|Wear a sun hat when you go outside.",
+  "HARP|🪉|The golden harp makes gentle music.",
+  "HORN|📯|Toot, toot! Blow the shiny horn.",
+  "HOUSE|🏠|Welcome to our warm little house!",
+  "HAND|✋|Clap your hands together!",
+  "HEART|❤️|My heart is full of love.",
+  "HONEY|🍯|Bees make sweet golden honey.",
+  "HAM|🍖|Put a slice of ham on the sandwich.",
+  "HAMSTER|🐹|The cute hamster has chubby cheeks.",
+  "HEDGEHOG|🦔|The little hedgehog rolls into a ball.",
+  "HAWK|🦅|The hawk has very sharp eyes.",
+  "HOTDOG|🌭|A tasty hotdog in a soft bun.",
+  "HAMMER|🔨|Tap the nail with a hammer.",
+  "HELMET|⛑️|Always wear a helmet on your bike!",
+  "HILL|⛰️|Let's climb up the green hill.",
   // I
-  "ICE|🧊|F", "INK|🖋️|T", "IRON|🥌|T", "ISLAND|🏝️|N", "IGUANA|🦎|A", "INSECT|🐞|A", "IGLOO|🛖|N",
+  "ICE|🧊|Ice cubes are very cold!",
+  "INK|🖋️|The pen is filled with blue ink.",
+  "IRON|🥌|Mom uses a warm iron on the shirt.",
+  "ISLAND|🏝️|The little island has palm trees.",
+  "IGUANA|🦎|The green iguana sits in the sun.",
+  "INSECT|🐞|A ladybug is a cute little insect.",
+  "IGLOO|🛖|The snow igloo is white and round.",
   // J
-  "JAM|🍓|F", "JUICE|🧃|F", "JELLY|🍮|F", "JET|✈️|V", "JEEP|🚙|V", "JAR|🫙|T", "JELLYFISH|🪼|A", "JACKET|🧥|T", "JEWEL|💍|T", "JUNGLE|🌴|N",
+  "JAM|🍓|Spread sweet strawberry jam on bread.",
+  "JUICE|🧃|Drink a box of sweet apple juice.",
+  "JELLY|🍮|Wobbly fruit jelly is fun to eat!",
+  "JET|✈️|Zoom! The fast jet flies in the sky.",
+  "JEEP|🚙|The green jeep drives over bumpy roads.",
+  "JAR|🫙|Cookies are inside the glass jar.",
+  "JELLYFISH|🪼|The jellyfish floats in the deep ocean.",
+  "JACKET|🧥|Put on your jacket before going out.",
+  "JEWEL|💍|The crown has a bright red jewel.",
+  "JUNGLE|🌴|Monkeys and parrots live in the jungle.",
   // K
-  "KEY|🔑|T", "KITE|🪁|T", "KING|🤴|N", "KIDS|🧒|N", "KIWI|🥝|F", "KOALA|🐨|A", "KANGAROO|🦘|A", "KITTEN|🐱|A", "KETTLE|🫖|T", "KNIFE|🍴|T", "KNEE|🦵|B",
+  "KEY|🔑|Use the key to unlock the door.",
+  "KITE|🪁|Fly your colorful kite in the wind!",
+  "KING|🤴|The kind king sits on his throne.",
+  "KIDS|🧒|The happy kids play in the park.",
+  "KIWI|🥝|Green kiwi fruit is sweet and tangy.",
+  "KOALA|🐨|The sleepy koala hugs the tree.",
+  "KANGAROO|🦘|Boing! The kangaroo jumps so high!",
+  "KITTEN|🐱|The tiny kitten plays with yarn.",
+  "KETTLE|🫖|The water boils in the tea kettle.",
+  "KNIFE|🍴|Be careful with the kitchen knife.",
+  "KNEE|🦵|Bend your knees and jump up!",
   // L
-  "LION|🦁|A", "LAMB|🐑|A", "LARK|🐤|A", "LAMP|💡|T", "LOCK|🔒|T", "LOG|🪵|N", "LEAF|🍃|N", "LEG|🦵|B", "LIPS|👄|B", "LEMON|🍋|F", "LIME|🍈|F", "LEOPARD|🐆|A", "LIZARD|🦎|A", "LOBSTER|🦞|A", "LADYBUG|🐞|A", "LOLLIPOP|🍭|F", "LADDER|🪜|T", "LAKE|🏞️|N",
+  "LION|🦁|Roar! The lion is king of the jungle.",
+  "LAMB|🐑|Baa! The little white lamb is soft.",
+  "LARK|🐤|The lark sings a morning song.",
+  "LAMP|💡|Turn on the lamp when it gets dark.",
+  "LOCK|🔒|Close the lock to keep it safe.",
+  "LOG|🪵|A green frog sits on a wooden log.",
+  "LEAF|🍃|A green leaf falls from the tree.",
+  "LEG|🦵|Hop on one leg!",
+  "LIPS|👄|Give Mommy a sweet kiss with your lips.",
+  "LEMON|🍋|Yellow lemons are very sour!",
+  "LIME|🍈|A green lime is fresh and sour.",
+  "LEOPARD|🐆|The fast leopard has black spots.",
+  "LIZARD|🦎|The little lizard climbs on the wall.",
+  "LOBSTER|🦞|The red lobster has two big claws.",
+  "LADYBUG|🐞|The red ladybug has black spots.",
+  "LOLLIPOP|🍭|Lick a sweet rainbow lollipop.",
+  "LADDER|🪜|Climb up the tall wooden ladder.",
+  "LAKE|🏞️|Ducks swim on the quiet blue lake.",
   // M
-  "MOUSE|🐭|A", "MOTH|🦋|A", "MULE|🫏|A", "MILK|🥛|F", "MEAT|🥩|F", "MELON|🍉|F", "MANGO|🥭|F", "MUG|☕|T", "MAP|🗺️|T", "MOP|🧹|T", "MASK|🎭|T", "MOON|🌙|N", "MONKEY|🐵|A", "MOOSE|🫎|A", "MUFFIN|🧁|F", "MUSHROOM|🍄|F", "MIRROR|🪞|T", "MAGNET|🧲|T", "MOUNTAIN|🏔️|N", "MOUTH|👄|B",
+  "MOUSE|🐭|Squeak! The little mouse runs fast.",
+  "MOTH|🦋|The moth flies out at night.",
+  "MULE|🫏|The strong mule carries heavy bags.",
+  "MILK|🥛|Drink warm milk to grow tall!",
+  "MEAT|🥩|Cook the meat in a hot pan.",
+  "MELON|🍉|Cold watermelon is great in summer!",
+  "MANGO|🥭|Yellow mango is so sweet and juicy.",
+  "MUG|☕|Hold the warm mug with two hands.",
+  "MAP|🗺️|Look at the map to find the way.",
+  "MOP|🧹|Help Dad clean the floor with a mop.",
+  "MASK|🎭|Who is hiding behind the mask?",
+  "MOON|🌙|Goodnight, bright yellow moon!",
+  "MONKEY|🐵|The funny monkey loves bananas!",
+  "MOOSE|🫎|The big moose walks in the forest.",
+  "MUFFIN|🧁|A warm blueberry muffin for snack.",
+  "MUSHROOM|🍄|Little mushrooms grow after the rain.",
+  "MIRROR|🪞|Look at your smile in the mirror!",
+  "MAGNET|🧲|The magnet sticks to the fridge.",
+  "MOUNTAIN|🏔️|Snow covers the tall mountain top.",
+  "MOUTH|👄|Open your mouth and say Ahh!",
   // N
-  "NUT|🥜|F", "NOODLE|🍜|F", "NET|🥅|T", "NAIL|🔩|T", "NOTE|🎵|T", "NEST|🪺|N", "NOSE|👃|B", "NECK|🧣|B", "NEEDLE|🪡|T", "NIGHT|🌃|N",
+  "NUT|🥜|Crunch! Squirrels love to eat nuts.",
+  "NOODLE|🍜|A warm bowl of yummy noodles.",
+  "NET|🥅|Kick the soccer ball into the net!",
+  "NAIL|🔩|Hammer the iron nail into the wood.",
+  "NOTE|🎵|Sing a happy musical note.",
+  "NEST|🪺|Three baby birds are in the nest.",
+  "NOSE|👃|Wiggle your cute little nose!",
+  "NECK|🧣|A giraffe has a very long neck.",
+  "NEEDLE|🪡|Grandma sews with a tiny needle.",
+  "NIGHT|🌃|Twinkle, twinkle, stars at night.",
   // O
-  "OWL|🦉|A", "OX|🐂|A", "OTTER|🦦|A", "OLIVE|🫒|F", "ONION|🧅|F", "OCEAN|🌊|N", "OCTOPUS|🐙|A", "OSTRICH|鸵|A", "ORANGE|🍊|F", "OVEN|🥘|T",
+  "OWL|🦉|Hoot, hoot! The owl is awake at night.",
+  "OX|🐂|The strong ox pulls the cart.",
+  "OTTER|🦦|The cute otter floats on its back.",
+  "OLIVE|🫒|Green olives grow on sunny trees.",
+  "ONION|🧅|Chopping onions can make you cry!",
+  "OCEAN|🌊|Whales swim in the deep blue ocean.",
+  "OCTOPUS|🐙|The octopus has eight long arms!",
+  "OSTRICH|🐦|The big ostrich can run very fast.",
+  "ORANGE|🍊|Oranges are full of sweet juice.",
+  "OVEN|🥘|Bake a yummy cake in the oven.",
   // P
-  "PIG|🐷|A", "PANDA|🐼|A", "PUPPY|🐶|A", "PONY|🐴|A", "PEAR|🍐|F", "PEACH|🍑|F", "PIE|🥧|F", "PIZZA|🍕|F", "PEA|🫛|F", "PEN|🖊️|T", "PAN|🍳|T", "POT|🍲|T", "PIANO|🎹|T", "PLANE|🛩️|V", "PARROT|🦜|A", "PEACOCK|🦚|A", "PENGUIN|🐧|A", "PANCAKE|🥞|F", "PEANUT|🥜|F", "PEPPER|🫑|F", "POPCORN|🍿|F", "POTATO|🥔|F", "PUMPKIN|🎃|F", "PENCIL|✏️|T", "PILLOW|🛌|T", "PHONE|📱|T", "PARK|🏞️|N",
+  "PIG|🐷|Oink, oink! A cute pink pig.",
+  "PANDA|🐼|The black and white panda is so cute!",
+  "PUPPY|🐶|The little puppy loves to play fetch.",
+  "PONY|🐴|Ride on the gentle little pony.",
+  "PEAR|🍐|A sweet andrunchy green pear.",
+  "PEACH|🍑|Bite into a soft pink peach.",
+  "PIE|🥧|Warm apple pie smells amazing!",
+  "PIZZA|🍕|Let's share a cheesy slice of pizza!",
+  "PEA|🫛|Little green peas inside a pod.",
+  "PEN|🖊️|Write your name with a blue pen.",
+  "PAN|🍳|Fry an egg in the cooking pan.",
+  "POT|🍲|Warm soup is cooking in the pot.",
+  "PIANO|🎹|Play a pretty song on the piano.",
+  "PLANE|🛩️|The airplane flies high in the clouds.",
+  "PARROT|🦜|The colorful parrot can talk!",
+  "PEACOCK|🦚|The peacock opens its beautiful tail.",
+  "PENGUIN|🐧|The penguin loves cold ice and snow.",
+  "PANCAKE|🥞|Put sweet honey on warm pancakes!",
+  "PEANUT|🥜|Elephants love to eat peanuts.",
+  "PEPPER|🫑|Crunchy green and red bell peppers.",
+  "POPCORN|🍿|Pop, pop! Eat warmrunchy popcorn.",
+  "POTATO|🥔|Potatoes grow under the ground.",
+  "PUMPKIN|🎃|A big round orange pumpkin.",
+  "PENCIL|✏️|Draw a star with your yellow pencil.",
+  "PILLOW|🛌|Rest your head on the soft pillow.",
+  "PHONE|📱|Ring, ring! Answer the phone.",
+  "PARK|🏞️|Let's go play on the slide at the park!",
   // Q
-  "QUEEN|👸|N", "QUILT|🛌|T", "QUAIL|🐦|A",
+  "QUEEN|👸|The queen wears a beautiful crown.",
+  "QUILT|🛌|The warm quilt keeps me cozy in bed.",
+  "QUAIL|🐦|The little quail has a feather on its head.",
   // R
-  "RAT|🐀|A", "RAM|🐏|A", "RABBIT|🐰|A", "RICE|🍚|F", "RING|💍|T", "ROPE|🪢|T", "ROBOT|🤖|T", "RADIO|📻|T", "ROSE|🌹|N", "RAIN|🌧️|N", "RACCOON|🦝|A", "RHINO|🦏|A", "ROOSTER|🐓|A", "RADISH|🥕|F", "RAINBOW|🌈|N", "RIVER|🏞️|N", "ROCK|🪨|N", "ROCKET|🚀|V",
+  "RAT|🐀|The little rat runs into its hole.",
+  "RAM|🐏|The mountain ram has curly horns.",
+  "RABBIT|🐰|Hop, hop! The rabbit has long ears.",
+  "RICE|🍚|Eat every grain of white rice!",
+  "RING|💍|A shiny ring on Mommy's finger.",
+  "ROPE|🪢|Let's play jump rope together!",
+  "ROBOT|🤖|The toy robot can walk and talk.",
+  "RADIO|📻|Listen to happy music on the radio.",
+  "ROSE|🌹|A red rose smells so sweet.",
+  "RAIN|🌧️|Pitter-patter! Listen to the rain.",
+  "RACCOON|🦝|The raccoon has a cute ringed tail.",
+  "RHINO|🦏|The big gray rhino has a horn on its nose.",
+  "ROOSTER|🐓|The rooster crows when the sun comes up.",
+  "RADISH|🥕|Pull the crunchy radish from the soil.",
+  "RAINBOW|🌈|Look at the seven colors of the rainbow!",
+  "RIVER|🏞️|The clear river flows to the sea.",
+  "ROCK|🪨|A smooth gray rock by the river.",
+  "ROCKET|🚀|Three, two, one! The rocket blasts off!",
   // S
-  "SHEEP|🐑|A", "SNAKE|🐍|A", "SHARK|🦈|A", "SNAIL|🐌|A", "SWAN|🦢|A", "SEAL|🦭|A", "SOUP|🥣|F", "SALAD|🥗|F", "SHIP|🚢|V", "SLED|🛷|V", "SOCK|🧦|T", "SHOE|👟|T", "SOAP|🧼|T", "SPOON|🥄|T", "STAR|⭐|N", "SUN|☀️|N", "SHRIMP|🦐|A", "SPIDER|🕷️|A", "SQUIRREL|🐿️|A", "SANDWICH|🥪|F", "STEAK|🥩|F", "SCARF|🧣|T", "SHIRT|👕|T", "SHORTS|🩳|T", "SKIRT|👗|T", "SCISSORS|✂️|T", "SNOW|❄️|N", "STONE|🪨|N", "SMILE|😊|B",
+  "SHEEP|🐑|Baa! The white sheep has soft wool.",
+  "SNAKE|🐍|Hiss! The green snake has no legs.",
+  "SHARK|🦈|The big shark swims fast in the sea.",
+  "SNAIL|🐌|The little snail carries its house.",
+  "SWAN|🦢|The white swan glides on the lake.",
+  "SEAL|🦭|Arf, arf! The seal claps its flippers.",
+  "SOUP|🥣|Blow on the hot soup before you drink.",
+  "SALAD|🥗|Fresh green salad is good for you!",
+  "SHIP|🚢|The giant ship sails across the ocean.",
+  "SLED|🛷|Zoom down the snow on a sled!",
+  "SOCK|🧦|Put on your warm cotton socks.",
+  "SHOE|👟|Tie your shoes before you run.",
+  "SOAP|🧼|Wash your hands with bubbles and soap!",
+  "SPOON|🥄|Eat your soup with a round spoon.",
+  "STAR|⭐|Twinkle, twinkle, little star!",
+  "SUN|☀️|The warm yellow sun shines in the sky.",
+  "SHRIMP|🦐|Little pink shrimp swim in the sea.",
+  "SPIDER|🕷️|The spider climbs up the water spout.",
+  "SQUIRREL|🐿️|The squirrel hides nuts for winter.",
+  "SANDWICH|🥪|A yummy lunch sandwich with cheese.",
+  "STEAK|🥩|Dad cooks a tasty steak for dinner.",
+  "SCARF|🧣|A warm knit scarf for cold days.",
+  "SHIRT|👕|Put on a clean blue shirt.",
+  "SHORTS|🩳|Wear cool shorts on a sunny day.",
+  "SKIRT|👗|She spins around in her pretty skirt.",
+  "SCISSORS|✂️|Cut the paper carefully with scissors.",
+  "SNOW|❄️|Let's make a snowball in the snow!",
+  "STONE|🪨|Skip a small flat stone on the water.",
+  "SMILE|😊|Your happy smile makes me happy too!",
   // T
-  "TIGER|🐯|A", "TOAD|🐸|A", "TURTLE|🐢|A", "TRAIN|🚂|V", "TRUCK|🚚|V", "TAXI|🚖|V", "TENT|⛺|T", "TOY|🧸|T", "TACO|🌮|F", "TOAST|🍞|F", "TREE|🌳|N", "TOOTH|🦷|B", "TURKEY|🦃|A", "TOMATO|🍅|F", "TEA|🍵|F", "TABLE|🪑|T", "TOWEL|🛁|T", "TRACTOR|🚜|V", "TONGUE|👅|B",
+  "TIGER|🐯|Roar! The orange tiger can run fast.",
+  "TOAD|🐸|The bumpy toad sits by the pond.",
+  "TURTLE|🐢|The little turtle walks very slowly.",
+  "TRAIN|🚂|Choo-choo! Here comes the long train!",
+  "TRUCK|🚚|The big truck carries heavy boxes.",
+  "TAXI|🚖|Take a yellow taxi to the city.",
+  "TENT|⛺|We sleep in a tent when we go camping.",
+  "TOY|🧸|Share your favorite toy with friends.",
+  "TACO|🌮|A crunchy taco with meat and cheese!",
+  "TOAST|🍞|Warm crispy toast with jam.",
+  "TREE|🌳|Birds build nests in the tall tree.",
+  "TOOTH|🦷|Brush every tooth until it shines!",
+  "TURKEY|🦃|Gobble, gobble goes the big turkey!",
+  "TOMATO|🍅|A round and juicy red tomato.",
+  "TEA|🍵|Grandpa likes to drink warm tea.",
+  "TABLE|🪑|Set the plates on the dining table.",
+  "TOWEL|🛁|Dry your hands with a soft towel.",
+  "TRACTOR|🚜|The farmer drives a big green tractor.",
+  "TONGUE|👅|We taste yummy food with our tongue!",
   // U
-  "URN|🏺|T", "UFO|🛸|V", "UNICORN|🦄|A", "UMBRELLA|☂️|T",
+  "URN|🏺|Flowers are in the big stone urn.",
+  "UFO|🛸|A shiny flying saucer in the sky!",
+  "UNICORN|🦄|The magic unicorn has a rainbow mane.",
+  "UMBRELLA|☂️|Open your umbrella when it rains!",
   // V
-  "VAN|🚐|V", "VASE|🏺|T", "VEST|🦺|T", "VIOLIN|🎻|T", "VOLCANO|🌋|N",
+  "VAN|🚐|Our whole family rides in the van.",
+  "VASE|🏺|Put fresh flowers in the glass vase.",
+  "VEST|🦺|Wear a warm vest over your shirt.",
+  "VIOLIN|🎻|Play sweet music on the little violin.",
+  "VOLCANO|🌋|Hot lava comes out of the volcano!",
   // W
-  "WOLF|🐺|A", "WORM|🪱|A", "WHALE|🐋|A", "WAFFLE|🧇|F", "WATER|💧|F", "WATCH|⌚|T", "WEB|🕸️|N", "WALRUS|🦭|A", "WHEEL|🛞|T", "WINDOW|🪟|T", "WOOD|🪵|N", "WAVE|🌊|N", "WIND|🌬️|N",
+  "WOLF|🐺|The gray wolf lives in the forest.",
+  "WORM|🪱|Birds like to catch little worms.",
+  "WHALE|🐋|The blue whale is the biggest animal!",
+  "WAFFLE|🧇|Warm crispy waffles for breakfast!",
+  "WATER|💧|Drink plenty of clean water every day.",
+  "WATCH|⌚|Look at my watch to tell the time.",
+  "WEB|🕸️|Morning dew shines on the spider web.",
+  "WALRUS|🦭|The big walrus has two long tusks.",
+  "WHEEL|🛞|The wheels on the bus go round and round!",
+  "WINDOW|🪟|Look out the window at the sunny sky.",
+  "WOOD|🪵|The chair is made of strong wood.",
+  "WAVE|🌊|Big ocean waves crash on the beach.",
+  "WIND|🌬️|The cool wind blows the tree leaves.",
   // X
-  "XRAY|🩻|T", "XYLOPHONE|🎹|T",
+  "XRAY|🩻|The doctor looks at bones with an X-ray.",
+  "XYLOPHONE|🎹|Tap the rainbow keys of the xylophone!",
   // Y
-  "YAK|🐃|A", "YARN|🧶|T", "YOYO|🪀|T", "YACHT|🛥️|V", "YOGURT|🥛|F",
+  "YAK|🐃|The furry yak lives on high mountains.",
+  "YARN|🧶|Grandma knits a sweater with soft yarn.",
+  "YOYO|🪀|Up and down goes the spinning yoyo!",
+  "YACHT|🛥️|The white yacht sails on the blue sea.",
+  "YOGURT|🥛|Eat a spoonful of sweet fruit yogurt.",
   // Z
-  "ZEBRA|🦓|A", "ZOO|🎪|N", "ZIPPER|🧥|T"
+  "ZEBRA|🦓|The zebra has black and white stripes.",
+  "ZOO|🎪|We see lions and monkeys at the zoo!",
+  "ZIPPER|🧥|Pull up the zipper on your jacket!"
 ];
 
-function makeSimpleSentence(word, cat) {
-  const w = word.toLowerCase();
-  if (cat === "F") return `Yummy! I like to eat ${w}.`;
-  if (cat === "A") return `Look at the cute ${w}!`;
-  if (cat === "V") return `Let's go in the ${w}!`;
-  if (cat === "B") return `Touch your little ${w}!`;
-  return `I can see a ${w}.`;
-}
-
-THEME_EXCLUSIVE_WORDS.daily = RAW_DAILY_DATA.map(entry => {
-  const [word, emoji, cat] = entry.split("|");
-  return { word, emoji, sentence: makeSimpleSentence(word, cat) };
+THEME_EXCLUSIVE_WORDS.daily = RAW_DAILY_SENTENCES.map(entry => {
+  const [word, emoji, sentence] = entry.split("|");
+  return { word, emoji, sentence };
 });
 
 const LETTER_COLORS = {
@@ -1132,11 +1648,6 @@ const completedSet = new Set(progressData.completedKeys);
 const cloudPlayer = new Audio();
 cloudPlayer.preload = "auto";
 
-/**
- * 智能随机抽取下一个单词索引：
- * 1. 优先从当前主题【尚未学过】的单词里随机抽一个，且不与刚刚玩过的这一个重复
- * 2. 如果当前主题已经全部学完，则从整个主题词库里随机抽一个
- */
 function pickRandomWordIndex(themeKey, excludeIdx = -1) {
   const list = THEME_EXCLUSIVE_WORDS[themeKey];
   if (!list || list.length <= 1) return 0;
@@ -1152,7 +1663,6 @@ function pickRandomWordIndex(themeKey, excludeIdx = -1) {
     return unlearnedIndices[Math.floor(Math.random() * unlearnedIndices.length)];
   }
 
-  // 全部都学过了，随机选一个不等于当前词的索引
   let next = Math.floor(Math.random() * list.length);
   if (next === excludeIdx) {
     next = (excludeIdx + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
@@ -1353,7 +1863,6 @@ function applyThemeEnvironment(themeKey) {
     ambientBg.appendChild(item);
   }
 
-  // 每次进入或切换主题时，如果上次存的单词还没完成，优先恢复上次的单词；若已完成或首次进入，则直接乱序抽一个新词
   const savedIdx = progressData.themeWordIndices[themeKey];
   if (
     typeof savedIdx === 'number' &&
@@ -1384,7 +1893,12 @@ document.getElementById('start-btn').addEventListener('click', () => {
 showcaseCard.onclick = () => speakWordOrSentence(currentWordList[currentIdx].word);
 const speakCurrentTargetLetter = () => {
   const targetChar = currentWordList[currentIdx].word[expectedCharIndex];
-  if (targetChar) speakLetterName(targetChar);
+  if (targetChar) {
+    // 点怪兽或气泡时，怪兽也张一下嘴巴打招呼
+    monsterBody.classList.add('mouth-wide');
+    setTimeout(() => monsterBody.classList.remove('mouth-wide'), 480);
+    speakLetterName(targetChar);
+  }
 };
 monsterBody.onclick = speakCurrentTargetLetter;
 cravingBubble.onclick = speakCurrentTargetLetter;
@@ -1397,8 +1911,8 @@ function clearTreats() {
 function applyMonsterStyle(idx) {
   const themeMonsters = THEMES[currentThemeKey].monsters;
   const style = themeMonsters[idx % themeMonsters.length];
-  monsterBody.style.backgroundColor = style.color;
-  monsterBody.style.borderRadius = style.radius;
+  document.documentElement.style.setProperty('--monster-color', style.color);
+  document.documentElement.style.setProperty('--monster-belly', style.belly);
   monsterHorns.textContent = style.horn;
   monsterBody.style.transform = 'scale(1)';
 
@@ -1577,10 +2091,10 @@ function measureTreatArea() {
 
   const monsterRect = monsterBody.getBoundingClientRect();
   const monsterBottom = monsterRect.bottom || vh * 0.62;
-  const belowH = vh - monsterBottom - 20;
+  const belowH = vh - monsterBottom - 26;
 
   if (belowH >= 60) {
-    return { w: vw - margin * 2, h: belowH, x: margin, y: monsterBottom + 20 };
+    return { w: vw - margin * 2, h: belowH, x: margin, y: monsterBottom + 24 };
   }
 
   const leftW = Math.max(0, monsterRect.left - margin);
@@ -1732,9 +2246,8 @@ function bindTreatInteraction(treat, wordObj) {
 
     speakLetterName(treat.dataset.char);
 
-    if (treat.dataset.char === wordObj.word[expectedCharIndex]) {
-      monsterBody.classList.add('mouth-wide');
-    }
+    // 只要孩子手指抓起字母，小怪兽就张大嘴巴等待投喂！
+    monsterBody.classList.add('mouth-wide');
     lookAtPoint(e.clientX, e.clientY);
   });
 
@@ -1763,7 +2276,7 @@ function bindTreatInteraction(treat, wordObj) {
       (mRect.top + mRect.height / 2) - (tRect.top + tRect.height / 2)
     );
 
-    if (distToMouth < 145 || (moveDist < 18 && ch === targetChar)) {
+    if (distToMouth < 150 || (moveDist < 18 && ch === targetChar)) {
       if (ch === targetChar) {
         const myOrder = parseInt(treat.dataset.order, 10);
         if (myOrder !== expectedCharIndex) {
@@ -1794,24 +2307,28 @@ function bindTreatInteraction(treat, wordObj) {
 function feedMonsterSuccess(treat, wordObj) {
   const ch = treat.dataset.char;
   const color = LETTER_COLORS[ch] || "#FF6B6B";
-  const mRect = monsterBody.getBoundingClientRect();
+  const mouthEl = document.getElementById('monster-mouth');
+  const mRect = mouthEl.getBoundingClientRect();
+
+  // 先让怪兽张大嘴迎接飞过来的字母
+  monsterBody.classList.add('mouth-wide');
 
   treat.style.transition = 'all 0.22s ease-in';
-  treat.style.left = (mRect.left + mRect.width / 2 - 40) + 'px';
-  treat.style.top = (mRect.top + mRect.height / 2 - 20) + 'px';
+  treat.style.left = (mRect.left + mRect.width / 2 - 36) + 'px';
+  treat.style.top = (mRect.top + mRect.height / 2 - 36) + 'px';
   treat.style.transform = 'scale(0.2)';
   treat.style.opacity = '0';
 
   setTimeout(() => {
     treat.remove();
+    monsterBody.classList.remove('mouth-wide');
     playChompSound();
-    burstCrumbs(mRect.left + mRect.width / 2, mRect.top + mRect.height * 0.65, color);
+    burstCrumbs(mRect.left + mRect.width / 2, mRect.top + mRect.height / 2, color);
 
+    // 触发嘴巴一开一合咀嚼动画与眯眼笑
     monsterBody.classList.remove('chewing');
     void monsterBody.offsetWidth;
     monsterBody.classList.add('chewing');
-    const growScale = 1 + (expectedCharIndex + 1) * 0.035;
-    monsterBody.style.transform = `scale(${growScale})`;
 
     const slot = document.getElementById(`h-slot-${expectedCharIndex}`);
     if (slot) {
@@ -1825,9 +2342,9 @@ function feedMonsterSuccess(treat, wordObj) {
     if (expectedCharIndex < wordObj.word.length) {
       updateTurnHighlights();
     } else {
-      setTimeout(() => showWordAndSentenceCelebration(wordObj), 480);
+      setTimeout(() => showWordAndSentenceCelebration(wordObj), 550);
     }
-  }, 200);
+  }, 220);
 }
 
 // ==================== 7. 拼完单词后：保存进度 + 展示句子 + 下一题乱序抽取 ====================
@@ -1867,7 +2384,6 @@ function showWordAndSentenceCelebration(wordObj) {
     speakWordOrSentence(wordObj.sentence);
   };
 
-  // 点击 NEXT 时随机抽取下一个未学单词（不再按死板顺序出词）
   celNextBtn.onclick = () => {
     loadWord(pickRandomWordIndex(currentThemeKey, currentIdx));
   };
