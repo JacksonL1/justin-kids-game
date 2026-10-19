@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Hungry ABC - Holiday Adventure</title>
+<title>Hungry ABC - Holiday & Daily Edition</title>
 <style>
   :root {
     --bg-top: #E0F7FA;
@@ -199,7 +199,7 @@
   }
   #Showcase-card.is-learned #learned-star { display: block; }
   #big-word-emoji {
-    font-size: 82px;
+    font-size: 80px;
     line-height: 1.05;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
     animation: floatIdle 2.4s infinite ease-in-out;
@@ -240,35 +240,35 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.18);
   }
 
-  /* ==================== 4. 可全屏自由移动的四大主题主角 ==================== */
+  /* ==================== 4. 四大主题主角（严格置于 z-index: 30，绝不遮挡 z-index: 50 的字母） ==================== */
   #hero-actor {
     position: fixed;
     left: 50%;
-    top: 52%;
+    top: 47%;
     transform: translate(-50%, -50%);
-    z-index: 65;
+    z-index: 30;
     pointer-events: auto;
     cursor: pointer;
     transition:
-      left 0.52s cubic-bezier(0.34, 1.25, 0.64, 1),
-      top 0.52s cubic-bezier(0.34, 1.25, 0.64, 1);
+      left 0.48s cubic-bezier(0.34, 1.25, 0.64, 1),
+      top 0.48s cubic-bezier(0.34, 1.25, 0.64, 1);
   }
   #craving-bubble {
     position: absolute;
     top: -32px;
-    right: -66px;
+    right: -58px;
     background: #fff;
     border: 4px solid #333;
     border-radius: 24px;
     padding: 4px 12px;
-    font-size: 26px;
+    font-size: 25px;
     font-weight: 900;
     color: #FF5252;
     box-shadow: 0 8px 16px rgba(0,0,0,0.16);
     display: flex;
     align-items: center;
     gap: 4px;
-    z-index: 90;
+    z-index: 35;
     animation: pulseScale 0.9s infinite alternate ease-in-out;
     white-space: nowrap;
   }
@@ -291,20 +291,20 @@
   #hero-actor[data-skin="christmas"] .skin-christmas { display: flex; }
   #hero-actor[data-skin="lunar"] .skin-lunar { display: flex; }
 
-  /* 通用大眼睛样式（强制 flex-shrink: 0 绝不挤压成眯眯眼！） */
+  /* 通用大眼睛（强制防挤压，永远圆溜溜） */
   .cute-eyes-row {
     display: flex;
-    gap: 18px;
+    gap: 16px;
     z-index: 4;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
   }
   .cute-eye {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
     flex-shrink: 0 !important;
     background: #fff;
     border-radius: 50%;
@@ -316,8 +316,8 @@
     box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1);
   }
   .m-pupil {
-    width: 22px;
-    height: 22px;
+    width: 21px;
+    height: 21px;
     flex-shrink: 0;
     background: #231942;
     border-radius: 50%;
@@ -329,8 +329,8 @@
     position: absolute;
     top: 3px;
     left: 4px;
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     background: #fff;
     border-radius: 50%;
   }
@@ -347,8 +347,8 @@
 
   /* 通用粉嫩腮红 */
   .cute-cheeks-row {
-    width: 140px;
-    height: 16px;
+    width: 132px;
+    height: 15px;
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
@@ -357,20 +357,20 @@
     pointer-events: none;
   }
   .cute-cheek {
-    width: 28px;
-    height: 15px;
+    width: 26px;
+    height: 14px;
     background: rgba(255, 65, 108, 0.55);
     border-radius: 50%;
   }
 
-  /* 通用可大张开的嘴巴（防挤压） */
+  /* 通用可大张开的嘴巴 */
   .cute-mouth {
     margin-top: 4px;
-    width: 50px;
-    height: 22px;
+    width: 48px;
+    height: 20px;
     flex-shrink: 0;
     background: #6A040F;
-    border-radius: 12px 12px 34px 34px;
+    border-radius: 10px 10px 32px 32px;
     border: 4px solid #370617;
     position: relative;
     overflow: hidden;
@@ -387,39 +387,39 @@
     flex-shrink: 0;
   }
   .tooth {
-    width: 13px;
+    width: 12px;
     height: 8px;
     background: #fff;
     border-radius: 0 0 7px 7px;
   }
   .tongue {
-    width: 38px;
-    height: 14px;
+    width: 36px;
+    height: 13px;
     flex-shrink: 0;
     background: #FF4D6D;
     border-radius: 50% 50% 0 0;
     transition: all 0.22s;
   }
 
-  /* 张大嘴巴状态（所有吃东西角色通用） */
+  /* 张大嘴巴状态 */
   #hero-actor.mouth-wide .cute-mouth {
-    width: 108px;
-    height: 76px;
+    width: 104px;
+    height: 74px;
     background: #800F2F;
-    border-radius: 24px 24px 58px 58px;
+    border-radius: 22px 22px 54px 54px;
     box-shadow: inset 0 6px 12px rgba(0,0,0,0.35);
   }
   #hero-actor.mouth-wide .tooth {
-    width: 16px;
-    height: 12px;
+    width: 15px;
+    height: 11px;
   }
   #hero-actor.mouth-wide .tongue {
-    width: 68px;
-    height: 32px;
+    width: 64px;
+    height: 30px;
     background: #FF758F;
   }
 
-  /* 咀嚼动画（只动嘴巴和身体弹跳，绝不压扁眼睛！） */
+  /* 咀嚼动画 */
   #hero-actor.chewing {
     animation: heroHappyBounce 0.24s 3 ease-in-out !important;
   }
@@ -435,29 +435,29 @@
     50% { transform: translate(-50%, -50%) scale(1.1, 0.92); }
   }
   @keyframes mouthChompAnim {
-    0%, 100% { width: 44px; height: 12px; border-radius: 18px; }
-    50% { width: 92px; height: 54px; border-radius: 20px 20px 46px 46px; }
+    0%, 100% { width: 42px; height: 12px; border-radius: 18px; }
+    50% { width: 88px; height: 50px; border-radius: 20px 20px 44px 44px; }
   }
 
   /* ---------- 皮肤A：🌈 日常主题 Q 版萌宠怪兽 ---------- */
   .skin-daily {
-    width: 192px;
-    min-height: 182px;
+    width: 180px;
+    min-height: 170px;
     background: var(--monster-color);
-    border-radius: 90px 90px 70px 70px;
+    border-radius: 85px 85px 65px 65px;
     border: 6px solid #fff;
-    box-shadow: inset 0 -14px 0 rgba(0,0,0,0.12), 0 14px 28px rgba(0,0,0,0.18);
+    box-shadow: inset 0 -12px 0 rgba(0,0,0,0.12), 0 12px 24px rgba(0,0,0,0.16);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 22px 14px 16px;
+    padding: 20px 12px 14px;
     animation: floatIdle 2.4s infinite ease-in-out;
   }
   .m-ear {
     position: absolute;
-    top: -14px;
-    width: 40px;
-    height: 40px;
+    top: -12px;
+    width: 36px;
+    height: 36px;
     background: var(--monster-color);
     border: 5px solid #fff;
     border-radius: 50%;
@@ -467,248 +467,228 @@
   .m-ear.right { right: 14px; }
   .m-hand {
     position: absolute;
-    top: 72px;
-    width: 30px;
-    height: 42px;
-    background: var(--monster-color);
-    border: 5px solid #fff;
-    border-radius: 20px;
-    z-index: -1;
-  }
-  .m-hand.left { left: -16px; transform: rotate(25deg); }
-  .m-hand.right { right: -16px; transform: rotate(-25deg); }
-  .m-foot {
-    position: absolute;
-    bottom: -12px;
-    width: 38px;
-    height: 22px;
+    top: 68px;
+    width: 28px;
+    height: 38px;
     background: var(--monster-color);
     border: 4px solid #fff;
-    border-radius: 16px;
+    border-radius: 18px;
     z-index: -1;
   }
-  .m-foot.left { left: 32px; }
-  .m-foot.right { right: 32px; }
+  .m-hand.left { left: -14px; transform: rotate(25deg); }
+  .m-hand.right { right: -14px; transform: rotate(-25deg); }
+  .m-foot {
+    position: absolute;
+    bottom: -10px;
+    width: 34px;
+    height: 20px;
+    background: var(--monster-color);
+    border: 4px solid #fff;
+    border-radius: 14px;
+    z-index: -1;
+  }
+  .m-foot.left { left: 28px; }
+  .m-foot.right { right: 28px; }
   #monster-horns {
     position: absolute;
-    top: -34px;
-    font-size: 38px;
+    top: -32px;
+    font-size: 36px;
     z-index: 6;
   }
 
-  /* ---------- 皮肤B：🎃 万圣节主题 可爱漂浮小幽灵 (Ghost) ---------- */
+  /* ---------- 皮肤B：🎃 万圣节主题 紧凑可爱小幽灵 (Ghost) ---------- */
   .skin-halloween {
-    width: 176px;
-    min-height: 190px;
+    width: 162px;
+    min-height: 174px;
     background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #F0F4FF 75%, #D8E2FF 100%);
-    border-radius: 90px 90px 26px 26px;
+    border-radius: 82px 82px 24px 24px;
     border: 5px solid #fff;
     box-shadow:
-      0 0 28px rgba(255, 255, 255, 0.75),
-      inset 0 -14px 20px rgba(140, 160, 255, 0.35),
-      0 16px 30px rgba(0,0,0,0.3);
+      0 0 24px rgba(255, 255, 255, 0.7),
+      inset 0 -12px 18px rgba(140, 160, 255, 0.35),
+      0 14px 26px rgba(0,0,0,0.28);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 26px 14px 24px;
+    padding: 22px 12px 20px;
     animation: ghostFloat 2s infinite alternate ease-in-out;
   }
   @keyframes ghostFloat {
-    0% { transform: translateY(-6px) rotate(-3deg); }
-    100% { transform: translateY(8px) rotate(3deg); }
+    0% { transform: translateY(-5px) rotate(-2deg); }
+    100% { transform: translateY(6px) rotate(2deg); }
   }
   .ghost-hat {
     position: absolute;
-    top: -38px;
-    font-size: 46px;
+    top: -34px;
+    font-size: 40px;
     z-index: 6;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
   }
   .ghost-hand {
     position: absolute;
-    top: 74px;
-    width: 34px;
-    height: 24px;
+    top: 68px;
+    width: 30px;
+    height: 22px;
     background: #FFFFFF;
-    border-radius: 20px;
+    border-radius: 18px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   }
-  .ghost-hand.left { left: -20px; transform: rotate(-20deg); }
-  .ghost-hand.right { right: -20px; transform: rotate(20deg); }
-  /* 幽灵底部波浪裙摆 */
+  .ghost-hand.left { left: -16px; transform: rotate(-20deg); }
+  .ghost-hand.right { right: -16px; transform: rotate(20deg); }
   .ghost-tail {
     position: absolute;
-    bottom: -14px;
+    bottom: -12px;
     left: 4px;
     right: 4px;
-    height: 24px;
+    height: 20px;
     display: flex;
     justify-content: space-between;
   }
   .ghost-wave {
-    width: 38px;
-    height: 24px;
+    width: 34px;
+    height: 20px;
     background: #D8E2FF;
     border-radius: 0 0 50% 50%;
   }
 
-  /* ---------- 皮肤C：🎄 圣诞节主题 驯鹿拉圣诞雪橇 + 圣诞老人与礼物背包 ---------- */
+  /* ---------- 皮肤C：🎄 圣诞节主题 仅保留圣诞老人背着鼓鼓的红礼物袋 ---------- */
   .skin-christmas {
-    width: 246px;
-    height: 150px;
+    width: 156px;
+    height: 146px;
     align-items: center;
     justify-content: center;
-    animation: sleighBob 1.8s infinite alternate ease-in-out;
+    animation: santaBob 1.8s infinite alternate ease-in-out;
   }
-  @keyframes sleighBob {
-    0% { transform: translateY(-4px) rotate(-1deg); }
-    100% { transform: translateY(5px) rotate(1deg); }
+  @keyframes santaBob {
+    0% { transform: translateY(-4px); }
+    100% { transform: translateY(5px); }
   }
-  .sleigh-car {
+  .santa-solo-wrap {
     position: relative;
-    width: 236px;
-    height: 112px;
-    background: linear-gradient(180deg, #E63946 0%, #B5171E 100%);
-    border: 5px solid #FFD166;
-    border-radius: 28px 55px 24px 24px;
-    box-shadow: 0 12px 0 #800F2F, 0 18px 28px rgba(0,0,0,0.28);
+    width: 150px;
+    height: 136px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    padding: 0 12px;
+    justify-content: center;
   }
-  /* 雪橇底部金色滑撬 */
-  .sleigh-runner {
-    position: absolute;
-    bottom: -16px;
-    left: -10px;
-    right: -14px;
-    height: 10px;
-    background: #FFD166;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-  /* 圣诞老人背后的红色大礼物背包 */
+  /* 圣诞老人身后背着的鼓鼓的红礼物袋 */
   #santa-bag {
-    position: relative;
-    width: 74px;
-    height: 82px;
-    margin-top: -32px;
+    position: absolute;
+    right: 2px;
+    bottom: 8px;
+    width: 78px;
+    height: 88px;
     background: radial-gradient(circle at 35% 30%, #FF5A5F, #C81D25);
     border: 4px solid #FFD166;
-    border-radius: 42% 42% 48% 48%;
-    box-shadow: inset -8px -8px 0 rgba(0,0,0,0.18), 0 6px 12px rgba(0,0,0,0.2);
+    border-radius: 44% 44% 50% 50%;
+    box-shadow: inset -8px -8px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.25);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 38px;
+    transform: rotate(12deg);
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
   }
   #santa-bag.bag-open {
-    transform: scale(1.22) rotate(-8deg);
+    transform: scale(1.26) rotate(4deg);
     background: radial-gradient(circle at 35% 30%, #FF8589, #E63946);
+    box-shadow: 0 0 20px #FFD166, 0 8px 16px rgba(0,0,0,0.25);
   }
-  .santa-driver {
-    font-size: 68px;
-    margin-top: -36px;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.2));
-  }
-  .reindeer-puller {
-    font-size: 64px;
-    margin-top: -28px;
-    margin-right: -8px;
-    transform: scaleX(-1);
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.2));
-    animation: deerGallop 0.6s infinite alternate ease-in-out;
-  }
-  @keyframes deerGallop {
-    0% { transform: scaleX(-1) translateY(0) rotate(0deg); }
-    100% { transform: scaleX(-1) translateY(-8px) rotate(-8deg); }
-  }
-  .golden-reins {
-    position: absolute;
-    top: 26px;
-    right: 45px;
-    width: 55px;
-    height: 18px;
-    border-bottom: 4px dashed #FFD166;
-    border-radius: 50%;
-    pointer-events: none;
+  /* 圣诞老人本体 */
+  .santa-character {
+    position: relative;
+    left: -18px;
+    font-size: 96px;
+    line-height: 1;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.22));
+    z-index: 2;
   }
 
-  /* ---------- 皮肤D：🧧 农历新年主题 威风可爱中国红祥龙 (Chinese Dragon) ---------- */
+  /* ---------- 皮肤D：🧧 农历新年主题 中国红祥龙 ---------- */
   .skin-lunar {
-    width: 196px;
-    min-height: 190px;
+    width: 174px;
+    min-height: 174px;
     background: linear-gradient(180deg, #E63946 0%, #D62828 100%);
-    border-radius: 75px 75px 58px 58px;
+    border-radius: 70px 70px 54px 54px;
     border: 6px solid #FFD166;
     box-shadow:
-      inset 0 -14px 0 rgba(0,0,0,0.2),
-      0 0 24px rgba(255, 209, 102, 0.55),
-      0 16px 30px rgba(0,0,0,0.28);
+      inset 0 -12px 0 rgba(0,0,0,0.2),
+      0 0 22px rgba(255, 209, 102, 0.5),
+      0 14px 26px rgba(0,0,0,0.26);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 24px 14px 16px;
+    padding: 20px 12px 14px;
     animation: dragonWave 2s infinite alternate ease-in-out;
   }
   @keyframes dragonWave {
-    0% { transform: translateY(-5px) rotate(-2deg); }
-    100% { transform: translateY(6px) rotate(2deg); }
+    0% { transform: translateY(-4px) rotate(-2deg); }
+    100% { transform: translateY(5px) rotate(2deg); }
   }
-  /* 金色鹿角龙角与火焰鬃毛 */
   .dragon-horns {
     position: absolute;
-    top: -36px;
+    top: -32px;
     display: flex;
-    gap: 26px;
-    font-size: 38px;
+    gap: 20px;
+    font-size: 34px;
     z-index: 6;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
   }
-  /* 中国龙飘逸的金须 */
   .dragon-whisker {
     position: absolute;
-    top: 86px;
-    width: 44px;
-    height: 18px;
+    top: 80px;
+    width: 36px;
+    height: 16px;
     border-top: 5px solid #FFD166;
     border-radius: 50%;
     z-index: 5;
   }
-  .dragon-whisker.left { left: -28px; transform: rotate(-15deg); }
-  .dragon-whisker.right { right: -28px; transform: rotate(15deg); }
-  /* 盘旋的祥龙尾巴背鳍 */
+  .dragon-whisker.left { left: -22px; transform: rotate(-15deg); }
+  .dragon-whisker.right { right: -22px; transform: rotate(15deg); }
   .dragon-tail {
     position: absolute;
-    bottom: -14px;
-    right: -34px;
-    font-size: 46px;
+    bottom: -10px;
+    right: -28px;
+    font-size: 40px;
     z-index: -1;
     animation: pulseScale 0.8s infinite alternate;
   }
 
-  /* ==================== 5. 分散在屏幕各处的字母糖果/礼物/宝珠 ==================== */
+  /* ==================== 5. 字母糖果/礼物/宝珠（z-index: 50 高于角色，绝不被遮挡！） ==================== */
   .letter-treat {
     position: fixed;
-    width: 82px;
-    height: 82px;
-    border-radius: 24px;
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
     border: 5px solid #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 46px;
+    font-size: 44px;
     font-weight: 900;
     color: #fff;
     cursor: pointer;
-    z-index: 40;
+    z-index: 50;
     box-shadow: 0 8px 0 rgba(0,0,0,0.18), 0 12px 20px rgba(0,0,0,0.15);
     touch-action: none;
-    transition: transform 0.22s, opacity 0.25s, filter 0.25s;
+    transition: transform 0.2s, opacity 0.25s, filter 0.25s;
   }
-  /* 圣诞节礼物盒丝带十字装饰 */
+  .letter-treat.daily-draggable {
+    cursor: grab;
+  }
+  .letter-treat.dragging {
+    cursor: grabbing;
+    z-index: 85 !important;
+    animation: none !important;
+    transform: scale(1.22) rotate(-5deg) !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .letter-treat.returning {
+    transition: left 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   .letter-treat.christmas-gift {
     border-radius: 18px;
     border-color: #FFD166;
@@ -718,36 +698,34 @@
   }
   .letter-treat.christmas-gift span:last-child {
     background: rgba(0,0,0,0.28);
-    padding: 2px 10px;
-    border-radius: 12px;
+    padding: 2px 9px;
+    border-radius: 10px;
   }
-  /* 万圣节圆形发光糖果 */
   .letter-treat.halloween-candy {
     border-radius: 50%;
     border-color: #FFE066;
   }
-  /* 新年黄金边福字宝珠 */
   .letter-treat.lunar-gem {
     border-radius: 50%;
     border-color: #FFD700;
-    box-shadow: 0 0 16px rgba(255, 215, 0, 0.5), 0 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), 0 8px 0 rgba(0,0,0,0.2);
   }
 
   .treat-badge {
     position: absolute;
-    top: -12px;
-    right: -10px;
-    font-size: 26px;
+    top: -11px;
+    right: -9px;
+    font-size: 24px;
     pointer-events: none;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   }
   .letter-treat.active-target {
-    z-index: 55;
+    z-index: 60;
     box-shadow: 0 0 0 6px #FFE066, 0 10px 0 rgba(0,0,0,0.2), 0 16px 28px rgba(0,0,0,0.25);
     animation: targetBounce 1s infinite alternate ease-in-out;
   }
   .letter-treat.waiting-turn {
-    opacity: 0.68;
+    opacity: 0.65;
     transform: scale(0.9);
   }
   .letter-treat.wrong-wiggle {
@@ -971,20 +949,18 @@
   }
 
   @media (max-width: 680px) {
-    #big-word-emoji { font-size: 68px; }
-    .skin-daily { width: 164px; min-height: 158px; padding: 18px 10px 14px; }
-    .skin-halloween { width: 156px; min-height: 168px; padding: 22px 10px 20px; }
-    .skin-christmas { width: 215px; height: 132px; }
-    .sleigh-car { width: 205px; height: 96px; }
-    #santa-bag { width: 62px; height: 70px; font-size: 32px; }
-    .santa-driver { font-size: 56px; }
-    .reindeer-puller { font-size: 54px; }
-    .skin-lunar { width: 168px; min-height: 164px; padding: 20px 10px 14px; }
-    .cute-eye { width: 38px !important; height: 38px !important; min-width: 38px !important; min-height: 38px !important; }
-    .m-pupil { width: 19px; height: 19px; }
-    .cute-cheeks-row { width: 120px; }
-    #craving-bubble { right: -52px; font-size: 22px; padding: 3px 10px; }
-    .letter-treat { width: 66px; height: 66px; font-size: 36px; border-radius: 18px; }
+    #big-word-emoji { font-size: 66px; }
+    .skin-daily { width: 156px; min-height: 150px; padding: 16px 10px 12px; }
+    .skin-halloween { width: 146px; min-height: 158px; padding: 18px 10px 18px; }
+    .skin-christmas { width: 142px; height: 132px; }
+    .santa-character { font-size: 84px; }
+    #santa-bag { width: 68px; height: 76px; font-size: 32px; }
+    .skin-lunar { width: 156px; min-height: 154px; padding: 18px 10px 12px; }
+    .cute-eye { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; }
+    .m-pupil { width: 18px; height: 18px; }
+    .cute-cheeks-row { width: 112px; }
+    #craving-bubble { right: -48px; font-size: 21px; padding: 3px 9px; }
+    .letter-treat { width: 64px; height: 64px; font-size: 35px; border-radius: 18px; }
   }
 </style>
 </head>
@@ -1002,10 +978,10 @@
 <!-- 2. 顶部极简导航栏 -->
 <div id="top-bar">
   <div id="theme-switcher">
-    <button class="theme-pill active" data-theme="daily" title="Daily Classic">🌈</button>
-    <button class="theme-pill" data-theme="christmas" title="Christmas">🎄</button>
-    <button class="theme-pill" data-theme="halloween" title="Halloween">🎃</button>
-    <button class="theme-pill" data-theme="lunar" title="Lunar New Year">🧧</button>
+    <button class="theme-pill active" data-theme="daily" title="Daily Classic (Drag to Feed)">🌈</button>
+    <button class="theme-pill" data-theme="christmas" title="Christmas (Santa & Bag)">🎄</button>
+    <button class="theme-pill" data-theme="halloween" title="Halloween (Floating Ghost)">🎃</button>
+    <button class="theme-pill" data-theme="lunar" title="Lunar New Year (Chinese Dragon)">🧧</button>
   </div>
   <button class="nav-btn grid-btn" id="open-drawer-btn" title="Word Book">📖</button>
 </div>
@@ -1019,11 +995,11 @@
   </div>
 </div>
 
-<!-- 4. 可全屏移动的四大主题主角（日常萌怪兽 / 万圣节小幽灵 / 圣诞老人驯鹿雪橇 / 新年中国祥龙） -->
+<!-- 4. 四大主题主角（日常：拖拽投喂怪兽；圣诞/万圣/新年：点击字母主动过去收集且不挡字母） -->
 <div id="hero-actor" data-skin="daily">
   <div id="craving-bubble" title="Tap to hear letter">😋 <span id="craving-letter">A</span></div>
 
-  <!-- A. 日常主题：大眼睛Q版萌怪兽 -->
+  <!-- A. 日常主题：大眼睛Q版萌怪兽（拖拽投喂模式） -->
   <div class="hero-skin skin-daily">
     <div class="m-ear left"></div>
     <div class="m-ear right"></div>
@@ -1071,18 +1047,15 @@
     </div>
   </div>
 
-  <!-- C. 圣诞节主题：坐着驯鹿雪橇装礼物的圣诞老人 -->
+  <!-- C. 圣诞节主题：只保留圣诞老人背着鼓鼓的红礼物袋 -->
   <div class="hero-skin skin-christmas">
-    <div class="sleigh-car">
-      <div id="santa-bag" title="Santa's Gift Bag">🎒</div>
-      <div class="santa-driver">🎅</div>
-      <div class="golden-reins"></div>
-      <div class="reindeer-puller">🦌</div>
-      <div class="sleigh-runner"></div>
+    <div class="santa-solo-wrap">
+      <div class="santa-character">🎅</div>
+      <div id="santa-bag" title="Santa's Red Gift Bag">🎒</div>
     </div>
   </div>
 
-  <!-- D. 农历新年主题：游走吞宝珠的中国红祥龙 -->
+  <!-- D. 农历新年主题：中国红祥龙 -->
   <div class="hero-skin skin-lunar">
     <div class="dragon-horns"><span>🦌</span><span>🔥</span><span>🦌</span></div>
     <div class="dragon-whisker left"></div>
@@ -1178,7 +1151,7 @@ const THEME_EXCLUSIVE_WORDS = {
     { word: "STAR", emoji: "🌟", sentence: "The star shines on top of the tree." },
     { word: "BELL", emoji: "🔔", sentence: "Jingle bells, jingle all the way!" },
     { word: "GIFT", emoji: "🎁", sentence: "Let's open the Christmas gift!" },
-    { word: "DEER", emoji: "🦌", sentence: "The deer pulls Santa's sleigh." },
+    { word: "DEER", emoji: "🦌", sentence: "The deer runs in the white snow." },
     { word: "SNOW", emoji: "❄️", sentence: "White snow falls from the sky." },
     { word: "SOCK", emoji: "🧦", sentence: "Hang up your red Christmas sock." },
     { word: "SLED", emoji: "🛷", sentence: "Slide down the hill on a sled!" },
@@ -1756,7 +1729,7 @@ let currentWordList = THEME_EXCLUSIVE_WORDS[currentThemeKey] || THEME_EXCLUSIVE_
 let currentIdx = 0;
 let expectedCharIndex = 0;
 let activeLetterFilter = "ALL";
-let isHeroBusy = false; // 防止角色飞行途中重复点击
+let isHeroBusy = false;
 let audioCtx = null;
 let preferredEnglishVoice = null;
 const completedSet = new Set(progressData.completedKeys);
@@ -1930,15 +1903,21 @@ const ambientBg = document.getElementById('ambient-bg');
 const savedProgressTip = document.getElementById('saved-progress-tip');
 const topBar = document.getElementById('top-bar');
 
-function moveHeroToCenter() {
+/**
+ * 将角色归位到安全的中央位置（紧随顶部卡片下方，绝不挡底部或四周字母）
+ */
+function moveHeroToHomeCenter() {
+  const cardRect = showcaseCard.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const safeCenterY = Math.min(vh * 0.49, Math.max(cardRect.bottom + 115, vh * 0.44));
   heroActor.style.left = '50%';
-  heroActor.style.top = '52%';
+  heroActor.style.top = Math.round(safeCenterY) + 'px';
 }
 
 function syncResponsiveLayout() {
   if (topBar) {
     const h = topBar.getBoundingClientRect().height;
-    document.documentElement.style.setProperty('--topbar-space', Math.round(h + 18) + 'px');
+    document.documentElement.style.setProperty('--topbar-space', Math.round(h + 16) + 'px');
   }
   if (currentWordList && currentWordList[currentIdx]) {
     const chars = currentWordList[currentIdx].word.split('');
@@ -1946,8 +1925,14 @@ function syncResponsiveLayout() {
   }
 }
 
-window.addEventListener('resize', syncResponsiveLayout);
-window.addEventListener('orientationchange', () => setTimeout(syncResponsiveLayout, 250));
+window.addEventListener('resize', () => {
+  syncResponsiveLayout();
+  if (!isHeroBusy) moveHeroToHomeCenter();
+});
+window.addEventListener('orientationchange', () => setTimeout(() => {
+  syncResponsiveLayout();
+  if (!isHeroBusy) moveHeroToHomeCenter();
+}, 250));
 
 if (completedSet.size > 0) {
   savedProgressTip.textContent = `🌟 Saved Progress: ${completedSet.size} Words Learned!`;
@@ -1966,7 +1951,6 @@ function applyThemeEnvironment(themeKey) {
   document.documentElement.style.setProperty('--card-border', t.cardBorder);
   document.documentElement.style.setProperty('--accent-color', t.accent);
 
-  // 切换主角外观：daily=怪兽, halloween=小幽灵, christmas=圣诞老人驯鹿车, lunar=中国龙
   heroActor.dataset.skin = themeKey;
 
   document.querySelectorAll('.theme-pill').forEach(btn => {
@@ -2026,7 +2010,7 @@ cravingBubble.onclick = e => {
   speakCurrentTargetLetter();
 };
 
-// ==================== 6. 满屏分散生成字母糖果/礼物/宝珠 + 角色过去吃掉/装进背包 ====================
+// ==================== 6. 核心防遮挡排布 + 区分【日常拖拽】与【节日点击寻宝】 ====================
 function clearTreats() {
   document.querySelectorAll('.letter-treat').forEach(el => el.remove());
 }
@@ -2050,7 +2034,6 @@ function loadWord(idx) {
 
   celebrateLayer.classList.remove('show');
   clearTreats();
-  moveHeroToCenter();
 
   const wordObj = currentWordList[idx];
   const chars = wordObj.word.split('');
@@ -2073,70 +2056,139 @@ function loadWord(idx) {
   cravingLetter.textContent = chars[0];
   speakWordOrSentence(wordObj.word);
   syncResponsiveLayout();
-  spawnScatteredTreats(wordObj, chars);
+
+  // 先将主角放置到中央安全坐标，随后测量主角真实矩形框，确保生成的字母 100% 不与角色重叠！
+  moveHeroToHomeCenter();
+  requestAnimationFrame(() => {
+    spawnThemeTreats(wordObj, chars);
+  });
 }
 
 /**
- * 将字母糖果/礼物盒/宝珠随机分散在屏幕四周各处（避开顶部单词卡与中央主角初始位）
+ * 🌈 日常主题专属：字母整齐排布在怪兽下方的安全区域（绝不碰到怪兽），支持手指拖拽喂进怪兽嘴里
  */
-function computeScatteredPositions(count, treatSize) {
+function computeDailyBottomGridPositions(count, treatW) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const heroRect = heroActor.getBoundingClientRect();
+
+  // 怪兽脚底再往下留出 26px 缓冲，确保怪兽和头顶气泡绝不遮挡任何字母
+  const topStart = Math.max(heroRect.bottom + 26, vh * 0.68);
+  const availH = Math.max(treatW + 10, vh - topStart - 14);
+  const availW = vw - 24;
+
+  const gapX = Math.max(10, Math.round(treatW * 0.22));
+  const gapY = Math.max(14, Math.round(treatW * 0.28));
+
+  const cols = Math.max(1, Math.min(count, Math.floor((availW + gapX) / (treatW + gapX))));
+  const rows = Math.ceil(count / cols);
+
+  const totalW = cols * treatW + (cols - 1) * gapX;
+  const totalH = rows * treatW + (rows - 1) * gapY;
+
+  const startX = (vw - totalW) / 2;
+  const startY = topStart + Math.max(0, (availH - totalH) / 2);
+
+  // 打乱左右顺序
+  const shuffledIndices = Array.from({ length: count }, (_, i) => i).sort(() => Math.random() - 0.5);
+
+  return shuffledIndices.map(slotIdx => {
+    const r = Math.floor(slotIdx / cols);
+    const c = slotIdx % cols;
+    return {
+      x: Math.round(startX + c * (treatW + gapX)),
+      y: Math.round(Math.min(vh - treatW - 10, startY + r * (treatW + gapY)))
+    };
+  });
+}
+
+/**
+ * 🎄🎃🧧 节日主题专属：字母散落在屏幕四周各处，但严格避开中央主角所在的安全禁区（Safe Box）和顶部单词卡片
+ */
+function computeHolidayScatteredPositions(count, treatSize) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const cardRect = showcaseCard.getBoundingClientRect();
-  const topSafeY = Math.max(cardRect.bottom + 18, 225);
-  const bottomSafeY = vh - treatSize - 18;
-  const leftSafeX = 16;
-  const rightSafeX = vw - treatSize - 16;
+  const heroRect = heroActor.getBoundingClientRect();
 
-  // 主角初始位于屏幕正中央 (50%, 52%)，生成散落点时避开正中间区域，分布在四周各处
-  const centerX = vw * 0.5;
-  const centerY = vh * 0.52;
+  const topSafeY = Math.max(cardRect.bottom + 20, 210);
+  const bottomSafeY = vh - treatSize - 16;
+  const leftSafeX = 14;
+  const rightSafeX = vw - treatSize - 14;
+
+  // 为中央角色（含右侧气泡和头顶装饰）建立外扩 26px 的禁区矩形，任何字母不得落入此框内！
+  const forbidLeft = heroRect.left - 28;
+  const forbidRight = heroRect.right + 58; // 包含右侧😋气泡宽度
+  const forbidTop = heroRect.top - 36;
+  const forbidBottom = heroRect.bottom + 24;
 
   const positions = [];
   for (let i = 0; i < count; i++) {
     let bestX = leftSafeX;
     let bestY = bottomSafeY;
+    let found = false;
 
-    for (let attempt = 0; attempt < 90; attempt++) {
+    for (let attempt = 0; attempt < 140; attempt++) {
       const rx = leftSafeX + Math.random() * Math.max(20, rightSafeX - leftSafeX);
       const ry = topSafeY + Math.random() * Math.max(20, bottomSafeY - topSafeY);
 
-      const cx = rx + treatSize / 2;
-      const cy = ry + treatSize / 2;
+      // 检查是否与主角禁区矩形相交
+      const hitHeroBox =
+        rx + treatSize > forbidLeft &&
+        rx < forbidRight &&
+        ry + treatSize > forbidTop &&
+        ry < forbidBottom;
 
-      // 离正中心保持一定距离，形成环绕四周散落的效果
-      const distFromHeroCenter = Math.hypot(cx - centerX, cy - centerY);
-      if (attempt < 50 && distFromHeroCenter < 105) continue;
+      if (hitHeroBox) continue;
 
-      // 字母之间互不重叠
-      let overlap = false;
+      // 检查是否与其他已放置的字母重叠
+      const minSpacing = attempt < 85 ? treatSize + 16 : treatSize + 6;
+      let hitOtherTreat = false;
       for (const p of positions) {
-        if (Math.hypot(p.x - rx, p.y - ry) < treatSize + 14) {
-          overlap = true;
+        if (Math.hypot(p.x - rx, p.y - ry) < minSpacing) {
+          hitOtherTreat = true;
           break;
         }
       }
-      if (!overlap) {
+
+      if (!hitOtherTreat) {
         bestX = rx;
         bestY = ry;
+        found = true;
         break;
       }
     }
+
+    // 极端小屏兜底：放在底部安全行
+    if (!found) {
+      const step = (vw - 28) / count;
+      bestX = 14 + i * step;
+      bestY = bottomSafeY;
+    }
+
     positions.push({ x: Math.round(bestX), y: Math.round(bestY) });
   }
   return positions;
 }
 
-function spawnScatteredTreats(wordObj, chars) {
+function spawnThemeTreats(wordObj, chars) {
   const vw = window.innerWidth;
-  const treatW = vw < 680 ? 64 : 80;
-  const positions = computeScatteredPositions(chars.length, treatW);
+  const count = chars.length;
+  let treatW = vw < 680 ? 62 : 78;
+  if (count >= 7) treatW = Math.max(48, Math.min(treatW, Math.floor((vw - 70) / count)));
+
+  const isDaily = (currentThemeKey === 'daily');
+  const positions = isDaily
+    ? computeDailyBottomGridPositions(count, treatW)
+    : computeHolidayScatteredPositions(count, treatW);
+
   const badges = THEMES[currentThemeKey].treatBadges;
 
   chars.forEach((ch, charOrderIdx) => {
     const treat = document.createElement('div');
     treat.className = 'letter-treat';
-    if (currentThemeKey === 'christmas') treat.classList.add('christmas-gift');
+    if (isDaily) treat.classList.add('daily-draggable');
+    else if (currentThemeKey === 'christmas') treat.classList.add('christmas-gift');
     else if (currentThemeKey === 'halloween') treat.classList.add('halloween-candy');
     else if (currentThemeKey === 'lunar') treat.classList.add('lunar-gem');
 
@@ -2145,6 +2197,7 @@ function spawnScatteredTreats(wordObj, chars) {
     treat.style.backgroundColor = LETTER_COLORS[ch] || "#FF6B6B";
     treat.style.width = treatW + 'px';
     treat.style.height = treatW + 'px';
+    treat.style.fontSize = Math.round(treatW * 0.56) + 'px';
 
     const badgeIcon = badges[(currentIdx + charOrderIdx) % badges.length];
     treat.innerHTML = `<span class="treat-badge">${badgeIcon}</span><span>${ch}</span>`;
@@ -2152,9 +2205,17 @@ function spawnScatteredTreats(wordObj, chars) {
     const pos = positions[charOrderIdx];
     treat.style.left = pos.x + 'px';
     treat.style.top = pos.y + 'px';
+    treat.dataset.homeX = pos.x;
+    treat.dataset.homeY = pos.y;
 
     document.body.appendChild(treat);
-    bindTreatClickAndMove(treat, wordObj);
+
+    // 核心分流：日常主题使用【拖拽喂进怪兽嘴里】；圣诞/万圣/新年使用【点击字母角色跑过去收集】
+    if (isDaily) {
+      bindDailyDragToMouth(treat, wordObj);
+    } else {
+      bindHolidayTapToCollect(treat, wordObj);
+    }
   });
 
   updateTurnHighlights();
@@ -2242,12 +2303,126 @@ function burstCrumbs(x, y, color) {
   }
 }
 
-/**
- * 核心互动：点击散落在各处的字母糖果/礼物/宝珠时：
- * - 如果点击的是正确的当前顺序字母：幽灵/圣诞老人雪橇/中国龙/萌怪兽直接飞到该字母旁边吃掉或装进圣诞老人背包！
- * - 如果点击的顺序不对：摇晃提示并重读当前应该找的字母。
- */
-function bindTreatClickAndMove(treat, wordObj) {
+// ==================== 6A. 【日常主题专属】手指拖拽字母喂进怪兽嘴里 ====================
+function bindDailyDragToMouth(treat, wordObj) {
+  let dragging = false;
+  let ox = 0, oy = 0;
+
+  treat.addEventListener('pointerdown', e => {
+    treat.setPointerCapture(e.pointerId);
+    dragging = true;
+
+    const r = treat.getBoundingClientRect();
+    ox = e.clientX - r.left;
+    oy = e.clientY - r.top;
+
+    treat.classList.remove('returning');
+    treat.classList.add('dragging');
+
+    speakLetterName(treat.dataset.char);
+
+    // 抓起字母时，日常萌怪兽立刻张大嘴巴“啊——”等待投喂
+    heroActor.classList.add('mouth-wide');
+    lookAtPoint(e.clientX, e.clientY);
+  });
+
+  treat.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    treat.style.left = (e.clientX - ox) + 'px';
+    treat.style.top = (e.clientY - oy) + 'px';
+    lookAtPoint(e.clientX, e.clientY);
+  });
+
+  const finishDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    treat.classList.remove('dragging');
+    heroActor.classList.remove('mouth-wide');
+    resetEyes();
+
+    const ch = treat.dataset.char;
+    const targetChar = wordObj.word[expectedCharIndex];
+
+    const hRect = heroActor.getBoundingClientRect();
+    const tRect = treat.getBoundingClientRect();
+    const distToMouth = Math.hypot(
+      (hRect.left + hRect.width / 2) - (tRect.left + tRect.width / 2),
+      (hRect.top + hRect.height * 0.6) - (tRect.top + tRect.height / 2)
+    );
+
+    // 拖到了怪兽嘴巴附近
+    if (distToMouth < 135) {
+      if (ch === targetChar) {
+        const myOrder = parseInt(treat.dataset.order, 10);
+        if (myOrder !== expectedCharIndex) {
+          const other = document.querySelector(`.letter-treat[data-order="${expectedCharIndex}"]`);
+          if (other) other.dataset.order = myOrder;
+          treat.dataset.order = expectedCharIndex;
+        }
+        feedDailyMonsterMouth(treat, wordObj);
+        return;
+      } else {
+        // 顺序不对：怪兽摇头拒吃并弹回原位
+        playBoingSoft();
+        heroActor.classList.remove('head-shake');
+        void heroActor.offsetWidth;
+        heroActor.classList.add('head-shake');
+        setTimeout(() => speakLetterName(targetChar), 260);
+      }
+    }
+
+    treat.classList.add('returning');
+    treat.style.left = treat.dataset.homeX + 'px';
+    treat.style.top = treat.dataset.homeY + 'px';
+  };
+
+  treat.addEventListener('pointerup', finishDrag);
+  treat.addEventListener('pointercancel', finishDrag);
+}
+
+function feedDailyMonsterMouth(treat, wordObj) {
+  const ch = treat.dataset.char;
+  const color = LETTER_COLORS[ch] || "#FF6B6B";
+  const mouthEl = document.querySelector('.skin-daily .cute-mouth');
+  const mRect = mouthEl.getBoundingClientRect();
+
+  heroActor.classList.add('mouth-wide');
+
+  treat.style.transition = 'all 0.2s ease-in';
+  treat.style.left = (mRect.left + mRect.width / 2 - 36) + 'px';
+  treat.style.top = (mRect.top + mRect.height / 2 - 36) + 'px';
+  treat.style.transform = 'scale(0.15)';
+  treat.style.opacity = '0';
+
+  setTimeout(() => {
+    treat.remove();
+    heroActor.classList.remove('mouth-wide');
+    playChompSound();
+    burstCrumbs(mRect.left + mRect.width / 2, mRect.top + mRect.height / 2, color);
+
+    heroActor.classList.remove('chewing');
+    void heroActor.offsetWidth;
+    heroActor.classList.add('chewing');
+
+    const slot = document.getElementById(`h-slot-${expectedCharIndex}`);
+    if (slot) {
+      slot.classList.remove('target-now');
+      slot.classList.add('filled');
+      slot.style.backgroundColor = color;
+    }
+
+    expectedCharIndex++;
+
+    if (expectedCharIndex < wordObj.word.length) {
+      updateTurnHighlights();
+    } else {
+      setTimeout(() => showWordAndSentenceCelebration(wordObj), 520);
+    }
+  }, 200);
+}
+
+// ==================== 6B. 【圣诞/万圣/新年专属】点击字母，角色跑过去旁侧停靠（不挡其他字母） ====================
+function bindHolidayTapToCollect(treat, wordObj) {
   treat.addEventListener('pointerdown', e => {
     e.preventDefault();
     if (isHeroBusy) return;
@@ -2255,27 +2430,23 @@ function bindTreatClickAndMove(treat, wordObj) {
     const ch = treat.dataset.char;
     const targetChar = wordObj.word[expectedCharIndex];
 
-    // 眼珠看向孩子点击的这个字母
     const tRect = treat.getBoundingClientRect();
     const tx = tRect.left + tRect.width / 2;
     const ty = tRect.top + tRect.height / 2;
     lookAtPoint(tx, ty);
 
-    // 朗读点击的字母名
     speakLetterName(ch);
 
     if (ch === targetChar) {
       isHeroBusy = true;
-      // 若单词里有相同字母（如 APPLE 的两个 P），允许点任意一个 P
       const myOrder = parseInt(treat.dataset.order, 10);
       if (myOrder !== expectedCharIndex) {
         const other = document.querySelector(`.letter-treat[data-order="${expectedCharIndex}"]`);
         if (other) other.dataset.order = myOrder;
         treat.dataset.order = expectedCharIndex;
       }
-      heroGoCollectTreat(treat, wordObj, tx, ty);
+      holidayHeroGoCollect(treat, wordObj, tx, ty);
     } else {
-      // 点错了顺序：字母摇晃 + 角色摇头 + 提示正确的目标字母
       playBoingSoft();
       treat.classList.remove('wrong-wiggle');
       void treat.offsetWidth;
@@ -2292,11 +2463,53 @@ function bindTreatClickAndMove(treat, wordObj) {
   });
 }
 
-function heroGoCollectTreat(treat, wordObj, tx, ty) {
+/**
+ * 计算角色跑到目标字母旁边时的“最佳不挡字母停靠点”：
+ * 尝试目标字母的【左、右、上、下】四个邻近停靠位，选出距离其他未收集字母最远的一个安全点！
+ */
+function findNonOverlappingStandPos(targetTreat, tx, ty) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const cardBottom = showcaseCard.getBoundingClientRect().bottom + 75;
+
+  const candidates = [
+    { x: tx - 92, y: ty },
+    { x: tx + 92, y: ty },
+    { x: tx, y: ty - 95 },
+    { x: tx, y: ty + 95 }
+  ];
+
+  const remainingTreats = Array.from(document.querySelectorAll('.letter-treat')).filter(el => el !== targetTreat);
+
+  let bestPos = { x: tx, y: ty };
+  let bestScore = -Infinity;
+
+  candidates.forEach(cand => {
+    const cx = Math.max(85, Math.min(vw - 85, cand.x));
+    const cy = Math.max(cardBottom, Math.min(vh - 90, cand.y));
+
+    let minDistToOthers = 9999;
+    remainingTreats.forEach(other => {
+      const r = other.getBoundingClientRect();
+      const ox = r.left + r.width / 2;
+      const oy = r.top + r.height / 2;
+      const d = Math.hypot(cx - ox, cy - oy);
+      if (d < minDistToOthers) minDistToOthers = d;
+    });
+
+    if (minDistToOthers > bestScore) {
+      bestScore = minDistToOthers;
+      bestPos = { x: cx, y: cy };
+    }
+  });
+
+  return bestPos;
+}
+
+function holidayHeroGoCollect(treat, wordObj, tx, ty) {
   const ch = treat.dataset.char;
   const color = LETTER_COLORS[ch] || "#FF6B6B";
 
-  // 1. 幽灵 / 中国龙 / 萌怪兽 张大嘴巴（圣诞老人则是打开礼物背包）飞向目标字母旁边
   if (currentThemeKey === 'christmas') {
     const bag = document.getElementById('santa-bag');
     if (bag) bag.classList.add('bag-open');
@@ -2304,17 +2517,14 @@ function heroGoCollectTreat(treat, wordObj, tx, ty) {
     heroActor.classList.add('mouth-wide');
   }
 
-  // 控制角色移动落点在屏幕安全范围内，紧贴字母糖果/礼物旁边
-  const safeHeroX = Math.max(95, Math.min(window.innerWidth - 95, tx));
-  const safeHeroY = Math.max(190, Math.min(window.innerHeight - 105, ty - 25));
+  // 移动到目标字母旁边的安全停靠位（不压住其他字母）
+  const standPos = findNonOverlappingStandPos(treat, tx, ty);
+  heroActor.style.left = Math.round(standPos.x) + 'px';
+  heroActor.style.top = Math.round(standPos.y) + 'px';
 
-  heroActor.style.left = safeHeroX + 'px';
-  heroActor.style.top = safeHeroY + 'px';
-
-  // 2. 当角色抵达字母旁边后（约 450ms），执行“吃进嘴巴”或“装进圣诞老人背包”动作
   setTimeout(() => {
     if (currentThemeKey === 'christmas') {
-      // 圣诞主题：礼物高高跃起，直接装进圣诞老人车上的红色背包里！
+      // 圣诞主题：礼物跃起并直接塞进圣诞老人背着的鼓鼓红礼物袋里！
       const bagEl = document.getElementById('santa-bag');
       const bagRect = bagEl.getBoundingClientRect();
       const bx = bagRect.left + bagRect.width / 2 - 36;
@@ -2323,8 +2533,8 @@ function heroGoCollectTreat(treat, wordObj, tx, ty) {
       treat.style.zIndex = '90';
       treat.style.transition = 'all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)';
       treat.style.left = bx + 'px';
-      treat.style.top = (by - 28) + 'px';
-      treat.style.transform = 'scale(0.55) rotate(20deg)';
+      treat.style.top = (by - 32) + 'px';
+      treat.style.transform = 'scale(0.55) rotate(18deg)';
 
       setTimeout(() => {
         treat.style.top = by + 'px';
@@ -2335,11 +2545,13 @@ function heroGoCollectTreat(treat, wordObj, tx, ty) {
         bagEl.classList.remove('bag-open');
       }, 240);
     } else {
-      // 万圣节幽灵 / 新年中国龙 / 日常萌怪兽：张大嘴一口把字母糖果/宝珠吞进去！
+      // 万圣节小幽灵 / 新年中国龙：张大嘴巴一口把旁边的糖果或宝珠吸进嘴里吃掉！
+      const mouthEl = document.querySelector(`#hero-actor[data-skin="${currentThemeKey}"] .cute-mouth`);
+      const mRect = mouthEl ? mouthEl.getBoundingClientRect() : heroActor.getBoundingClientRect();
       treat.style.zIndex = '90';
       treat.style.transition = 'all 0.22s ease-in';
-      treat.style.left = (safeHeroX - 36) + 'px';
-      treat.style.top = (safeHeroY - 10) + 'px';
+      treat.style.left = (mRect.left + mRect.width / 2 - 36) + 'px';
+      treat.style.top = (mRect.top + mRect.height / 2 - 36) + 'px';
       treat.style.transform = 'scale(0.15)';
       treat.style.opacity = '0';
     }
@@ -2351,15 +2563,13 @@ function heroGoCollectTreat(treat, wordObj, tx, ty) {
 
       if (currentThemeKey !== 'christmas') {
         playChompSound();
-        burstCrumbs(safeHeroX, safeHeroY, color);
+        burstCrumbs(standPos.x, standPos.y, color);
       }
 
-      // 触发咀嚼/欢呼弹跳
       heroActor.classList.remove('chewing');
       void heroActor.offsetWidth;
       heroActor.classList.add('chewing');
 
-      // 点亮顶部对应拼写槽位
       const slot = document.getElementById(`h-slot-${expectedCharIndex}`);
       if (slot) {
         slot.classList.remove('target-now');
@@ -2370,14 +2580,15 @@ function heroGoCollectTreat(treat, wordObj, tx, ty) {
       expectedCharIndex++;
 
       if (expectedCharIndex < wordObj.word.length) {
+        // 收集完当前这颗字母后，立即轻盈退回中央安全区，保证绝不遮挡画面上剩下的任何字母！
+        moveHeroToHomeCenter();
         isHeroBusy = false;
         updateTurnHighlights();
       } else {
-        // 整个单词收集完毕！角色飞回中央并弹出句子庆典
         setTimeout(() => {
-          moveHeroToCenter();
+          moveHeroToHomeCenter();
           showWordAndSentenceCelebration(wordObj);
-        }, 520);
+        }, 500);
       }
     }, currentThemeKey === 'christmas' ? 460 : 220);
   }, 440);
