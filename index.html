@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<!-- 关键修复1：禁止发送 Referrer，解决安卓浏览器请求有道/百度云端语音 MP3 被防盗链拦截的问题 -->
+<!-- 禁止发送 Referrer，解决安卓浏览器请求云端语音 MP3 被防盗链拦截的问题 -->
 <meta name="referrer" content="no-referrer">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Hungry ABC - Holiday & Daily Edition</title>
+<title>Hungry ABC - Cute Dragon Edition</title>
 <style>
   :root {
     --bg-top: #E0F7FA;
@@ -256,9 +256,14 @@
       left 0.48s cubic-bezier(0.34, 1.25, 0.64, 1),
       top 0.48s cubic-bezier(0.34, 1.25, 0.64, 1);
   }
+  /* 当处于盘旋飞行时，关闭默认线性过渡，交由高精度螺旋帧动画控制 */
+  #hero-actor.spiraling-home {
+    transition: none !important;
+  }
+
   #craving-bubble {
     position: absolute;
-    top: -32px;
+    top: -34px;
     right: -58px;
     background: #fff;
     border: 4px solid #333;
@@ -554,7 +559,7 @@
     border-radius: 0 0 50% 50%;
   }
 
-  /* ---------- 皮肤C：🎄 圣诞节主题 仅保留圣诞老人背着鼓鼓的红礼物袋 ---------- */
+  /* ---------- 皮肤C：🎄 圣诞节主题 圣诞老人背着鼓鼓的红礼物袋 ---------- */
   .skin-christmas {
     width: 156px;
     height: 146px;
@@ -606,54 +611,283 @@
     z-index: 2;
   }
 
-  /* ---------- 皮肤D：🧧 农历新年主题 中国红祥龙 ---------- */
+  /* ==================== 皮肤D：🧧 农历新年主题 全新Q版萌宠中国祥龙 ==================== */
   .skin-lunar {
-    width: 174px;
-    min-height: 174px;
-    background: linear-gradient(180deg, #E63946 0%, #D62828 100%);
-    border-radius: 70px 70px 54px 54px;
+    width: 210px;
+    min-height: 195px;
+    align-items: center;
+    justify-content: center;
+    animation: dragonHover 2.2s infinite ease-in-out;
+  }
+  @keyframes dragonHover {
+    0%, 100% { transform: translateY(-5px) rotate(-1.5deg); }
+    50% { transform: translateY(6px) rotate(1.5deg); }
+  }
+
+  /* 蜿蜒在龙头后方的Q版盘旋龙身与龙尾（由3节圆润鳞片身体组成，随呼吸摆动） */
+  .dragon-coils {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .d-coil {
+    position: absolute;
+    background: linear-gradient(135deg, #FF4D4D 0%, #C9182B 100%);
+    border: 4px solid #FFD166;
+    border-radius: 50%;
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,0.18), 0 6px 12px rgba(0,0,0,0.2);
+  }
+  /* 龙身背鳍小金刺 */
+  .d-coil::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 12px;
+    background: #FFD166;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  }
+  .d-coil.c1 {
+    width: 72px;
+    height: 72px;
+    right: -22px;
+    bottom: 18px;
+    animation: coilWave 1.6s infinite alternate ease-in-out;
+  }
+  .d-coil.c2 {
+    width: 56px;
+    height: 56px;
+    right: -46px;
+    bottom: 48px;
+    animation: coilWave 1.6s 0.2s infinite alternate ease-in-out;
+  }
+  .d-coil.c3 {
+    width: 42px;
+    height: 42px;
+    right: -58px;
+    bottom: 84px;
+    animation: coilWave 1.6s 0.4s infinite alternate ease-in-out;
+  }
+  /* 龙尾火焰绒毛 */
+  .dragon-tail-tuft {
+    position: absolute;
+    right: -74px;
+    bottom: 108px;
+    width: 34px;
+    height: 34px;
+    background: radial-gradient(circle at 30% 70%, #FFF3B0, #FFB703, #FB5607);
+    border-radius: 50% 0 50% 50%;
+    transform: rotate(-15deg);
+    border: 3px solid #FFF;
+    box-shadow: 0 0 12px rgba(255, 183, 3, 0.8);
+    animation: tailFlick 0.8s infinite alternate ease-in-out;
+  }
+  @keyframes coilWave {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-9px) scale(1.04); }
+  }
+  @keyframes tailFlick {
+    0% { transform: rotate(-25deg) scale(0.95); }
+    100% { transform: rotate(10deg) scale(1.1); }
+  }
+
+  /* 萌龙大头主体（上窄下宽的婴儿肥瑞兽脸型） */
+  .dragon-head-card {
+    position: relative;
+    width: 178px;
+    min-height: 168px;
+    background: radial-gradient(circle at 50% 28%, #FF5A5F 0%, #D90429 85%);
+    border-radius: 78px 78px 64px 68px;
     border: 6px solid #FFD166;
     box-shadow:
-      inset 0 -12px 0 rgba(0,0,0,0.2),
-      0 0 22px rgba(255, 209, 102, 0.5),
-      0 14px 26px rgba(0,0,0,0.26);
+      inset 0 -12px 0 rgba(128, 0, 20, 0.35),
+      inset 0 8px 14px rgba(255, 255, 255, 0.35),
+      0 14px 28px rgba(0,0,0,0.28);
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     padding: 20px 12px 14px;
-    animation: dragonWave 2s infinite alternate ease-in-out;
+    z-index: 3;
   }
-  @keyframes dragonWave {
-    0% { transform: translateY(-4px) rotate(-2deg); }
-    100% { transform: translateY(5px) rotate(2deg); }
-  }
-  .dragon-horns {
+
+  /* 立体分叉黄金小龙角（SVG绘制，超萌圆角鹿角造型） */
+  .dragon-antlers-svg {
     position: absolute;
-    top: -32px;
-    display: flex;
-    gap: 20px;
-    font-size: 34px;
+    top: -44px;
+    width: 170px;
+    height: 54px;
+    pointer-events: none;
+    z-index: 2;
+    filter: drop-shadow(0 4px 5px rgba(0,0,0,0.22));
+  }
+
+  /* 萌龙圆润小耳朵（带翠绿内耳） */
+  .dragon-ear {
+    position: absolute;
+    top: 12px;
+    width: 34px;
+    height: 24px;
+    background: #FF4D4D;
+    border: 4px solid #FFD166;
+    border-radius: 20px 20px 6px 20px;
+    z-index: 1;
+  }
+  .dragon-ear::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #2EC4B6;
+    border-radius: inherit;
+    opacity: 0.85;
+  }
+  .dragon-ear.left { left: -22px; transform: rotate(-22deg); }
+  .dragon-ear.right { right: -22px; transform: rotate(22deg) scaleX(-1); }
+
+  /* 额头正中央的碧玉龙珠印记 */
+  .dragon-forehead-gem {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 35% 35%, #A8F9FF, #00BBF9, #0077B6);
+    border: 3px solid #FFD166;
+    border-radius: 50%;
+    margin-bottom: -4px;
     z-index: 6;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    box-shadow: 0 0 10px rgba(0, 187, 249, 0.8);
+    flex-shrink: 0;
   }
-  .dragon-whisker {
-    position: absolute;
-    top: 80px;
-    width: 36px;
+
+  /* 威风又俏皮的金色祥云粗眉毛 */
+  .dragon-brows {
+    width: 132px;
     height: 16px;
-    border-top: 5px solid #FFD166;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: -6px;
+    z-index: 6;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .d-brow {
+    width: 48px;
+    height: 15px;
+    background: linear-gradient(180deg, #FFF3B0 0%, #FFD166 60%, #F4A261 100%);
+    border: 2.5px solid #7F4F24;
+    border-radius: 20px 12px 16px 8px;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+  }
+  .d-brow.left { transform: rotate(-10deg); }
+  .d-brow.right { transform: rotate(10deg) scaleX(-1); }
+
+  /* 核心标志：可爱立体红金小龙鼻（带两个小鼻孔，一看就是萌龙！） */
+  .dragon-snout {
+    margin-top: -6px;
+    width: 54px;
+    height: 24px;
+    background: linear-gradient(180deg, #FF758F 0%, #E63946 100%);
+    border: 3.5px solid #FFD166;
+    border-radius: 26px 26px 18px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 10px;
+    z-index: 6;
+    box-shadow: 0 4px 0 rgba(140, 0, 20, 0.3);
+    flex-shrink: 0;
+  }
+  .d-nostril {
+    width: 8px;
+    height: 10px;
+    background: #590D22;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 0 rgba(255,209,102,0.5);
+  }
+
+  /* 两侧飘逸上翘的金色曲线长龙须 */
+  .dragon-whisker-svg {
+    position: absolute;
+    top: 74px;
+    width: 64px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 6;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.2));
+  }
+  .dragon-whisker-svg.left {
+    left: -46px;
+    animation: whiskerWaveL 1.8s infinite alternate ease-in-out;
+  }
+  .dragon-whisker-svg.right {
+    right: -46px;
+    transform: scaleX(-1);
+    animation: whiskerWaveR 1.8s infinite alternate ease-in-out;
+  }
+  @keyframes whiskerWaveL {
+    0% { transform: rotate(-6deg); }
+    100% { transform: rotate(8deg); }
+  }
+  @keyframes whiskerWaveR {
+    0% { transform: scaleX(-1) rotate(-6deg); }
+    100% { transform: scaleX(-1) rotate(8deg); }
+  }
+
+  /* 胸前金色条纹小肚兜与两只小龙爪 */
+  .dragon-belly {
+    position: absolute;
+    bottom: -6px;
+    width: 88px;
+    height: 24px;
+    background: repeating-linear-gradient(
+      0deg,
+      #FFE599,
+      #FFE599 6px,
+      #FFD166 6px,
+      #FFD166 12px
+    );
+    border: 3px solid #FFF;
+    border-radius: 30px 30px 20px 20px;
+    z-index: 2;
+  }
+  .dragon-claw {
+    position: absolute;
+    bottom: 6px;
+    width: 30px;
+    height: 28px;
+    background: #FF4D4D;
+    border: 3.5px solid #FFD166;
     border-radius: 50%;
     z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    padding-bottom: 2px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
-  .dragon-whisker.left { left: -22px; transform: rotate(-15deg); }
-  .dragon-whisker.right { right: -22px; transform: rotate(15deg); }
-  .dragon-tail {
-    position: absolute;
-    bottom: -10px;
-    right: -28px;
-    font-size: 40px;
-    z-index: -1;
-    animation: pulseScale 0.8s infinite alternate;
+  .dragon-claw::before, .dragon-claw::after {
+    content: "";
+    width: 6px;
+    height: 7px;
+    background: #FFF;
+    border-radius: 50%;
+  }
+  .dragon-claw.left { left: -8px; transform: rotate(20deg); }
+  .dragon-claw.right { right: -8px; transform: rotate(-20deg); }
+
+  /* 盘旋飞行途中飘出的祥云与金星尾迹粒子 */
+  .dragon-cloud-puff {
+    position: fixed;
+    pointer-events: none;
+    z-index: 28;
+    font-size: 24px;
+    animation: cloudFadeOut 0.65s ease-out forwards;
+  }
+  @keyframes cloudFadeOut {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.95; }
+    100% { transform: translate(-50%, -50%) scale(1.4) translateY(12px); opacity: 0; }
   }
 
   /* ==================== 5. 字母糖果/礼物/宝珠（z-index: 50 高于角色，绝不被遮挡） ==================== */
@@ -956,7 +1190,16 @@
     .skin-christmas { width: 142px; height: 132px; }
     .santa-character { font-size: 84px; }
     #santa-bag { width: 68px; height: 76px; font-size: 32px; }
-    .skin-lunar { width: 156px; min-height: 154px; padding: 18px 10px 12px; }
+    .skin-lunar { width: 180px; min-height: 170px; }
+    .dragon-head-card { width: 154px; min-height: 148px; padding: 16px 10px 12px; }
+    .dragon-antlers-svg { width: 148px; top: -38px; }
+    .dragon-brows { width: 114px; }
+    .d-brow { width: 40px; height: 13px; }
+    .dragon-snout { width: 46px; height: 20px; }
+    .d-coil.c1 { width: 58px; height: 58px; right: -16px; }
+    .d-coil.c2 { width: 44px; height: 44px; right: -34px; }
+    .d-coil.c3 { width: 34px; height: 34px; right: -44px; }
+    .dragon-tail-tuft { right: -56px; bottom: 92px; width: 28px; height: 28px; }
     .cute-eye { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; }
     .m-pupil { width: 18px; height: 18px; }
     .cute-cheeks-row { width: 112px; }
@@ -982,7 +1225,7 @@
     <button class="theme-pill active" data-theme="daily" title="Daily Classic (Drag to Feed)">🌈</button>
     <button class="theme-pill" data-theme="christmas" title="Christmas (Santa & Bag)">🎄</button>
     <button class="theme-pill" data-theme="halloween" title="Halloween (Floating Ghost)">🎃</button>
-    <button class="theme-pill" data-theme="lunar" title="Lunar New Year (Chinese Dragon)">🧧</button>
+    <button class="theme-pill" data-theme="lunar" title="Lunar New Year (Cute Dragon)">🧧</button>
   </div>
   <button class="nav-btn grid-btn" id="open-drawer-btn" title="Word Book">📖</button>
 </div>
@@ -1056,24 +1299,76 @@
     </div>
   </div>
 
-  <!-- D. 农历新年主题：中国红祥龙 -->
+  <!-- D. 农历新年主题：全新手绘级 Q 版萌宠中国小祥龙（带分叉金鹿角、祥云眉、立体龙鼻、飘逸龙须与3节盘旋龙身） -->
   <div class="hero-skin skin-lunar">
-    <div class="dragon-horns"><span>🦌</span><span>🔥</span><span>🦌</span></div>
-    <div class="dragon-whisker left"></div>
-    <div class="dragon-whisker right"></div>
-    <div class="cute-eyes-row">
-      <div class="cute-eye"><div class="m-pupil"></div></div>
-      <div class="cute-eye"><div class="m-pupil"></div></div>
+    <!-- 身后蜿蜒起伏的3节红金鳞片龙身与火焰尾 -->
+    <div class="dragon-coils">
+      <div class="dragon-tail-tuft"></div>
+      <div class="d-coil c3"></div>
+      <div class="d-coil c2"></div>
+      <div class="d-coil c1"></div>
     </div>
-    <div class="cute-cheeks-row">
-      <div class="cute-cheek"></div>
-      <div class="cute-cheek"></div>
+
+    <!-- 萌龙头部主体 -->
+    <div class="dragon-head-card">
+      <!-- 圆润分叉黄金小龙角 SVG -->
+      <svg class="dragon-antlers-svg" viewBox="0 0 180 60">
+        <!-- 左金龙角 -->
+        <path d="M 52 54 C 36 38, 24 22, 26 8 C 28 2, 36 4, 38 14 C 40 22, 46 28, 48 28 C 50 18, 56 12, 62 15 C 66 18, 62 28, 54 36 C 54 44, 56 50, 56 54 Z" fill="#FFD166" stroke="#9C5221" stroke-width="3.5" stroke-linejoin="round"/>
+        <!-- 右金龙角 -->
+        <path d="M 128 54 C 144 38, 156 22, 154 8 C 152 2, 144 4, 142 14 C 140 22, 134 28, 132 28 C 130 18, 124 12, 118 15 C 114 18, 118 28, 126 36 C 126 44, 124 50, 124 54 Z" fill="#FFD166" stroke="#9C5221" stroke-width="3.5" stroke-linejoin="round"/>
+      </svg>
+
+      <!-- 左右小龙耳 -->
+      <div class="dragon-ear left"></div>
+      <div class="dragon-ear right"></div>
+
+      <!-- 额头碧玉龙珠 -->
+      <div class="dragon-forehead-gem"></div>
+
+      <!-- 金色祥云粗眉 -->
+      <div class="dragon-brows">
+        <div class="d-brow left"></div>
+        <div class="d-brow right"></div>
+      </div>
+
+      <!-- 水汪汪圆眼睛 -->
+      <div class="cute-eyes-row">
+        <div class="cute-eye"><div class="m-pupil"></div></div>
+        <div class="cute-eye"><div class="m-pupil"></div></div>
+      </div>
+
+      <!-- 标志性立体Q萌小龙鼻（带两个小鼻孔） -->
+      <div class="dragon-snout">
+        <div class="d-nostril"></div>
+        <div class="d-nostril"></div>
+      </div>
+
+      <!-- 粉扑扑腮红 -->
+      <div class="cute-cheeks-row">
+        <div class="cute-cheek"></div>
+        <div class="cute-cheek"></div>
+      </div>
+
+      <!-- 左右飘逸卷曲金龙须 SVG -->
+      <svg class="dragon-whisker-svg left" viewBox="0 0 70 44">
+        <path d="M 66 18 C 44 6, 22 34, 8 14 C 3 7, 10 2, 16 8" fill="none" stroke="#FFD166" stroke-width="5.5" stroke-linecap="round"/>
+      </svg>
+      <svg class="dragon-whisker-svg right" viewBox="0 0 70 44">
+        <path d="M 66 18 C 44 6, 22 34, 8 14 C 3 7, 10 2, 16 8" fill="none" stroke="#FFD166" stroke-width="5.5" stroke-linecap="round"/>
+      </svg>
+
+      <!-- 可大口张开吞宝珠的龙嘴 -->
+      <div class="cute-mouth">
+        <div class="teeth-row"><div class="tooth"></div><div class="tooth"></div></div>
+        <div class="tongue"></div>
+      </div>
+
+      <!-- 金色龙鳞小肚皮与两只小龙爪 -->
+      <div class="dragon-belly"></div>
+      <div class="dragon-claw left"></div>
+      <div class="dragon-claw right"></div>
     </div>
-    <div class="cute-mouth">
-      <div class="teeth-row"><div class="tooth"></div><div class="tooth"></div></div>
-      <div class="tongue"></div>
-    </div>
-    <div class="dragon-tail">🐉</div>
   </div>
 </div>
 
@@ -1252,7 +1547,7 @@ const THEME_EXCLUSIVE_WORDS = {
   ],
 
   lunar: [
-    { word: "DRAGON", emoji: "🐉", sentence: "The long dragon dances in the street!" },
+    { word: "DRAGON", emoji: "🐉", sentence: "The cute dragon flies in the clouds!" },
     { word: "LION", emoji: "🦁", sentence: "Watch the lively red lion dance!" },
     { word: "GOLD", emoji: "🪙", sentence: "The gold coin shines brightly." },
     { word: "GIFT", emoji: "🧧", sentence: "Grandma gave me a red packet gift!" },
@@ -1731,11 +2026,11 @@ let currentIdx = 0;
 let expectedCharIndex = 0;
 let activeLetterFilter = "ALL";
 let isHeroBusy = false;
+let spiralAnimId = null;
 let audioCtx = null;
 let preferredEnglishVoice = null;
 const completedSet = new Set(progressData.completedKeys);
 
-// 关键修复2：使用挂载在 DOM 上的隐藏 <audio> 元素，并在首屏点击时用空白 WAV 解锁安卓 WebView 播放权限
 const cloudPlayer = document.createElement('audio');
 cloudPlayer.setAttribute('playsinline', 'true');
 cloudPlayer.setAttribute('webkit-playsinline', 'true');
@@ -1743,7 +2038,6 @@ cloudPlayer.preload = 'auto';
 cloudPlayer.style.display = 'none';
 document.body.appendChild(cloudPlayer);
 
-// 极短无声 WAV 数据流，用于在用户点击开始按钮瞬间彻底解锁安卓 <audio> 自动播放锁
 const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
 
 function pickRandomWordIndex(themeKey, excludeIdx = -1) {
@@ -1800,7 +2094,6 @@ function ensureAudio() {
 function speakLetterName(letterChar, onEnd = null) {
   const upper = letterChar.toUpperCase();
   const phoneticWord = LETTER_VOICE_QUERY[upper] || upper;
-  // 点击字母同时给一个轻快悦耳的按键音反馈，即使网络慢也有即时声音反馈
   playTapTone(440 + (upper.charCodeAt(0) - 65) * 12);
   speakEnglishAudio(phoneticWord, upper + ".", onEnd);
 }
@@ -1810,12 +2103,6 @@ function speakWordOrSentence(text, onEnd = null) {
   speakEnglishAudio(clean, clean, onEnd);
 }
 
-/**
- * 三级语音降级保障（解决安卓不发声问题）：
- * 第1级：有道美式真人发音 MP3（配合 no-referrer 突破安卓防盗链）
- * 第2级：百度翻译美式语音接口 MP3（当安卓网络拦截有道时自动秒切百度语音流）
- * 第3级：系统离线 TTS
- */
 function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   let finished = false;
   let watchdog = null;
@@ -1835,7 +2122,6 @@ function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   const primaryUrl = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
   const backupUrl = `https://fanyi.baidu.com/gettts?lan=en&text=${encoded}&spd=4&source=web`;
 
-  // 防止安卓音频挂起不回调
   watchdog = setTimeout(done, Math.max(2200, cloudQueryText.length * 140));
 
   const tryBackupStream = () => {
@@ -1880,7 +2166,6 @@ function fallbackLocalTTS(text, doneCallback) {
   }
 }
 
-// 轻快点击音（保证安卓在任何网络下点击都有清脆声音反馈）
 function playTapTone(freq = 520) {
   ensureAudio();
   if (!audioCtx) return;
@@ -1970,12 +2255,92 @@ const ambientBg = document.getElementById('ambient-bg');
 const savedProgressTip = document.getElementById('saved-progress-tip');
 const topBar = document.getElementById('top-bar');
 
-function moveHeroToHomeCenter() {
+function getHeroHomeCenterCoords() {
   const cardRect = showcaseCard.getBoundingClientRect();
+  const vw = window.innerWidth;
   const vh = window.innerHeight;
   const safeCenterY = Math.min(vh * 0.49, Math.max(cardRect.bottom + 115, vh * 0.44));
-  heroActor.style.left = '50%';
-  heroActor.style.top = Math.round(safeCenterY) + 'px';
+  return { x: Math.round(vw * 0.5), y: Math.round(safeCenterY) };
+}
+
+function moveHeroToHomeCenter() {
+  if (spiralAnimId) {
+    cancelAnimationFrame(spiralAnimId);
+    spiralAnimId = null;
+  }
+  heroActor.classList.remove('spiraling-home');
+  heroActor.style.transform = 'translate(-50%, -50%)';
+  const home = getHeroHomeCenterCoords();
+  heroActor.style.left = home.x + 'px';
+  heroActor.style.top = home.y + 'px';
+}
+
+/**
+ * 🐉 中国萌龙专属：吃完字母宝珠后，在空中划出优美的 360° 盘旋螺旋轨迹飞回原位置！
+ * 途中伴随祥云与金星粒子（☁️✨）以及龙身灵动倾侧摆动
+ */
+function spiralDragonBackHome(startX, startY, onComplete) {
+  if (spiralAnimId) cancelAnimationFrame(spiralAnimId);
+  const home = getHeroHomeCenterCoords();
+  const duration = 920; // 盘旋飞行时长 (ms)
+  const startTime = performance.now();
+  let lastCloudTime = 0;
+
+  heroActor.classList.add('spiraling-home');
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(1, elapsed / duration);
+    // 平滑缓出曲线
+    const ease = 1 - Math.pow(1 - t, 2.4);
+
+    // 基础直线插值
+    const baseX = startX + (home.x - startX) * ease;
+    const baseY = startY + (home.y - startY) * ease;
+
+    // 叠加一整圈 (2π) 螺旋盘旋半径，在飞行中段盘旋幅度最大，接近原位时平稳收拢
+    const loopAngle = t * Math.PI * 2.2;
+    const radius = Math.sin(t * Math.PI) * Math.min(82, Math.max(48, window.innerWidth * 0.14));
+
+    const curX = baseX + Math.cos(loopAngle) * radius;
+    const curY = baseY + Math.sin(loopAngle) * radius * 0.68;
+
+    // 龙身随盘旋方向自然倾侧摆动
+    const bankDeg = Math.sin(loopAngle) * 18 * (1 - t * 0.6);
+
+    heroActor.style.left = Math.round(curX) + 'px';
+    heroActor.style.top = Math.round(curY) + 'px';
+    heroActor.style.transform = `translate(-50%, -50%) rotate(${bankDeg.toFixed(1)}deg)`;
+
+    // 沿途洒下祥云与金星尾迹
+    if (now - lastCloudTime > 95 && t < 0.9) {
+      lastCloudTime = now;
+      spawnDragonCloudPuff(curX, curY + 25);
+    }
+
+    if (t < 1) {
+      spiralAnimId = requestAnimationFrame(step);
+    } else {
+      spiralAnimId = null;
+      heroActor.classList.remove('spiraling-home');
+      heroActor.style.transform = 'translate(-50%, -50%)';
+      heroActor.style.left = home.x + 'px';
+      heroActor.style.top = home.y + 'px';
+      if (onComplete) onComplete();
+    }
+  }
+
+  spiralAnimId = requestAnimationFrame(step);
+}
+
+function spawnDragonCloudPuff(x, y) {
+  const puff = document.createElement('div');
+  puff.className = 'dragon-cloud-puff';
+  puff.textContent = Math.random() > 0.4 ? '☁️' : '✨';
+  puff.style.left = Math.round(x + (Math.random() * 24 - 12)) + 'px';
+  puff.style.top = Math.round(y + (Math.random() * 16 - 8)) + 'px';
+  document.body.appendChild(puff);
+  setTimeout(() => puff.remove(), 650);
 }
 
 function syncResponsiveLayout() {
@@ -2049,12 +2414,10 @@ document.querySelectorAll('.theme-pill').forEach(btn => {
   btn.onclick = () => applyThemeEnvironment(btn.dataset.theme);
 });
 
-// 关键修复3：首屏开始按钮同时解锁 WebAudio、HTML5 <audio> 实例与本地 TTS，彻底打通安卓音频通道
 document.getElementById('start-btn').addEventListener('click', () => {
   ensureAudio();
   playTapTone(600);
 
-  // 用极短静音流解锁 cloudPlayer 在安卓上的自动播放权限
   cloudPlayer.src = SILENT_WAV;
   const p = cloudPlayer.play();
   if (p !== undefined) {
@@ -2193,9 +2556,10 @@ function computeHolidayScatteredPositions(count, treatSize) {
   const leftSafeX = 14;
   const rightSafeX = vw - treatSize - 14;
 
-  const forbidLeft = heroRect.left - 28;
-  const forbidRight = heroRect.right + 58;
-  const forbidTop = heroRect.top - 36;
+  // 为中央角色（包括小萌龙右侧盘旋的龙身）预留充足的安全禁区，绝不遮挡任何字母
+  const forbidLeft = heroRect.left - 34;
+  const forbidRight = heroRect.right + 68;
+  const forbidTop = heroRect.top - 42;
   const forbidBottom = heroRect.bottom + 24;
 
   const positions = [];
@@ -2490,8 +2854,7 @@ function feedDailyMonsterMouth(treat, wordObj) {
   }, 200);
 }
 
-// ==================== 6B. 【圣诞/万圣/新年专属】点击字母，角色跑过去旁侧停靠 ====================
-// 关键修复4：移除 e.preventDefault()，并使用 pointerup/click 兼容触发，确保安卓 WebView 把点击识别为合法用户手势从而放行音频播放
+// ==================== 6B. 【圣诞/万圣/新年专属】点击字母，角色跑过去吃掉并盘旋返回 ====================
 function bindHolidayTapToCollect(treat, wordObj) {
   let triggered = false;
   const onTap = () => {
@@ -2647,15 +3010,28 @@ function holidayHeroGoCollect(treat, wordObj, tx, ty) {
 
       expectedCharIndex++;
 
-      if (expectedCharIndex < wordObj.word.length) {
-        moveHeroToHomeCenter();
-        isHeroBusy = false;
+      const isWordCompleted = (expectedCharIndex >= wordObj.word.length);
+
+      // 🐉 如果是农历新年主题的小萌龙：吃完后盘旋一圈腾云飞回原位置！
+      if (currentThemeKey === 'lunar') {
         updateTurnHighlights();
+        spiralDragonBackHome(standPos.x, standPos.y, () => {
+          isHeroBusy = false;
+          if (isWordCompleted) {
+            showWordAndSentenceCelebration(wordObj);
+          }
+        });
       } else {
-        setTimeout(() => {
+        if (!isWordCompleted) {
           moveHeroToHomeCenter();
-          showWordAndSentenceCelebration(wordObj);
-        }, 500);
+          isHeroBusy = false;
+          updateTurnHighlights();
+        } else {
+          setTimeout(() => {
+            moveHeroToHomeCenter();
+            showWordAndSentenceCelebration(wordObj);
+          }, 500);
+        }
       }
     }, currentThemeKey === 'christmas' ? 460 : 220);
   }, 440);
