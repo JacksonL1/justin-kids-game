@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- 关键修复1：禁止发送 Referrer，解决安卓浏览器请求有道/百度云端语音 MP3 被防盗链拦截的问题 -->
+<meta name="referrer" content="no-referrer">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
@@ -21,6 +23,7 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
     margin: 0;
     padding: 0;
   }
@@ -240,7 +243,7 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.18);
   }
 
-  /* ==================== 4. 四大主题主角（严格置于 z-index: 30，绝不遮挡 z-index: 50 的字母） ==================== */
+  /* ==================== 4. 四大主题主角（z-index: 30，不挡 z-index: 50 的字母） ==================== */
   #hero-actor {
     position: fixed;
     left: 50%;
@@ -571,7 +574,6 @@
     align-items: center;
     justify-content: center;
   }
-  /* 圣诞老人身后背着的鼓鼓的红礼物袋 */
   #santa-bag {
     position: absolute;
     right: 2px;
@@ -595,7 +597,6 @@
     background: radial-gradient(circle at 35% 30%, #FF8589, #E63946);
     box-shadow: 0 0 20px #FFD166, 0 8px 16px rgba(0,0,0,0.25);
   }
-  /* 圣诞老人本体 */
   .santa-character {
     position: relative;
     left: -18px;
@@ -655,7 +656,7 @@
     animation: pulseScale 0.8s infinite alternate;
   }
 
-  /* ==================== 5. 字母糖果/礼物/宝珠（z-index: 50 高于角色，绝不被遮挡！） ==================== */
+  /* ==================== 5. 字母糖果/礼物/宝珠（z-index: 50 高于角色，绝不被遮挡） ==================== */
   .letter-treat {
     position: fixed;
     width: 78px;
@@ -995,7 +996,7 @@
   </div>
 </div>
 
-<!-- 4. 四大主题主角（日常：拖拽投喂怪兽；圣诞/万圣/新年：点击字母主动过去收集且不挡字母） -->
+<!-- 4. 四大主题主角 -->
 <div id="hero-actor" data-skin="daily">
   <div id="craving-bubble" title="Tap to hear letter">😋 <span id="craving-letter">A</span></div>
 
@@ -1733,8 +1734,17 @@ let isHeroBusy = false;
 let audioCtx = null;
 let preferredEnglishVoice = null;
 const completedSet = new Set(progressData.completedKeys);
-const cloudPlayer = new Audio();
-cloudPlayer.preload = "auto";
+
+// 关键修复2：使用挂载在 DOM 上的隐藏 <audio> 元素，并在首屏点击时用空白 WAV 解锁安卓 WebView 播放权限
+const cloudPlayer = document.createElement('audio');
+cloudPlayer.setAttribute('playsinline', 'true');
+cloudPlayer.setAttribute('webkit-playsinline', 'true');
+cloudPlayer.preload = 'auto';
+cloudPlayer.style.display = 'none';
+document.body.appendChild(cloudPlayer);
+
+// 极短无声 WAV 数据流，用于在用户点击开始按钮瞬间彻底解锁安卓 <audio> 自动播放锁
+const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
 
 function pickRandomWordIndex(themeKey, excludeIdx = -1) {
   const list = THEME_EXCLUSIVE_WORDS[themeKey];
@@ -1758,16 +1768,18 @@ function pickRandomWordIndex(themeKey, excludeIdx = -1) {
   return next;
 }
 
-// ==================== 4. 100% 纯正英文语音系统 ====================
+// ==================== 4. 专为安卓+苹果优化的三重保险英语语音系统 ====================
 function initPreferredEnglishVoice() {
   if (!('speechSynthesis' in window)) return;
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices || !voices.length) return;
-  preferredEnglishVoice =
-    voices.find(v => /Samantha|Alex|Victoria|Ava|Google US English/i.test(v.name) && /en/i.test(v.lang)) ||
-    voices.find(v => v.lang === 'en-US') ||
-    voices.find(v => /^en[-_]/i.test(v.lang)) ||
-    null;
+  try {
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices || !voices.length) return;
+    preferredEnglishVoice =
+      voices.find(v => /Samantha|Alex|Victoria|Ava|Google US English/i.test(v.name) && /en/i.test(v.lang)) ||
+      voices.find(v => v.lang === 'en-US') ||
+      voices.find(v => /^en[-_]/i.test(v.lang)) ||
+      null;
+  } catch (e) {}
 }
 if ('speechSynthesis' in window) {
   initPreferredEnglishVoice();
@@ -1775,17 +1787,21 @@ if ('speechSynthesis' in window) {
 }
 
 function ensureAudio() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  } catch (e) {}
 }
 
 function speakLetterName(letterChar, onEnd = null) {
   const upper = letterChar.toUpperCase();
   const phoneticWord = LETTER_VOICE_QUERY[upper] || upper;
+  // 点击字母同时给一个轻快悦耳的按键音反馈，即使网络慢也有即时声音反馈
+  playTapTone(440 + (upper.charCodeAt(0) - 65) * 12);
   speakEnglishAudio(phoneticWord, upper + ".", onEnd);
 }
 
@@ -1794,11 +1810,19 @@ function speakWordOrSentence(text, onEnd = null) {
   speakEnglishAudio(clean, clean, onEnd);
 }
 
+/**
+ * 三级语音降级保障（解决安卓不发声问题）：
+ * 第1级：有道美式真人发音 MP3（配合 no-referrer 突破安卓防盗链）
+ * 第2级：百度翻译美式语音接口 MP3（当安卓网络拦截有道时自动秒切百度语音流）
+ * 第3级：系统离线 TTS
+ */
 function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   let finished = false;
+  let watchdog = null;
   const done = () => {
     if (finished) return;
     finished = true;
+    if (watchdog) clearTimeout(watchdog);
     if (onEnd) onEnd();
   };
 
@@ -1808,19 +1832,35 @@ function speakEnglishAudio(cloudQueryText, ttsFallbackText, onEnd = null) {
   } catch (e) {}
 
   const encoded = encodeURIComponent(cloudQueryText.toLowerCase());
-  cloudPlayer.onended = done;
-  cloudPlayer.onerror = () => fallbackLocalTTS(ttsFallbackText, done);
-  cloudPlayer.src = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
+  const primaryUrl = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
+  const backupUrl = `https://fanyi.baidu.com/gettts?lan=en&text=${encoded}&spd=4&source=web`;
 
-  const p = cloudPlayer.play();
-  if (p !== undefined) {
-    p.catch(() => fallbackLocalTTS(ttsFallbackText, done));
+  // 防止安卓音频挂起不回调
+  watchdog = setTimeout(done, Math.max(2200, cloudQueryText.length * 140));
+
+  const tryBackupStream = () => {
+    cloudPlayer.onerror = () => fallbackLocalTTS(ttsFallbackText, done);
+    cloudPlayer.onended = done;
+    cloudPlayer.src = backupUrl;
+    const p2 = cloudPlayer.play();
+    if (p2 !== undefined) {
+      p2.catch(() => fallbackLocalTTS(ttsFallbackText, done));
+    }
+  };
+
+  cloudPlayer.onended = done;
+  cloudPlayer.onerror = tryBackupStream;
+  cloudPlayer.src = primaryUrl;
+
+  const p1 = cloudPlayer.play();
+  if (p1 !== undefined) {
+    p1.catch(tryBackupStream);
   }
 }
 
 function fallbackLocalTTS(text, doneCallback) {
   if (!('speechSynthesis' in window)) {
-    setTimeout(doneCallback, 800);
+    setTimeout(doneCallback, 600);
     return;
   }
   try {
@@ -1836,52 +1876,79 @@ function fallbackLocalTTS(text, doneCallback) {
     window.speechSynthesis.speak(u);
     setTimeout(doneCallback, Math.max(950, text.length * 85));
   } catch (e) {
-    setTimeout(doneCallback, 800);
+    setTimeout(doneCallback, 600);
   }
+}
+
+// 轻快点击音（保证安卓在任何网络下点击都有清脆声音反馈）
+function playTapTone(freq = 520) {
+  ensureAudio();
+  if (!audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.35, audioCtx.currentTime + 0.09);
+    gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.008, audioCtx.currentTime + 0.1);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+  } catch (e) {}
 }
 
 function playChompSound() {
   ensureAudio();
-  [260, 420, 580].forEach((f, i) => {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.045);
-    gain.gain.setValueAtTime(0.22, audioCtx.currentTime + i * 0.045);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.045 + 0.12);
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start(audioCtx.currentTime + i * 0.045);
-    osc.stop(audioCtx.currentTime + i * 0.045 + 0.12);
-  });
+  if (!audioCtx) return;
+  try {
+    [260, 420, 580].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.045);
+      gain.gain.setValueAtTime(0.22, audioCtx.currentTime + i * 0.045);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.045 + 0.12);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + i * 0.045);
+      osc.stop(audioCtx.currentTime + i * 0.045 + 0.12);
+    });
+  } catch (e) {}
 }
 
 function playBoingSoft() {
   ensureAudio();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(190, audioCtx.currentTime + 0.18);
-  gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-  osc.connect(gain).connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.2);
+  if (!audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(190, audioCtx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.2);
+  } catch (e) {}
 }
 
 function playDingFanfare() {
   ensureAudio();
-  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.06);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.06);
-    gain.gain.exponentialRampToValueAtTime(0.008, audioCtx.currentTime + i * 0.06 + 0.24);
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start(audioCtx.currentTime + i * 0.06);
-    osc.stop(audioCtx.currentTime + i * 0.06 + 0.24);
-  });
+  if (!audioCtx) return;
+  try {
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.06);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.008, audioCtx.currentTime + i * 0.06 + 0.24);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + i * 0.06);
+      osc.stop(audioCtx.currentTime + i * 0.06 + 0.24);
+    });
+  } catch (e) {}
 }
 
 // ==================== 5. 界面初始化与主题角色切换 ====================
@@ -1903,9 +1970,6 @@ const ambientBg = document.getElementById('ambient-bg');
 const savedProgressTip = document.getElementById('saved-progress-tip');
 const topBar = document.getElementById('top-bar');
 
-/**
- * 将角色归位到安全的中央位置（紧随顶部卡片下方，绝不挡底部或四周字母）
- */
 function moveHeroToHomeCenter() {
   const cardRect = showcaseCard.getBoundingClientRect();
   const vh = window.innerHeight;
@@ -1985,17 +2049,39 @@ document.querySelectorAll('.theme-pill').forEach(btn => {
   btn.onclick = () => applyThemeEnvironment(btn.dataset.theme);
 });
 
+// 关键修复3：首屏开始按钮同时解锁 WebAudio、HTML5 <audio> 实例与本地 TTS，彻底打通安卓音频通道
 document.getElementById('start-btn').addEventListener('click', () => {
   ensureAudio();
-  if ('speechSynthesis' in window) {
-    initPreferredEnglishVoice();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+  playTapTone(600);
+
+  // 用极短静音流解锁 cloudPlayer 在安卓上的自动播放权限
+  cloudPlayer.src = SILENT_WAV;
+  const p = cloudPlayer.play();
+  if (p !== undefined) {
+    p.then(() => {
+      document.getElementById('unlock-screen').style.display = 'none';
+      applyThemeEnvironment(currentThemeKey);
+    }).catch(() => {
+      document.getElementById('unlock-screen').style.display = 'none';
+      applyThemeEnvironment(currentThemeKey);
+    });
+  } else {
+    document.getElementById('unlock-screen').style.display = 'none';
+    applyThemeEnvironment(currentThemeKey);
   }
-  document.getElementById('unlock-screen').style.display = 'none';
-  applyThemeEnvironment(currentThemeKey);
+
+  if ('speechSynthesis' in window) {
+    try {
+      initPreferredEnglishVoice();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+    } catch (e) {}
+  }
 });
 
-showcaseCard.onclick = () => speakWordOrSentence(currentWordList[currentIdx].word);
+showcaseCard.onclick = () => {
+  playTapTone(520);
+  speakWordOrSentence(currentWordList[currentIdx].word);
+};
 const speakCurrentTargetLetter = () => {
   const targetChar = currentWordList[currentIdx].word[expectedCharIndex];
   if (targetChar) {
@@ -2057,22 +2143,17 @@ function loadWord(idx) {
   speakWordOrSentence(wordObj.word);
   syncResponsiveLayout();
 
-  // 先将主角放置到中央安全坐标，随后测量主角真实矩形框，确保生成的字母 100% 不与角色重叠！
   moveHeroToHomeCenter();
   requestAnimationFrame(() => {
     spawnThemeTreats(wordObj, chars);
   });
 }
 
-/**
- * 🌈 日常主题专属：字母整齐排布在怪兽下方的安全区域（绝不碰到怪兽），支持手指拖拽喂进怪兽嘴里
- */
 function computeDailyBottomGridPositions(count, treatW) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const heroRect = heroActor.getBoundingClientRect();
 
-  // 怪兽脚底再往下留出 26px 缓冲，确保怪兽和头顶气泡绝不遮挡任何字母
   const topStart = Math.max(heroRect.bottom + 26, vh * 0.68);
   const availH = Math.max(treatW + 10, vh - topStart - 14);
   const availW = vw - 24;
@@ -2089,7 +2170,6 @@ function computeDailyBottomGridPositions(count, treatW) {
   const startX = (vw - totalW) / 2;
   const startY = topStart + Math.max(0, (availH - totalH) / 2);
 
-  // 打乱左右顺序
   const shuffledIndices = Array.from({ length: count }, (_, i) => i).sort(() => Math.random() - 0.5);
 
   return shuffledIndices.map(slotIdx => {
@@ -2102,9 +2182,6 @@ function computeDailyBottomGridPositions(count, treatW) {
   });
 }
 
-/**
- * 🎄🎃🧧 节日主题专属：字母散落在屏幕四周各处，但严格避开中央主角所在的安全禁区（Safe Box）和顶部单词卡片
- */
 function computeHolidayScatteredPositions(count, treatSize) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
@@ -2116,9 +2193,8 @@ function computeHolidayScatteredPositions(count, treatSize) {
   const leftSafeX = 14;
   const rightSafeX = vw - treatSize - 14;
 
-  // 为中央角色（含右侧气泡和头顶装饰）建立外扩 26px 的禁区矩形，任何字母不得落入此框内！
   const forbidLeft = heroRect.left - 28;
-  const forbidRight = heroRect.right + 58; // 包含右侧😋气泡宽度
+  const forbidRight = heroRect.right + 58;
   const forbidTop = heroRect.top - 36;
   const forbidBottom = heroRect.bottom + 24;
 
@@ -2132,7 +2208,6 @@ function computeHolidayScatteredPositions(count, treatSize) {
       const rx = leftSafeX + Math.random() * Math.max(20, rightSafeX - leftSafeX);
       const ry = topSafeY + Math.random() * Math.max(20, bottomSafeY - topSafeY);
 
-      // 检查是否与主角禁区矩形相交
       const hitHeroBox =
         rx + treatSize > forbidLeft &&
         rx < forbidRight &&
@@ -2141,7 +2216,6 @@ function computeHolidayScatteredPositions(count, treatSize) {
 
       if (hitHeroBox) continue;
 
-      // 检查是否与其他已放置的字母重叠
       const minSpacing = attempt < 85 ? treatSize + 16 : treatSize + 6;
       let hitOtherTreat = false;
       for (const p of positions) {
@@ -2159,7 +2233,6 @@ function computeHolidayScatteredPositions(count, treatSize) {
       }
     }
 
-    // 极端小屏兜底：放在底部安全行
     if (!found) {
       const step = (vw - 28) / count;
       bestX = 14 + i * step;
@@ -2210,7 +2283,6 @@ function spawnThemeTreats(wordObj, chars) {
 
     document.body.appendChild(treat);
 
-    // 核心分流：日常主题使用【拖拽喂进怪兽嘴里】；圣诞/万圣/新年使用【点击字母角色跑过去收集】
     if (isDaily) {
       bindDailyDragToMouth(treat, wordObj);
     } else {
@@ -2309,7 +2381,7 @@ function bindDailyDragToMouth(treat, wordObj) {
   let ox = 0, oy = 0;
 
   treat.addEventListener('pointerdown', e => {
-    treat.setPointerCapture(e.pointerId);
+    try { treat.setPointerCapture(e.pointerId); } catch (err) {}
     dragging = true;
 
     const r = treat.getBoundingClientRect();
@@ -2321,7 +2393,6 @@ function bindDailyDragToMouth(treat, wordObj) {
 
     speakLetterName(treat.dataset.char);
 
-    // 抓起字母时，日常萌怪兽立刻张大嘴巴“啊——”等待投喂
     heroActor.classList.add('mouth-wide');
     lookAtPoint(e.clientX, e.clientY);
   });
@@ -2350,7 +2421,6 @@ function bindDailyDragToMouth(treat, wordObj) {
       (hRect.top + hRect.height * 0.6) - (tRect.top + tRect.height / 2)
     );
 
-    // 拖到了怪兽嘴巴附近
     if (distToMouth < 135) {
       if (ch === targetChar) {
         const myOrder = parseInt(treat.dataset.order, 10);
@@ -2362,7 +2432,6 @@ function bindDailyDragToMouth(treat, wordObj) {
         feedDailyMonsterMouth(treat, wordObj);
         return;
       } else {
-        // 顺序不对：怪兽摇头拒吃并弹回原位
         playBoingSoft();
         heroActor.classList.remove('head-shake');
         void heroActor.offsetWidth;
@@ -2421,11 +2490,14 @@ function feedDailyMonsterMouth(treat, wordObj) {
   }, 200);
 }
 
-// ==================== 6B. 【圣诞/万圣/新年专属】点击字母，角色跑过去旁侧停靠（不挡其他字母） ====================
+// ==================== 6B. 【圣诞/万圣/新年专属】点击字母，角色跑过去旁侧停靠 ====================
+// 关键修复4：移除 e.preventDefault()，并使用 pointerup/click 兼容触发，确保安卓 WebView 把点击识别为合法用户手势从而放行音频播放
 function bindHolidayTapToCollect(treat, wordObj) {
-  treat.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    if (isHeroBusy) return;
+  let triggered = false;
+  const onTap = () => {
+    if (triggered || isHeroBusy) return;
+    triggered = true;
+    setTimeout(() => { triggered = false; }, 300);
 
     const ch = treat.dataset.char;
     const targetChar = wordObj.word[expectedCharIndex];
@@ -2460,13 +2532,12 @@ function bindHolidayTapToCollect(treat, wordObj) {
         speakLetterName(targetChar);
       }, 320);
     }
-  });
+  };
+
+  treat.addEventListener('pointerdown', onTap);
+  treat.addEventListener('click', onTap);
 }
 
-/**
- * 计算角色跑到目标字母旁边时的“最佳不挡字母停靠点”：
- * 尝试目标字母的【左、右、上、下】四个邻近停靠位，选出距离其他未收集字母最远的一个安全点！
- */
 function findNonOverlappingStandPos(targetTreat, tx, ty) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
@@ -2517,14 +2588,12 @@ function holidayHeroGoCollect(treat, wordObj, tx, ty) {
     heroActor.classList.add('mouth-wide');
   }
 
-  // 移动到目标字母旁边的安全停靠位（不压住其他字母）
   const standPos = findNonOverlappingStandPos(treat, tx, ty);
   heroActor.style.left = Math.round(standPos.x) + 'px';
   heroActor.style.top = Math.round(standPos.y) + 'px';
 
   setTimeout(() => {
     if (currentThemeKey === 'christmas') {
-      // 圣诞主题：礼物跃起并直接塞进圣诞老人背着的鼓鼓红礼物袋里！
       const bagEl = document.getElementById('santa-bag');
       const bagRect = bagEl.getBoundingClientRect();
       const bx = bagRect.left + bagRect.width / 2 - 36;
@@ -2545,7 +2614,6 @@ function holidayHeroGoCollect(treat, wordObj, tx, ty) {
         bagEl.classList.remove('bag-open');
       }, 240);
     } else {
-      // 万圣节小幽灵 / 新年中国龙：张大嘴巴一口把旁边的糖果或宝珠吸进嘴里吃掉！
       const mouthEl = document.querySelector(`#hero-actor[data-skin="${currentThemeKey}"] .cute-mouth`);
       const mRect = mouthEl ? mouthEl.getBoundingClientRect() : heroActor.getBoundingClientRect();
       treat.style.zIndex = '90';
@@ -2580,7 +2648,6 @@ function holidayHeroGoCollect(treat, wordObj, tx, ty) {
       expectedCharIndex++;
 
       if (expectedCharIndex < wordObj.word.length) {
-        // 收集完当前这颗字母后，立即轻盈退回中央安全区，保证绝不遮挡画面上剩下的任何字母！
         moveHeroToHomeCenter();
         isHeroBusy = false;
         updateTurnHighlights();
@@ -2628,10 +2695,12 @@ function showWordAndSentenceCelebration(wordObj) {
   };
 
   celSentenceBox.onclick = () => {
+    playTapTone(540);
     speakWordOrSentence(wordObj.sentence);
   };
 
   celNextBtn.onclick = () => {
+    playTapTone(620);
     loadWord(pickRandomWordIndex(currentThemeKey, currentIdx));
   };
 }
